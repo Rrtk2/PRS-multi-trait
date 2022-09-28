@@ -1,0 +1,46 @@
+SETTINGS:
+variable	value
+s_figure_folder	C:/DATA_STORAGE/Projects/.blankProject/Data_QC/Test_branch/Plots/
+s_figure_folder_name	Plots
+s_OUT_dir	C:/DATA_STORAGE/Projects/.blankProject/Data_QC/Test_branch/
+s_out_folder	Data_QC/Test_branch/
+s_ROOT_current_folder_name	Test_branch
+s_ROOT_dir	C:/DATA_STORAGE/Projects/.blankProject/
+s_seed	42
+
+VERSION:
+platform	x86_64-w64-mingw32
+arch	x86_64
+os	mingw32
+system	x86_64, mingw32
+status	
+major	4
+minor	1.0
+year	2021
+month	05
+day	18
+svn rev	80317
+language	R
+version.string	R version 4.1.0 (2021-05-18)
+nickname	Camp Pontanezen
+
+SYSTEM INFO:
+sysname	Windows
+release	10 x64
+version	build 19044
+nodename	FHMLNP-WKS114
+machine	x86-64
+login	P70072451
+user	P70072451
+effective_user	P70072451
+
+BASE PACKAGES:
+stats
+graphics
+grDevices
+utils
+datasets
+methods
+base
+
+OTHER PACKAGES:

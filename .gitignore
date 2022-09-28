@@ -1,13 +1,9 @@
 # ignore filetypes
 *.rick
-*.log
 
 # ignore filetypes
 # tested using 'find * -size +1G | cat >> .gitignore' in folder
-*.txt
-*.zip
 *.ta
-*.rar
 *.bed
 *.vcf
 *.tab
@@ -22,6 +18,5 @@
 *.bt2
 *.2bit
 *.pac
-*.csv
 *.rda
 *.bim
