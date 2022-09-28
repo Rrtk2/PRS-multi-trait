@@ -7,7 +7,7 @@ description
 
 ### Collaborators
 Josh
-Niko
+Nico
 Valentin
 Ehsan
 
