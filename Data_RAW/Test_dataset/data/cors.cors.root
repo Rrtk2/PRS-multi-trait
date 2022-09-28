@@ -1,0 +1,8 @@
+Datafile human.bed
+Num_Samples 424
+Num_Predictors 3289
+Num_Samples_Used 424
+Num_Predictors_Used 3289
+Num_Pairs 139232
+Threshold 1.5527e-02
+Window_cM 3.0000
