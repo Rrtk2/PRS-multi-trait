@@ -21,11 +21,11 @@
 #-----------------------------------------------------------------------------------------------------#
 #							Main settings or load
 #-----------------------------------------------------------------------------------------------------#
-source("C:/DATA_STORAGE/Projects/PRS/Scripts/.Main/Settings.R")
+source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
 
 ldak = paste0("/mnt/c/DATA_STORAGE/Projects/PRS/Programs/ldak5.2.linux_/ldak5.2.linux")
 data_loc = paste0("/mnt/c/DATA_STORAGE/Projects/PRS/Data_RAW/Test_dataset/data/")
-C:\DATA_STORAGE\Projects\PRS\Data_RAW\Test_dataset\data
+
 
 #-----------------------------------------------------------------------------------------------------#
 #							Input

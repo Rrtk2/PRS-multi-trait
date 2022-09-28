@@ -13,7 +13,7 @@ s_seed <<- 42
 #							ROOT FOLDER
 #-----------------------------------------------------------------------------------------------------#
 # define ROOT here 
-s_ROOT_dir <<- "C:/DATA_STORAGE/Projects/PRS/"
+s_ROOT_dir <<- "C:/DATA_STORAGE/Projects/PRS-multi-trait/"
 s_ROOT_current_folder_name <<- "Test_branch"
 
 s_figure_folder_name <<- "Plots"
