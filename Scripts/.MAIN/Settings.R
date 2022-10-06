@@ -38,9 +38,15 @@ s_figure_folder <<- paste0(s_ROOT_dir,s_out_folder,s_figure_folder_name,"/")
 #-----------------------------------------------------------------------------------------------------#
 #							MAKE OUTPUT FOLDERS IF NEEDED
 #-----------------------------------------------------------------------------------------------------#
-temp_all_dirs = c(s_figure_folder_name,"output_folder_1","out_2")
+# main folders
+temp_all_dirs = c(s_figure_folder_name,"Manifest","Functions","LDAK","LDAK_LDpred2","Models","Predict","PRSice2","SumStats","DATA")
 if(!dir.exists(paste0(s_OUT_dir))){dir.create(file.path(paste0(s_OUT_dir)))}
 lapply(temp_all_dirs,function(i){if(!dir.exists(paste0(s_OUT_dir,i))){dir.create(file.path(paste0(s_OUT_dir,i)))}})
+
+# make output folders under ~/DATA
+temp_all_dirs2 = c("manifest","gwas","models")
+lapply(temp_all_dirs2,function(i){if(!dir.exists(paste0(s_OUT_dir,"DATA/",i))){dir.create(file.path(paste0(s_OUT_dir,"DATA/",i)))}})
+
 
 #-----------------------------------------------------------------------------------------------------#
 #							GET FUNCTIONS

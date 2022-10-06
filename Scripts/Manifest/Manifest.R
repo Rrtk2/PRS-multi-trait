@@ -3,7 +3,7 @@
 #-----------------------------------------------------------------------------------------------------#
 # File description:
 #	Name
-#		Functions.R
+#		Manifest.R
 #
 #	Purpose 
 #		This code was made as sub-master level regulation script.
@@ -16,43 +16,33 @@
 #
 #
 #-----------------------------------------------------------------------------------------------------#
-#							Main Functions
+#							Main settings or load
 #-----------------------------------------------------------------------------------------------------#
-#Get active manifest info
-f_getManifest = function(printManifest=FALSE){
-	load(file = paste0(s_ROOT_dir,s_out_folder,"DATA/manifest/Ref_gwas_manifest.Rdata"),envir = .GlobalEnv) 
-	if(printManifest){
-		cat("GWAS manifest file:\n\n")
-		print(Ref_gwas_manifest)
-		cat("\n\n")
-	}
-}
+source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
 
 #-----------------------------------------------------------------------------------------------------#
-#							PLOTTING 
+#							Temp placeholder of gwas manifest for eduYears, to get system running
+#							@Josh this stuff here is absolutely non-perminent
 #-----------------------------------------------------------------------------------------------------#
 
-# Auto generate high res images. PDF and TIFF at location given below
-# default is 7 inch; this is now 480 (px?) in this function (so both pdf and tidd scale nice)
-Rplot = function(insert=NA,title="Temp_title",resolution = 350, width = 480, height = 480){
-	pdf(paste0(s_figure_folder,title,".pdf"),width = width/(480/7),height = height/(480/7)) 
-		print({insert})
-	dev.off()
+# Make temp Reference frame
+Ref_gwas_manifest = data.frame(short=c("EduYears",NA),
+	n=c(999999,NA),
+	filename=c("D:/DATA_STORAGE/GWAS/Educational_attainment_2016/EduYears_Main.txt",NA),
+	year=c("2016",NA),
+	trait=c("Educational attainment",NA),
+	processed=c(0,NA))
 
 
-	tiff(paste0(s_figure_folder,title,".tiff"),width = width*(resolution/72), height = height*(resolution/72),res = resolution)
-		print({insert})
-	dev.off()
-}
-
-#-----------------------------------------------------------------------------------------------------#
-#							Cleanup
-#-----------------------------------------------------------------------------------------------------#
-Rclean = function(){
-	rm(list=ls(envir = .GlobalEnv)[grep(ls(envir = .GlobalEnv),pattern = "^temp_")],envir = .GlobalEnv)
-}
 
 #-----------------------------------------------------------------------------------------------------#
 #							output
 #-----------------------------------------------------------------------------------------------------#
+save(Ref_gwas_manifest,file = paste0(s_ROOT_dir,s_out_folder,"DATA/manifest/Ref_gwas_manifest.Rdata"))  # save in same folder, with name matching object
 
+save.image(paste0(s_ROOT_dir,s_out_folder,"Manifest/IMAGE_workspace.Rdata")) # save image
+
+#-----------------------------------------------------------------------------------------------------#
+#							Cleanup
+#-----------------------------------------------------------------------------------------------------#
+Rclean() # remove all temp_ prefix variables

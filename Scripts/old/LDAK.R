@@ -33,46 +33,26 @@ data_loc = paste0("/mnt/c/DATA_STORAGE/Projects/PRS-multi-trait/Data_RAW/Test_da
 # load(paste0(s_ROOT_dir,s_out_folder,"Example/Pheno.Rdata"))
 
 # first get the manifest and check processed 
-f_getManifest(1)
+f_getManifest()
 
 if(length(which(Ref_gwas_manifest$processed==1))!=0){
 	for(i in 1:which(Ref_gwas_manifest$processed==1)){
 	temp_manifest = Ref_gwas_manifest[i,]
-	gwas_loc = paste0(s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".Rdata")
+	
 }
 
-# https://dougspeed.com/summary-statistics/
-# SUMM STATS SHOULD:
-#
-# Predictor (Chr:bp)
-# A1 (test)
-# A2 (other)
-# n (num of samples)
-# 
-# Z 		or		Direction + Stat 	or 		Direction + p
-
-
-# @RRR https://dougspeed.com/reference-panel/
-# Reference panel is needed
-# 
 #-----------------------------------------------------------------------------------------------------#
 #							Main algorithm
 #-----------------------------------------------------------------------------------------------------#
 
 
-# this generates 'summary stats' from infividual level, as summ is needed later -> calculates betas and such
-#system(paste0("wsl cd ",data_loc," ; pwd ;",ldak," --linear quant --bfile human --pheno quant.pheno"))
+# this generates 'summary stats' from infividual level, as summ is needed later
+system(paste0("wsl cd ",data_loc," ; pwd ;",ldak," --linear quant --bfile human --pheno quant.pheno"))
 #We identify SNPs that are within high-LD regions by running
-#system(paste0("wsl cd ",data_loc," ; ",ldak," --cut-genes highld --bfile human --genefile highld.txt"))# -> in example case fails!
+system(paste0("wsl cd ",data_loc," ; ",ldak," --cut-genes highld --bfile human --genefile highld.txt"))# -> in example case fails!
 
-
-
-
-# this command needs the refernec set -> human is reference set
 # Calculate predictor-predictor correlations.
 system(paste0("wsl cd ",data_loc," ; ",ldak," --calc-cors cors --bfile human --window-cm 3"))
-
-
 
 # >need ldak.thin.ind.hers<
 # Estimate per-predictor heritabilities assuming the LDAK-Thin Model
@@ -87,14 +67,10 @@ system(paste0("wsl cd ",data_loc," ; awk < thin.in '{print $1, 1}' > weights.thi
 system(paste0("wsl cd ",data_loc," ; ",ldak," --calc-tagging ldak.thin --bfile human --weights weights.thin --power -.25 --window-cm 1 --save-matrix YES"))
 system(paste0("wsl cd ",data_loc," ; ",ldak," --sum-hers ldak.thin --tagfile ldak.thin.tagging --summary quant.summaries --matrix ldak.thin.matrix"))
 
-temp_outfile = "megabayesr"
-temp_model = "bayesr"
-temp_summfile = "/mnt/c/DATA_STORAGE/Projects/PRS-multi-trait/Data_QC/Test_branch/DATA/gwas/EduYears.summaries"#"quant.summaries"
+
 # construct prediction model
-system(paste0("wsl cd ",data_loc,"; ",ldak,paste0(" --mega-prs ",temp_outfile," --model ",temp_model," --ind-hers ldak.thin.ind.hers --summary ",temp_summfile," --cors cors --cv-proportion .1 --check-high-LD NO --window-cm 1 --allow-ambiguous YES")))
-#	--ind-hers <indhersfile> - to specify the per-predictor heritabilities.
-#	--summary <sumsfile> - to specify the file containing the summary statistics.
-#	--cors <corstem> - to specify the predictor-predictor correlations.
+system(paste0("wsl cd ",data_loc,"; ",ldak," --mega-prs megabayesr --model bayesr --ind-hers ldak.thin.ind.hers --summary quant.summaries --cors cors --cv-proportion .1 --check-high-LD NO --window-cm 1 --allow-ambiguous YES"))
+
 
 #get evaluation/ prs
 system(paste0("wsl cd ",data_loc," ; ",ldak," --calc-scores megabayesr --bfile human --scorefile megabayesr.effects --power 0 --pheno quant.pheno"))
@@ -140,5 +116,3 @@ Rclean() # remove all temp_ prefix variables
 #
 #rm list.txt; for j in {21..22}; do echo "cors$j" >> list.txt; done
 #./ldak.out --join-cors cors --corslist list.txt
-
-

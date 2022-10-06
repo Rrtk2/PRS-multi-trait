@@ -1,11 +1,11 @@
 SETTINGS:
 variable	value
-s_figure_folder	C:/DATA_STORAGE/Projects/.blankProject/Data_QC/Test_branch/Plots/
+s_figure_folder	C:/DATA_STORAGE/Projects/PRS-multi-trait/Data_QC/Test_branch/Plots/
 s_figure_folder_name	Plots
-s_OUT_dir	C:/DATA_STORAGE/Projects/.blankProject/Data_QC/Test_branch/
+s_OUT_dir	C:/DATA_STORAGE/Projects/PRS-multi-trait/Data_QC/Test_branch/
 s_out_folder	Data_QC/Test_branch/
 s_ROOT_current_folder_name	Test_branch
-s_ROOT_dir	C:/DATA_STORAGE/Projects/.blankProject/
+s_ROOT_dir	C:/DATA_STORAGE/Projects/PRS-multi-trait/
 s_seed	42
 
 VERSION:

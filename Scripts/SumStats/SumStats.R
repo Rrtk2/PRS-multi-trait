@@ -21,24 +21,36 @@
 source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
 
 #-----------------------------------------------------------------------------------------------------#
-#							Libraries of this script
+#							Temp placeholder of gwas manifest for eduYears, to get system running
+#							@Josh this stuff here is non-perminent (TO SOME DEGREE!)
+#							Making subset of top 1000 snps FOR SPEED AND TEST
 #-----------------------------------------------------------------------------------------------------#
-# library(package)
+# first get the manifest and check processed 
+f_getManifest(1)
 
+if(length(which(Ref_gwas_manifest$processed==0))!=0){
+	for(i in 1:which(Ref_gwas_manifest$processed==0)){
+		temp_manifest = Ref_gwas_manifest[i,]
+		
+		temp_gwas = read.table(temp_manifest$filename,header = TRUE,sep = "\t")
+		
+		
+		# -temp- filter! @RRR needs to be removed
+		temp_psign = -log10(temp_gwas$Pval)
+		temp_gwas = temp_gwas[order(temp_psign,decreasing = T),][1:1000,]
+		
+		# assign to short name, then store
+		assign(x=temp_manifest$short, temp_gwas)
+		save(list=c(temp_manifest$short),file = paste0(s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".Rdata")) # @RRR OPTIONAL. This is only for loading in R. This line should be commented out at some point
+		write.table(get(temp_manifest$short),file = paste0(s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".summaries"),row.names = FALSE,sep = "\t",quote = FALSE)
+		
+		# update settings
+		Ref_gwas_manifest[i,"processed"] = 1
+	}
 
-#-----------------------------------------------------------------------------------------------------#
-#							Input
-#-----------------------------------------------------------------------------------------------------#
-# load(paste0(s_ROOT_dir,s_out_folder,"Example/Pheno.Rdata"))
-
-
-
-#-----------------------------------------------------------------------------------------------------#
-#							Main algorithm
-#-----------------------------------------------------------------------------------------------------#
-# do stuff
-# temp_remove_me = c(0,1)
-# Result = temp_remove_me
+	# Update manifest
+	save(Ref_gwas_manifest,file = paste0(s_ROOT_dir,s_out_folder,"DATA/manifest/Ref_gwas_manifest.Rdata"))  # save in same folder, with name matching object
+}
 
 #-----------------------------------------------------------------------------------------------------#
 #							output
@@ -50,4 +62,4 @@ source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
 #-----------------------------------------------------------------------------------------------------#
 #							Cleanup
 #-----------------------------------------------------------------------------------------------------#
-Rclean() # remove all temp_ prefix variables
+#Rclean() # remove all temp_ prefix variables
