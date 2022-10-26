@@ -49,6 +49,24 @@ lapply(temp_all_dirs2,function(i){if(!dir.exists(paste0(s_OUT_dir,"DATA/",i))){d
 
 
 #-----------------------------------------------------------------------------------------------------#
+#							GET PROGRAM LOCATIONS
+#-----------------------------------------------------------------------------------------------------#
+s_plinkloc = "C:/DATA_STORAGE/Projects/PRISMO/Data_RAW/1_Genomics/plink/plink2.exe"
+s_gzip = "C:/Program Files (x86)/GnuWin32/bin/gzip.exe"
+s_ldak = paste0("/mnt/c/DATA_STORAGE/Projects/PRS-multi-trait/Programs/ldak5.2.linux_/ldak5.2.linux")
+s_ref_out_name = "1000G_phase3_final"
+
+
+#-----------------------------------------------------------------------------------------------------#
+#							PRS
+#-----------------------------------------------------------------------------------------------------#
+s_data_loc_ref = paste0(s_ROOT_dir,"Data_RAW/1000Genomes/") # 1000G
+s_ref_loc_final = paste0(s_data_loc_ref,s_ref_out_name)
+
+
+
+
+#-----------------------------------------------------------------------------------------------------#
 #							GET FUNCTIONS
 #-----------------------------------------------------------------------------------------------------#
 

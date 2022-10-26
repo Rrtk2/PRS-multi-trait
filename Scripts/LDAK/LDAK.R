@@ -22,123 +22,175 @@
 #							Main settings or load
 #-----------------------------------------------------------------------------------------------------#
 source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
-
-ldak = paste0("/mnt/c/DATA_STORAGE/Projects/PRS-multi-trait/Programs/ldak5.2.linux_/ldak5.2.linux")
-data_loc = paste0("/mnt/c/DATA_STORAGE/Projects/PRS-multi-trait/Data_RAW/Test_dataset/data/")
-
-
-#-----------------------------------------------------------------------------------------------------#
-#							Input
-#-----------------------------------------------------------------------------------------------------#
-# load(paste0(s_ROOT_dir,s_out_folder,"Example/Pheno.Rdata"))
+require(data.table)
 
 # first get the manifest and check processed 
 f_getManifest(1)
+f_getTraits()
 
-if(length(which(Ref_gwas_manifest$processed==1))!=0){
-	for(i in 1:which(Ref_gwas_manifest$processed==1)){
-	temp_manifest = Ref_gwas_manifest[i,]
-	gwas_loc = paste0(s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".Rdata")
+# make PRS model for trait
+f_calcPRS_LDAK(Trait="EduAtt")	
+f_calcPRS_LDAK(Trait="Heigth")
+f_calcPRS_LDAK(Trait="AD")
+f_calcPRS_LDAK(Trait="AD_jans")
+
+#-----------------------------------------------------------------------------------------------------#
+#							Function
+#-----------------------------------------------------------------------------------------------------#
+
+f_calcPRS_LDAK = function(Trait = NA){
+	#-----------------------------------------------------------------------------------------------------#
+	#							Startup
+	#-----------------------------------------------------------------------------------------------------#
+	time1 = as.numeric(Sys.time())
+	
+	f_getManifest(1)
+	
+	Trait_index = which(Ref_gwas_manifest$short==Trait)
+	
+	# check: if manifest Trait exists, else warning with options and return FAIL
+	if(length(Trait_index)==0){
+		warning("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    -",paste0(Ref_gwas_manifest$short,collapse = "\n    -"),"\n\n")
+		return(message("calcPRS failed!\n"))
+	}
+	
+	temp_manifest = Ref_gwas_manifest[Trait_index,]
+	
+	# show items
+	{cat("#-----------------------------#\n")
+	cat(paste0("Trait: ",Trait,"\n" ))
+	cat(paste0("Generation of PRS model: ",Ref_gwas_manifest[Trait_index,"short"]," \n"))
+	cat("#-----------------------------#\n\n\n")}
+	
+	Sys.sleep(3) # to hava a brief moment to see what you selected
+	
+	#-----------------------------------------------------------------------------------------------------#
+	#							Input
+	#-----------------------------------------------------------------------------------------------------#
+	# load(paste0(s_ROOT_dir,s_out_folder,"Example/Pheno.Rdata"))
+
+
+	gwas_loc = paste0(s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".summaries")
+		
+		# load the gwas SumStat
+		#load(gwas_loc)
+		# resutls EduYears in example
+	#}
+
+
+	# https://dougspeed.com/summary-statistics/
+	# SUMM STATS SHOULD:
+	#
+	# Predictor (Chr:bp)
+	# A1 (test)
+	# A2 (other)
+	# n (num of samples)
+	# 
+	# Z 		or		Direction + Stat 	or 		Direction + p
+
+	# REFORMAT the resulted summaries into temp object
+	temp_gwas = data.table::fread(gwas_loc,header=TRUE) # fasterrr!
+	# @RRR really make sure the part below is moved, then IN MANIFEST it is stated what type the trait is, then deal with this appropriately, as in mentioned above (Z 		or		Direction + Stat 	or 		Direction + p)
+	# IF CASE is DIRECTION + pval (Cont. trait)
+	# replaces temp_gwas
+
+	
+	#-----------------------------------------------------------------------------------------------------#
+	#							Get refset if not ready (1000G)
+	#-----------------------------------------------------------------------------------------------------#
+
+	if(!file.exists(paste0(s_data_loc_ref,".flag"))){
+		source(paste0(s_ROOT_dir,"Scripts/LDAK/Cal_Ref_1000G.R"))
+	}
+
+
+	#-----------------------------------------------------------------------------------------------------#
+	#							Prepare location and folders
+	#-----------------------------------------------------------------------------------------------------#
+	s_data_loc_ref2 = paste0(gsub(s_data_loc_ref,pattern = "C:/",replacement = "/mnt/c/"))
+	s_ref_loc_final2 = paste0(gsub(s_ref_loc_final,pattern = "C:/",replacement = "/mnt/c/"))
+
+
+
+	# Parameters for specific PRS models -> in models
+	model_dir = paste0(s_ROOT_dir,s_out_folder,"DATA/models/")
+	specifi_model_dir = paste0(model_dir,temp_manifest$short)
+	specifi_model_dir2 = paste0(gsub(specifi_model_dir,pattern = "C:/",replacement = "/mnt/c/"))
+
+	temp_summfile = paste0("C:/DATA_STORAGE/Projects/PRS-multi-trait/Data_QC/Test_branch/DATA/gwas/",temp_manifest$short,".summaries") 
+	temp_summfile_pred = paste0(temp_summfile,"pred") 
+	temp_summfile2 = paste0("/mnt/c/DATA_STORAGE/Projects/PRS-multi-trait/Data_QC/Test_branch/DATA/gwas/",temp_manifest$short,".summaries") 
+	temp_summfile_pred2 = paste0(gsub(temp_summfile_pred,pattern = "C:/",replacement = "/mnt/c/")) 
+	
+	# make dir if needed
+	if(!dir.exists(paste0(specifi_model_dir))){dir.create(file.path(paste0(specifi_model_dir)))}
+
+	#@RRR include this -> data.table::fwrite()
+	#data.table::fwrite(temp_gwas,file = temp_summfile,row.names = FALSE,sep = "\t",quote = FALSE)
+	data.table::fwrite(list(temp_gwas$Predictor),file = temp_summfile_pred,col.names=FALSE, row.names = FALSE,sep = "\t",quote = FALSE)
+	rm(temp_gwas)
+
+	#-----------------------------------------------------------------------------------------------------#
+	#							PRS calculation
+	#-----------------------------------------------------------------------------------------------------#
+	s_ref_loc_finalfile = "megabayesr"
+	temp_model = "bayesr" # best in LDAK for now...
+
+	system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --sum-hers ",s_data_loc_ref2,"ldak.thin --tagfile ",s_data_loc_ref2,"ldak.thin.tagging --summary ",temp_summfile2," --matrix ",s_data_loc_ref2,"ldak.thin.matrix"," --check-sums NO"))
+
+	# construct prediction model
+	system(paste0("wsl cd ",specifi_model_dir2,"; ",s_ldak,paste0(" --mega-prs ",s_ref_loc_finalfile," --model ",temp_model," --ind-hers ",s_data_loc_ref2,"ldak.thin.ind.hers --summary ",temp_summfile2," --cors ",s_data_loc_ref2,"cors --cv-proportion .1 --check-high-LD NO --window-kb 1000 --allow-ambiguous YES --extract ",temp_summfile_pred2," --max-threads 8")))
+	#	--ind-hers <indhersfile> - to specify the per-predictor heritabilities.
+	#	--summary <sumsfile> - to specify the file containing the summary statistics.
+	#	--cors <corstem> - to specify the predictor-predictor correlations.
+
+	#get evaluation/ prs
+	#system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --calc-scores megabayesr --bfile ",s_ref_loc_final2," --scorefile megabayesr.effects --power 0 "))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" overall
+	#system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --jackknife megabayesr --profile megabayesr.profile --num-blocks 200"))
+
+	# cleanup!
+	#file.remove(temp_summfile)
+	file.remove(temp_summfile_pred)
+	
+	# Check the number of SNPs in final model
+	temp_model = data.table::fread(paste0(specifi_model_dir,"/",s_ref_loc_finalfile,".effects"),header = TRUE,sep = " ") # waaay faster now!
+		
+
+	# update manifest 
+	time2 = as.numeric(Sys.time())
+	Ref_gwas_manifest[Trait_index,"processed"] = 2
+	Ref_gwas_manifest[Trait_index,"finalModelSNPs"] = dim(temp_model)[1]
+	Ref_gwas_manifest[Trait_index,"modelRunningTime"] = round((time2-time1) / 60,0)
+	Ref_gwas_manifest <<- Ref_gwas_manifest # this needs to be pushed into .globalenv
+	rm(temp_model)
+	f_saveManifest()
+	
+	{cat("\n\n#-----------------------------#\n")
+	cat("Completed\n")
+	cat(paste0("PRS model stored in:\n"))
+	cat(paste0(specifi_model_dir2,"/",s_ref_loc_finalfile,".effects","\n"))
+	cat(paste0("Took approx ", Ref_gwas_manifest[Trait_index,"modelRunningTime"] , " minutes.\n"))
+	cat("#-----------------------------#\n")}
+
 }
-
-# https://dougspeed.com/summary-statistics/
-# SUMM STATS SHOULD:
-#
-# Predictor (Chr:bp)
-# A1 (test)
-# A2 (other)
-# n (num of samples)
-# 
-# Z 		or		Direction + Stat 	or 		Direction + p
-
-
-# @RRR https://dougspeed.com/reference-panel/
-# Reference panel is needed
-# 
-#-----------------------------------------------------------------------------------------------------#
-#							Main algorithm
-#-----------------------------------------------------------------------------------------------------#
-
-
-# this generates 'summary stats' from infividual level, as summ is needed later -> calculates betas and such
-#system(paste0("wsl cd ",data_loc," ; pwd ;",ldak," --linear quant --bfile human --pheno quant.pheno"))
-#We identify SNPs that are within high-LD regions by running
-#system(paste0("wsl cd ",data_loc," ; ",ldak," --cut-genes highld --bfile human --genefile highld.txt"))# -> in example case fails!
-
-
-
-
-# this command needs the refernec set -> human is reference set
-# Calculate predictor-predictor correlations.
-system(paste0("wsl cd ",data_loc," ; ",ldak," --calc-cors cors --bfile human --window-cm 3"))
-
-
-
-# >need ldak.thin.ind.hers<
-# Estimate per-predictor heritabilities assuming the LDAK-Thin Model
-system(paste0("wsl cd ",data_loc," ; ",ldak," --thin thin --bfile human --window-prune .98 --window-kb 100"))
-
-# store weigth 1 per snp in new file
-system(paste0("wsl cd ",data_loc," ; awk < thin.in '{print $1, 1}' > weights.thin"))
-
-
-
-# calculate the tagging file
-system(paste0("wsl cd ",data_loc," ; ",ldak," --calc-tagging ldak.thin --bfile human --weights weights.thin --power -.25 --window-cm 1 --save-matrix YES"))
-system(paste0("wsl cd ",data_loc," ; ",ldak," --sum-hers ldak.thin --tagfile ldak.thin.tagging --summary quant.summaries --matrix ldak.thin.matrix"))
-
-temp_outfile = "megabayesr"
-temp_model = "bayesr"
-temp_summfile = "/mnt/c/DATA_STORAGE/Projects/PRS-multi-trait/Data_QC/Test_branch/DATA/gwas/EduYears.summaries"#"quant.summaries"
-# construct prediction model
-system(paste0("wsl cd ",data_loc,"; ",ldak,paste0(" --mega-prs ",temp_outfile," --model ",temp_model," --ind-hers ldak.thin.ind.hers --summary ",temp_summfile," --cors cors --cv-proportion .1 --check-high-LD NO --window-cm 1 --allow-ambiguous YES")))
-#	--ind-hers <indhersfile> - to specify the per-predictor heritabilities.
-#	--summary <sumsfile> - to specify the file containing the summary statistics.
-#	--cors <corstem> - to specify the predictor-predictor correlations.
-
-#get evaluation/ prs
-system(paste0("wsl cd ",data_loc," ; ",ldak," --calc-scores megabayesr --bfile human --scorefile megabayesr.effects --power 0 --pheno quant.pheno"))
-system(paste0("wsl cd ",data_loc," ; ",ldak," --jackknife megabayesr --profile megabayesr.profile --num-blocks 200"))
-
-
-
-#-----------------------------------------------------------------------------------------------------#
-#							plot?
-#-----------------------------------------------------------------------------------------------------#
-# need to see what next steps are @RRR
-
-#  for now final predicting model effect sizes to be plotted?
-
-SNP_effects = read.table(paste0("C:/DATA_STORAGE/Projects/PRS/Data_RAW/Test_dataset/data/","megabayesr.effects"),sep = " ",header = TRUE)
-SNP_profile = read.table(paste0("C:/DATA_STORAGE/Projects/PRS/Data_RAW/Test_dataset/data/","megabayesr.profile"),sep = "\t",header = TRUE)
-Samples_pheno = read.table(paste0("C:/DATA_STORAGE/Projects/PRS/Data_RAW/Test_dataset/data/","quant.pheno"),sep = " ",header = TRUE)
-
-# prs scores:
-SNP_profile$Profile_1
-
-plot(y = SNP_profile$Profile_1, x = SNP_profile$Phenotype)
-
-#-----------------------------------------------------------------------------------------------------#
-#							output
-#-----------------------------------------------------------------------------------------------------#
-# save(Result,file = paste0(s_ROOT_dir,s_out_folder,"Example/Result.Rdata"))  # save in same folder, with name matching object
-
-# save.image(paste0(s_ROOT_dir,s_out_folder,"DE/IMAGE_workspace.Rdata")) # save image
 
 #-----------------------------------------------------------------------------------------------------#
 #							Cleanup
 #-----------------------------------------------------------------------------------------------------#
 Rclean() # remove all temp_ prefix variables
 
-
 #-----------------------------------------------------------------------------------------------------#
-#							Par compute by chr
+#							NOTES
 #-----------------------------------------------------------------------------------------------------#
-#for j in {21..22}; do
-#./ldak.out --calc-cors cors$j --bfile human --window-cm 3 --chr $j
-#done
-#
-#rm list.txt; for j in {21..22}; do echo "cors$j" >> list.txt; done
-#./ldak.out --join-cors cors --corslist list.txt
 
+if(0){
+	temp_bfile = "C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05"
 
+	system(paste0(s_plinkloc," --bfile ", temp_bfile, " --set-all-var-ids @:# --make-bed --out ",paste0(temp_bfile,"_out1")))
+	system(paste0(s_plinkloc," --bfile ", paste0(temp_bfile,"_out1"), " --rm-dup --make-bed --out ",paste0(temp_bfile,"_out2")))
+	system(paste0(s_plinkloc," --bfile ", paste0(temp_bfile,"_out1"), " --exclude ",paste0(temp_bfile,"_out2.rmdup.mismatch")," --make-bed --out ",paste0(temp_bfile,"_2")))
+
+	temp_bfile = "C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05_2"
+	temp_bfile3 = paste0(gsub(temp_bfile,pattern = "C:/",replacement = "/mnt/c/"))
+	f_predPRS(bfile = temp_bfile3, Trait = 1)
+}
