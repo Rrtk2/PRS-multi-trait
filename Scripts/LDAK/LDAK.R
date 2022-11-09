@@ -27,31 +27,45 @@ require(data.table)
 # first get the manifest and check processed 
 f_getManifest(1)
 f_getTraits()
+#--LDpred YES
 
 # make PRS model for trait
-f_calcPRS_LDAK(Trait="EduAtt")	
-f_calcPRS_LDAK(Trait="Heigth")
-f_calcPRS_LDAK(Trait="AD")
-f_calcPRS_LDAK(Trait="AD_jans")
+f_calcPGS_LDAK(Trait="EduAtt")	
+f_calcPGS_LDAK(Trait="Height22")
+f_calcPGS_LDAK(Trait="AD")
+f_calcPGS_LDAK(Trait="AD_jans")
+
+# check --cutoff
 
 #-----------------------------------------------------------------------------------------------------#
 #							Function
 #-----------------------------------------------------------------------------------------------------#
 
-f_calcPRS_LDAK = function(Trait = NA){
+f_calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	#-----------------------------------------------------------------------------------------------------#
 	#							Startup
 	#-----------------------------------------------------------------------------------------------------#
 	time1 = as.numeric(Sys.time())
+	possiblemodels = c("bayesr") # @RRR need to add support for others!
 	
 	f_getManifest(1)
-	
 	Trait_index = which(Ref_gwas_manifest$short==Trait)
 	
+	#-----------------------------------------------------------------------------------------------------#
+	#							Checks
+	#-----------------------------------------------------------------------------------------------------#
+
 	# check: if manifest Trait exists, else warning with options and return FAIL
 	if(length(Trait_index)==0){
-		warning("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    -",paste0(Ref_gwas_manifest$short,collapse = "\n    -"),"\n\n")
-		return(message("calcPRS failed!\n"))
+		warning("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    - ",paste0(Ref_gwas_manifest$short,collapse = "\n    - "),"\n\n")
+		return(message("calcPGS failed (Trait)!\n"))
+	}
+	
+	# check: if model is any of the available ones
+	
+	if(!Model%in%possiblemodels){
+		warning("\n\nEntered model('",Model,"') does not match any of the possible models supported!","\n","  Options:\n    - ",paste0(possiblemodels,collapse = "\n    - "),"\n\n")
+		return(message("calcPGS failed (Model)!\n"))	
 	}
 	
 	temp_manifest = Ref_gwas_manifest[Trait_index,]
@@ -60,6 +74,7 @@ f_calcPRS_LDAK = function(Trait = NA){
 	{cat("#-----------------------------#\n")
 	cat(paste0("Trait: ",Trait,"\n" ))
 	cat(paste0("Generation of PRS model: ",Ref_gwas_manifest[Trait_index,"short"]," \n"))
+	cat(paste0("Using: ",Model," \n"))
 	cat("#-----------------------------#\n\n\n")}
 	
 	Sys.sleep(3) # to hava a brief moment to see what you selected
@@ -98,29 +113,29 @@ f_calcPRS_LDAK = function(Trait = NA){
 	#-----------------------------------------------------------------------------------------------------#
 	#							Get refset if not ready (1000G)
 	#-----------------------------------------------------------------------------------------------------#
-
-	if(!file.exists(paste0(s_data_loc_ref,".flag"))){
-		source(paste0(s_ROOT_dir,"Scripts/LDAK/Cal_Ref_1000G.R"))
-	}
+	#@RRR FORCE DISABLED. NO CHECKS OF REFERENCE SET!!!
+	#if(!fil e.exists(paste0(s_data_loc_ref,".flag"))){
+	#	source(paste0(s_ROOT_dir,"Scripts/LDAK/Cal_Ref_1000G.R"))
+	#}
 
 
 	#-----------------------------------------------------------------------------------------------------#
 	#							Prepare location and folders
 	#-----------------------------------------------------------------------------------------------------#
-	s_data_loc_ref2 = paste0(gsub(s_data_loc_ref,pattern = "C:/",replacement = "/mnt/c/"))
-	s_ref_loc_final2 = paste0(gsub(s_ref_loc_final,pattern = "C:/",replacement = "/mnt/c/"))
+	s_data_loc_ref2 = f_wslpath(s_data_loc_ref)
+	s_ref_loc_final2 = f_wslpath(s_ref_loc_final)
 
 
 
 	# Parameters for specific PRS models -> in models
 	model_dir = paste0(s_ROOT_dir,s_out_folder,"DATA/models/")
 	specifi_model_dir = paste0(model_dir,temp_manifest$short)
-	specifi_model_dir2 = paste0(gsub(specifi_model_dir,pattern = "C:/",replacement = "/mnt/c/"))
+	specifi_model_dir2 = f_wslpath(specifi_model_dir)
 
-	temp_summfile = paste0("C:/DATA_STORAGE/Projects/PRS-multi-trait/Data_QC/Test_branch/DATA/gwas/",temp_manifest$short,".summaries") 
+	temp_summfile = paste0(s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".summaries") 
+	temp_summfile2 = f_wslpath(temp_summfile)
 	temp_summfile_pred = paste0(temp_summfile,"pred") 
-	temp_summfile2 = paste0("/mnt/c/DATA_STORAGE/Projects/PRS-multi-trait/Data_QC/Test_branch/DATA/gwas/",temp_manifest$short,".summaries") 
-	temp_summfile_pred2 = paste0(gsub(temp_summfile_pred,pattern = "C:/",replacement = "/mnt/c/")) 
+	temp_summfile_pred2 = f_wslpath(temp_summfile_pred)
 	
 	# make dir if needed
 	if(!dir.exists(paste0(specifi_model_dir))){dir.create(file.path(paste0(specifi_model_dir)))}
@@ -134,15 +149,21 @@ f_calcPRS_LDAK = function(Trait = NA){
 	#							PRS calculation
 	#-----------------------------------------------------------------------------------------------------#
 	s_ref_loc_finalfile = "megabayesr"
-	temp_model = "bayesr" # best in LDAK for now...
+	#Model defaults "bayesr" # best in LDAK for now...
 
-	system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --sum-hers ",s_data_loc_ref2,"ldak.thin --tagfile ",s_data_loc_ref2,"ldak.thin.tagging --summary ",temp_summfile2," --matrix ",s_data_loc_ref2,"ldak.thin.matrix"," --check-sums NO"))
+	#system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --sum-hers ",s_data_loc_ref2,"ldak.thin --tagfile ",s_data_loc_ref2,"ldak.thin.tagging --summary ",temp_summfile2," --matrix ",s_data_loc_ref2,"ldak.thin.matrix"," --check-sums NO"))
+	system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --sum-hers ",s_data_loc_ref2,"gbr.hapmap --tagfile ",s_data_loc_ref2,"gbr.hapmap.bld.ldak.quickprs.tagging --summary ",temp_summfile2," --matrix ",s_data_loc_ref2,"gbr.hapmap.bld.ldak.quickprs.matrix"," --check-sums NO"))
 
 	# construct prediction model
-	system(paste0("wsl cd ",specifi_model_dir2,"; ",s_ldak,paste0(" --mega-prs ",s_ref_loc_finalfile," --model ",temp_model," --ind-hers ",s_data_loc_ref2,"ldak.thin.ind.hers --summary ",temp_summfile2," --cors ",s_data_loc_ref2,"cors --cv-proportion .1 --check-high-LD NO --window-kb 1000 --allow-ambiguous YES --extract ",temp_summfile_pred2," --max-threads 8")))
+	if(Model=="bayesr"){
+		system(paste0("wsl cd ",specifi_model_dir2,"; ",s_ldak,paste0(" --mega-prs ",s_ref_loc_finalfile," --model ",Model," --ind-hers ",s_data_loc_ref2,"gbr.hapmap.ind.hers --summary ",temp_summfile2," --cors ",s_data_loc_ref2,"gbr.hapmap --cv-proportion .1 --check-high-LD NO --window-kb 1000 --allow-ambiguous YES --extract ",temp_summfile_pred2," --max-threads 8")))
+	}	# kb 1000
+	# LDpred
+	#system(paste0("wsl cd ",specifi_model_dir2,"; ",s_ldak,paste0(" --mega-prs ",s_ref_loc_finalfile," --model ","bolt"," --ind-hers ",s_data_loc_ref2,"gbr.hapmap.ind.hers --summary ",temp_summfile2," --cors ",s_data_loc_ref2,"gbr.hapmap --cv-proportion .1 --check-high-LD NO --window-kb 1000 --allow-ambiguous YES --extract ",temp_summfile_pred2," --max-threads 8 --LDpred YES"))) # kb 1000
 	#	--ind-hers <indhersfile> - to specify the per-predictor heritabilities.
 	#	--summary <sumsfile> - to specify the file containing the summary statistics.
 	#	--cors <corstem> - to specify the predictor-predictor correlations.
+	#   --LDpred YES potentially works like this???
 
 	#get evaluation/ prs
 	#system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --calc-scores megabayesr --bfile ",s_ref_loc_final2," --scorefile megabayesr.effects --power 0 "))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" overall
@@ -179,18 +200,3 @@ f_calcPRS_LDAK = function(Trait = NA){
 #-----------------------------------------------------------------------------------------------------#
 Rclean() # remove all temp_ prefix variables
 
-#-----------------------------------------------------------------------------------------------------#
-#							NOTES
-#-----------------------------------------------------------------------------------------------------#
-
-if(0){
-	temp_bfile = "C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05"
-
-	system(paste0(s_plinkloc," --bfile ", temp_bfile, " --set-all-var-ids @:# --make-bed --out ",paste0(temp_bfile,"_out1")))
-	system(paste0(s_plinkloc," --bfile ", paste0(temp_bfile,"_out1"), " --rm-dup --make-bed --out ",paste0(temp_bfile,"_out2")))
-	system(paste0(s_plinkloc," --bfile ", paste0(temp_bfile,"_out1"), " --exclude ",paste0(temp_bfile,"_out2.rmdup.mismatch")," --make-bed --out ",paste0(temp_bfile,"_2")))
-
-	temp_bfile = "C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05_2"
-	temp_bfile3 = paste0(gsub(temp_bfile,pattern = "C:/",replacement = "/mnt/c/"))
-	f_predPRS(bfile = temp_bfile3, Trait = 1)
-}

@@ -32,15 +32,15 @@ f_getManifest(1)
 #-----------------------------------------------------------------------------------------------------#
 warning("(Predict.R)    !!! There is an example here, should be removed! !!!!")
 #temp_bfile = "C:/DATA_STORAGE/Projects/PRS-multi-trait/Data_RAW/Test_dataset/data/human"
-#temp_bfile2 = paste0(gsub(temp_bfile,pattern = "C:/",replacement = "/mnt/c/"))
 
 temp_adni_bfile = "C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05_2"
-temp_adni_bfile2 = paste0(gsub(temp_adni_bfile,pattern = "C:/",replacement = "/mnt/c/"))
+temp_adni_bfile2 = f_wslpath(temp_adni_bfile)
 
 #f_predPRS(bfile = temp_bfile2, Trait = "EduYears")
 f_getTraits()
 f_predPRS(bfile = temp_adni_bfile2, Trait = "EduAtt")
 f_predPRS(bfile = temp_adni_bfile2, Trait = "AD")
+f_predPRS(bfile = temp_adni_bfile2, Trait = "Heigth")
 #-----------------------------------------------------------------------------------------------------#
 #							output
 #-----------------------------------------------------------------------------------------------------#
@@ -52,3 +52,19 @@ f_predPRS(bfile = temp_adni_bfile2, Trait = "AD")
 #							Cleanup
 #-----------------------------------------------------------------------------------------------------#
 Rclean() # remove all temp_ prefix variables
+
+#-----------------------------------------------------------------------------------------------------#
+#							NOTES
+#-----------------------------------------------------------------------------------------------------#
+
+if(0){
+	temp_bfile = "C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05"
+
+	system(paste0(s_plinkloc," --bfile ", temp_bfile, " --set-all-var-ids @:# --make-bed --out ",paste0(temp_bfile,"_out1")))
+	system(paste0(s_plinkloc," --bfile ", paste0(temp_bfile,"_out1"), " --rm-dup --make-bed --out ",paste0(temp_bfile,"_out2")))
+	system(paste0(s_plinkloc," --bfile ", paste0(temp_bfile,"_out1"), " --exclude ",paste0(temp_bfile,"_out2.rmdup.mismatch")," --make-bed --out ",paste0(temp_bfile,"_2")))
+
+	temp_bfile = "C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05_2"
+	temp_bfile3 = f_wslpath(temp_bfile)
+	f_predPRS(bfile = temp_bfile3, Trait = 1)
+}

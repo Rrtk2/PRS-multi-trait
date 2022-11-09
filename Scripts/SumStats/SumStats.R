@@ -76,6 +76,22 @@ if(length(which(Ref_gwas_manifest$processed==0))!=0){
 
 		}
 		
+		if(temp_manifest$short == "Height22"){
+		warning("(SumStats.R)    !!! This is hardcoded Height22 !!!")
+		temp_gwas = data.frame(	Predictor=gsub(temp_gwas$SNPID,pattern = ":.:.",replacement = ""),
+					A1=temp_gwas$OTHER_ALLELE,
+					A2=temp_gwas$EFFECT_ALLELE,
+					n=temp_gwas$N,
+					Direction=-sign(temp_gwas$BETA), # This is reversed as effect allelle is reversed!!!!
+					P=as.numeric(temp_gwas$P))
+			# remove inconsistent  @RRR this is a stupid fix, need a better version later! This removes "inconsistent allelles"
+			a = data.table::fread(paste0(s_data_loc_ref,"gbr.hapmap.cors.bim"),header=FALSE)
+			a = a[match(temp_gwas$Predictor,a$V2),]
+			
+			temp_gwas = temp_gwas[which(temp_gwas$A1==a$V5 & temp_gwas$A2==a$V6),]
+
+		}
+		
 		if(temp_manifest$short == "AD"){
 		warning("(SumStats.R)    !!! This is hardcoded AD !!")
 		temp_gwas = data.table::fread(temp_manifest$filename,header = TRUE,sep = " ")

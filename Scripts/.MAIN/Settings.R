@@ -20,6 +20,24 @@ s_figure_folder_name <<- "Plots"
 
 
 #-----------------------------------------------------------------------------------------------------#
+#							GET FUNCTIONS
+#-----------------------------------------------------------------------------------------------------#
+
+# source functions
+source(paste0(s_ROOT_dir,"Scripts\\Functions\\Functions.R"))
+
+#-----------------------------------------------------------------------------------------------------#
+#							GET PROGRAM LOCATIONS
+#-----------------------------------------------------------------------------------------------------#
+# if installed using installer, these should be OK. Else adapt!!!
+s_plinkloc = paste0(s_ROOT_dir,"Programs/Plink2/plink2.exe")
+#s_gzip = paste0(s_ROOT_dir,"Programs/GnuWin32/bin/gzip.exe")
+s_ldak = f_wslpath(paste0(s_ROOT_dir,"/Programs/LDAK/ldak5.2.linux"))
+
+
+
+
+#-----------------------------------------------------------------------------------------------------#
 #							DEFINE OUTPUT FOLDER
 #-----------------------------------------------------------------------------------------------------#
 # change this to generate a different run, stored in new location
@@ -39,7 +57,7 @@ s_figure_folder <<- paste0(s_ROOT_dir,s_out_folder,s_figure_folder_name,"/")
 #							MAKE OUTPUT FOLDERS IF NEEDED
 #-----------------------------------------------------------------------------------------------------#
 # main folders
-temp_all_dirs = c(s_figure_folder_name,"Manifest","Functions","LDAK","LDAK_LDpred2","Models","Predict","PRSice2","SumStats","DATA")
+temp_all_dirs = c(s_figure_folder_name,"Manifest","Functions","LDAK","Predict","SumStats","DATA")
 if(!dir.exists(paste0(s_OUT_dir))){dir.create(file.path(paste0(s_OUT_dir)))}
 lapply(temp_all_dirs,function(i){if(!dir.exists(paste0(s_OUT_dir,i))){dir.create(file.path(paste0(s_OUT_dir,i)))}})
 
@@ -49,29 +67,15 @@ lapply(temp_all_dirs2,function(i){if(!dir.exists(paste0(s_OUT_dir,"DATA/",i))){d
 
 
 #-----------------------------------------------------------------------------------------------------#
-#							GET PROGRAM LOCATIONS
-#-----------------------------------------------------------------------------------------------------#
-s_plinkloc = "C:/DATA_STORAGE/Projects/PRISMO/Data_RAW/1_Genomics/plink/plink2.exe"
-s_gzip = "C:/Program Files (x86)/GnuWin32/bin/gzip.exe"
-s_ldak = paste0("/mnt/c/DATA_STORAGE/Projects/PRS-multi-trait/Programs/ldak5.2.linux_/ldak5.2.linux")
-s_ref_out_name = "1000G_phase3_final"
-
-
-#-----------------------------------------------------------------------------------------------------#
 #							PRS
 #-----------------------------------------------------------------------------------------------------#
-s_data_loc_ref = paste0(s_ROOT_dir,"Data_RAW/1000Genomes/") # 1000G
+s_ref_out_name = "gbr.hapmap"#"1000G_phase3_final"
+
+s_data_loc_ref = paste0(s_ROOT_dir,"Data_RAW/gbr_hapmap/") # 1000G code is: paste0(s_ROOT_dir,"Data_RAW/1000Genomes/")
 s_ref_loc_final = paste0(s_data_loc_ref,s_ref_out_name)
 
 
 
-
-#-----------------------------------------------------------------------------------------------------#
-#							GET FUNCTIONS
-#-----------------------------------------------------------------------------------------------------#
-
-# source functions
-source(paste0(s_ROOT_dir,"Scripts\\Functions\\Functions.R"))
 
 
 #-----------------------------------------------------------------------------------------------------#

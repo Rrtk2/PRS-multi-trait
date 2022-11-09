@@ -16,7 +16,25 @@
 #
 #
 #-----------------------------------------------------------------------------------------------------#
-#							Main Functions
+#							Other fucntions
+#-----------------------------------------------------------------------------------------------------#
+# this function should be on the top to avoid possible confusion about functions not loaded before getting used
+# this function gets the current path and acesses it via wsl
+# so from C:/ to /mnt/c/ 
+# ONLY works with single letter drives
+# checks where is the first ':' then uses that as a reference
+f_wslpath = function(localpath){
+	temp_drive = gsub(localpath,pattern = "/.*$",replacement = "")
+	wsl_drive = paste0("/mnt/",tolower(substr(temp_drive ,1,1)),"/")
+	
+	temp_path = substr(localpath,(unlist(gregexpr(':', localpath))[1] + 2),nchar(localpath))
+	
+	
+	return(paste0(wsl_drive,temp_path))
+}
+
+#-----------------------------------------------------------------------------------------------------#
+#							Manifest Functions
 #-----------------------------------------------------------------------------------------------------#
 #Get active manifest info
 f_getManifest = function(printManifest=FALSE){
@@ -37,8 +55,6 @@ f_getTraits = function(printManifest=FALSE){
 	cat(apply(data.frame(short = Ref_gwas_manifest$short,trait = Ref_gwas_manifest$trait),1,function(x){paste0(x,collapse = "\t|\t")}),sep = "\n")
 	cat("\n\n")
 }
-
-
 
 
 
@@ -84,7 +100,7 @@ f_predPRS = function(bfile = NA, Trait = NA){
 	# Parameters for specific PRS models -> in models
 	model_dir = paste0(s_ROOT_dir,s_out_folder,"DATA/models/")
 	specifi_model_dir = paste0(model_dir,temp_manifest$short)
-	specifi_model_dir2 = paste0(gsub(specifi_model_dir,pattern = "C:/",replacement = "/mnt/c/"))
+	specifi_model_dir2 = f_wslpath(specifi_model_dir)
 
 
 
@@ -92,7 +108,7 @@ f_predPRS = function(bfile = NA, Trait = NA){
 	#							Main algorithm
 	#-----------------------------------------------------------------------------------------------------#
 	temp_outfile = paste0(s_ROOT_dir,s_out_folder,"Predict/",temp_data_name,"_",temp_manifest$short)
-	temp_outfile2 = paste0(gsub(temp_outfile,pattern = "C:/",replacement = "/mnt/c/"))
+	temp_outfile2 = f_wslpath(temp_outfile)
 
 	#get evaluation/ prs
 	system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --calc-scores ",temp_outfile2," --bfile ",bfile," --scorefile megabayesr.effects --power 0 "))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" overall
@@ -122,6 +138,7 @@ Rplot = function(insert=NA,title="Temp_title",resolution = 350, width = 480, hei
 		print({insert})
 	dev.off()
 }
+
 
 #-----------------------------------------------------------------------------------------------------#
 #							Cleanup

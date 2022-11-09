@@ -65,6 +65,27 @@ if(TRUE){
 	f_saveManifest()	
 }
 
+# this part adds a gwas summary stat
+if(TRUE){
+	f_getManifest(1)
+	temp_man = data.frame(short=c("Height22"),
+		n=c(1572323),
+		filename=c("D:/DATA_STORAGE/GWAS/Height_2022/GIANT_HEIGHT_YENGO_2022_GWAS_SUMMARY_STATS_EUR.tsv"),
+		year=c("2022"),
+		trait=c("HEIGHT 2022 YENGO"),
+		DOI=c("https://doi.org/10.1101/2022.01.07.475305"),
+		genomeBuild = c("?"),
+		traitType = c("CONT"),
+		rawSNPs = c("?"),
+		finalModelSNPs = c("?"),
+		modelRunningTime = c("?"),
+		usedRefSet = c("?"),
+		processed=c(0))
+	
+	Ref_gwas_manifest[dim(Ref_gwas_manifest)[1]+1,] = temp_man
+	f_saveManifest()	
+}
+
 
 # this part adds a gwas summary stat
 if(TRUE){
@@ -119,7 +140,7 @@ f_getManifest(1)
 #-----------------------------------------------------------------------------------------------------#
 #save(Ref_gwas_manifest,file = paste0(s_ROOT_dir,s_out_folder,"DATA/manifest/Ref_gwas_manifest.Rdata"))  # save in same folder, with name matching object
 
-save.image(paste0(s_ROOT_dir,s_out_folder,"Manifest/IMAGE_workspace.Rdata")) # save image
+#save.image(paste0(s_ROOT_dir,s_out_folder,"Manifest/IMAGE_workspace.Rdata")) # save image
 
 #-----------------------------------------------------------------------------------------------------#
 #							Cleanup
