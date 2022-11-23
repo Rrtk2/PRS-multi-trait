@@ -13,7 +13,7 @@
 #	ra.reijnders@maastrichtuniversity.nl
 #
 #	Personal comment:
-#
+#	Add info about standardized input
 #
 #-----------------------------------------------------------------------------------------------------#
 #							Main settings or load
@@ -25,7 +25,6 @@ require(data.table)
 #-----------------------------------------------------------------------------------------------------#
 #							Temp placeholder of gwas manifest for eduYears, to get system running
 #							@Josh this stuff here is non-perminent (TO SOME DEGREE!)
-#							Making subset of top 1000 snps FOR SPEED AND TEST
 #-----------------------------------------------------------------------------------------------------#
 # first get the manifest and check processed 
 f_getManifest(1)
@@ -54,8 +53,9 @@ if(length(which(Ref_gwas_manifest$processed==0))!=0){
 					P=temp_gwas$P)
 					
 			# remove inconsistent  @RRR this is a stupid fix, need a better version later! This removes "inconsistent allelles"
-			a = data.table::fread(paste0(s_data_loc_ref,"1000G_phase3_final.bim"),header=FALSE)
+			a = data.table::fread(paste0(s_data_loc_ref,"gbr.hapmap.cors.bim"),header=FALSE)
 			a = a[match(temp_gwas$Predictor,a$V2),]
+			
 			
 			temp_gwas = temp_gwas[which(temp_gwas$A1==a$V5 & temp_gwas$A2==a$V6),]
 		}
@@ -84,12 +84,20 @@ if(length(which(Ref_gwas_manifest$processed==0))!=0){
 					n=temp_gwas$N,
 					Direction=-sign(temp_gwas$BETA), # This is reversed as effect allelle is reversed!!!!
 					P=as.numeric(temp_gwas$P))
+			
+			#temp_gwas = temp_gwas[temp_gwas$Predictor%in%SNPs_Intersect,]			
+							
 			# remove inconsistent  @RRR this is a stupid fix, need a better version later! This removes "inconsistent allelles"
 			a = data.table::fread(paste0(s_data_loc_ref,"gbr.hapmap.cors.bim"),header=FALSE)
 			a = a[match(temp_gwas$Predictor,a$V2),]
 			
+			#a = data.table::fread(paste0(s_ROOT_dir,"Data_RAW/1000Genomes/","1000G_phase3_final.bim"),header=FALSE)
+			#a = a[match(temp_gwas$Predictor,a$V2),]
+					
+			
 			temp_gwas = temp_gwas[which(temp_gwas$A1==a$V5 & temp_gwas$A2==a$V6),]
-
+			#WHYYY REPORT WITHOUT P VALUES THATS STUPID
+			temp_gwas = temp_gwas[!is.na(temp_gwas$P),]
 		}
 		
 		if(temp_manifest$short == "AD"){
@@ -124,7 +132,7 @@ if(length(which(Ref_gwas_manifest$processed==0))!=0){
 					
 		
 			
-					# remove duplicated and D/I
+			# remove duplicated and D/I
 			temp_gwas = temp_gwas[!duplicated(temp_gwas$Predictor),]
 			temp_gwas = temp_gwas[!(temp_gwas$A1 == "D" | temp_gwas$A1 == "I" | temp_gwas$A2 == "D" | temp_gwas$A2 == "I"),]
 			

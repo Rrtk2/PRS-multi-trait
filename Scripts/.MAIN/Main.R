@@ -27,20 +27,34 @@
 
 #-----------------------------------------------------------------------------------------------------#
 #							Main settings
+# 							initialize 
 #-----------------------------------------------------------------------------------------------------#
 source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
 
 #-----------------------------------------------------------------------------------------------------#
-#							Phases
+#							main functions
 #-----------------------------------------------------------------------------------------------------#
+# So there are many functions acting as wrappers.
 
-# example phase / script block
-source(paste0(s_ROOT_dir,"Scripts\\Example\\Example.R")) 
+# f_predPRS				# predict the PGS score given the model
+# f_calcPGS_LDAK		# Calculate the PGS model
+# f_collect_all_PRS		# Collect all the calculated PGS scores 
+
+# f_getManifest			# load the Manifest into memory
+# f_saveManifest		# Save the Manifest on disk
+
+# f_getTraits			# Get all the Traits in Manifest
+
+# f_windowspath			# Convert a linux path to windows path
+# f_wslpath				# Convert a windows path to linux path
+
+# Rclean				# Clean all the 'temp_' prefix variables from environment
+# Rplot					# Plotting
+
+
 
 #-----------------------------------------------------------------------------------------------------#
-#							FILE STRUCTURE
+#							Inital Startup
 #-----------------------------------------------------------------------------------------------------#
-# still need to make this into visualization
-
-
-
+# to run and install the workflow run the source:
+# source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")

@@ -18,13 +18,12 @@ s_ROOT_current_folder_name <<- "Test_branch"
 
 s_figure_folder_name <<- "Plots"
 
-
 #-----------------------------------------------------------------------------------------------------#
 #							GET FUNCTIONS
 #-----------------------------------------------------------------------------------------------------#
 
 # source functions
-source(paste0(s_ROOT_dir,"Scripts\\Functions\\Functions.R"))
+source(paste0(s_ROOT_dir,"Scripts/Functions/Functions.R"))
 
 #-----------------------------------------------------------------------------------------------------#
 #							GET PROGRAM LOCATIONS
@@ -32,7 +31,7 @@ source(paste0(s_ROOT_dir,"Scripts\\Functions\\Functions.R"))
 # if installed using installer, these should be OK. Else adapt!!!
 s_plinkloc = paste0(s_ROOT_dir,"Programs/Plink2/plink2.exe")
 #s_gzip = paste0(s_ROOT_dir,"Programs/GnuWin32/bin/gzip.exe")
-s_ldak = f_wslpath(paste0(s_ROOT_dir,"/Programs/LDAK/ldak5.2.linux"))
+s_ldak = f_wslpath(paste0(s_ROOT_dir,"Programs/LDAK/ldak5.2.linux"))
 
 
 
@@ -67,7 +66,7 @@ lapply(temp_all_dirs2,function(i){if(!dir.exists(paste0(s_OUT_dir,"DATA/",i))){d
 
 
 #-----------------------------------------------------------------------------------------------------#
-#							PRS
+#							REF PANEL
 #-----------------------------------------------------------------------------------------------------#
 s_ref_out_name = "gbr.hapmap"#"1000G_phase3_final"
 
@@ -75,7 +74,10 @@ s_data_loc_ref = paste0(s_ROOT_dir,"Data_RAW/gbr_hapmap/") # 1000G code is: past
 s_ref_loc_final = paste0(s_data_loc_ref,s_ref_out_name)
 
 
-
+#-----------------------------------------------------------------------------------------------------#
+#							INSTALLER (last as it needs locations based on items before)
+#-----------------------------------------------------------------------------------------------------#
+source(paste0(s_ROOT_dir,"Scripts/.MAIN/Installer.R"))
 
 
 #-----------------------------------------------------------------------------------------------------#

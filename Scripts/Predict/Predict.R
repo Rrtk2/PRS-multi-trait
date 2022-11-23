@@ -38,9 +38,13 @@ temp_adni_bfile2 = f_wslpath(temp_adni_bfile)
 
 #f_predPRS(bfile = temp_bfile2, Trait = "EduYears")
 f_getTraits()
-f_predPRS(bfile = temp_adni_bfile2, Trait = "EduAtt")
-f_predPRS(bfile = temp_adni_bfile2, Trait = "AD")
-f_predPRS(bfile = temp_adni_bfile2, Trait = "Heigth")
+f_predPRS(bfile = temp_adni_bfile2, Trait = "EduAtt", OverlapSNPsOnly = TRUE, Force = TRUE)
+f_predPRS(bfile = temp_adni_bfile2, Trait = "AD", OverlapSNPsOnly = TRUE, Force = TRUE)
+f_predPRS(bfile = temp_adni_bfile2, Trait = "Height22", OverlapSNPsOnly = TRUE, Force = TRUE)
+f_predPRS(bfile = temp_adni_bfile2, Trait = "AD_jans", OverlapSNPsOnly = TRUE, Force = TRUE)
+
+
+
 #-----------------------------------------------------------------------------------------------------#
 #							output
 #-----------------------------------------------------------------------------------------------------#
@@ -68,3 +72,11 @@ if(0){
 	temp_bfile3 = f_wslpath(temp_bfile)
 	f_predPRS(bfile = temp_bfile3, Trait = 1)
 }
+
+
+plink --bfile C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05 --set-all-var-ids @:# --make-bed --out C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05_chr_bp
+
+
+
+	system(paste0(s_plinkloc," --bfile ", paste0(temp_bfile,"_out1"), " --rm-dup --make-bed --out ",paste0(temp_bfile,"_out2")))
+	system(paste0(s_plinkloc," --bfile ", paste0(temp_bfile,"_out1"), " --exclude ",paste0(temp_bfile,"_out2.rmdup.mismatch")," --make-bed --out ",paste0(temp_bfile,"_2")))
