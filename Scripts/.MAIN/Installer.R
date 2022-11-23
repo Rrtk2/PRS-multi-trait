@@ -74,3 +74,24 @@ if(!file.exists(s_plinkloc)){
 #file.remove(paste0(s_ROOT_dir,"Programs/","GnuWin32/temp"))
 
 
+#-----------------------------------------------------------------------------------------------------#
+#							Reference panel
+#-----------------------------------------------------------------------------------------------------#
+if(!file.exists(paste0(s_ref_loc_final,".cats"))){
+
+	# print message for installer
+	cat(">> Reference panel not detected on expected location! <<\n")
+	cat("   - Installing reference panel from link\n\n")
+
+	if(!dir.exists(paste0(paste0(s_ROOT_dir,"Data_RAW/gbr_hapmap/")))){dir.create(file.path(paste0(paste0(s_ROOT_dir,"Data_RAW/gbr_hapmap/"))))}
+
+	# Download file into temp file
+	download.file("https://surfdrive.surf.nl/files/index.php/s/T3RLErWHxIyW5IM/download",paste0(s_ROOT_dir,"Data_RAW/temp.zip"),"curl")
+
+	# Unzip
+	unzip(paste0(s_ROOT_dir,"Data_RAW/temp.zip"),exdir=paste0(s_ROOT_dir,"Data_RAW"))  # unzip your file 
+
+	# Remove temp file
+	file.remove(paste0(s_ROOT_dir,"Data_RAW/temp.zip"))
+
+}
