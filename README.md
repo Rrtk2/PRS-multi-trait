@@ -13,15 +13,15 @@ Generalizing summary statistics, calculation and prediction of multi-trait PRS s
 
 4) Change the ``` s_ROOT_dir ``` from the predefied path to the path the PRS-multi-trait and save, and make sure this is defined using the global enviroment assignment using double arrow "<<-".  As example: ``` s_ROOT_dir <<- "C:/path/to/folder/PRS-multi-trait/" ```  
 
-5) Open R(studio) and source the settings file to set up the file structure, install needed programs and data. As example: ```source("C:/path/to/folder/PRS-multi-trait/Settings.R") ```  
+5) Open R(studio) and source the settings file to set up the file structure, install needed programs and data. As example: ```source("C:/path/to/folder/PRS-multi-trait/Scripts/.Main/Settings.R") ```  
 
 ### Generate PGS models
-1) Open R(studio) and source the settings file to set up the environment. As example: ```source("C:/path/to/folder/PRS-multi-trait/Settings.R") ```
+1) Open R(studio) and source the settings file to set up the environment. As example: ```source("C:/path/to/folder/PRS-multi-trait/Scripts/.Main/Settings.R") ```
 
 2) f_calcPGS_LDAK()
 
 ### Calculate PGS scores for trait
-1) Open R(studio) and source the settings file to set up the environment. As example: ```source("C:/path/to/folder/PRS-multi-trait/Settings.R") ```
+1) Open R(studio) and source the settings file to set up the environment. As example: ```source("C:/path/to/folder/PRS-multi-trait/Scripts/.Main/Settings.R") ```
 
 2) f_predPRS()
 
