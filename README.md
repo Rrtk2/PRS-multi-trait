@@ -15,15 +15,30 @@ Generalizing summary statistics, calculation and prediction of multi-trait PRS s
 
 5) Open R(studio) and source the settings file to set up the file structure, install needed programs and data. As example: ```source("C:/path/to/folder/PRS-multi-trait/Scripts/.Main/Settings.R") ```  
 
+### Interacting with Manifest
+ ``` f_getManifest(1) ```    -   Loads manifest into memory and show manifest
+
+ ``` f_saveManifest ```    -   Saves manifest onto disk
+
+ ``` f_getTraits ```    -   Shows the available traits to be used
+
+ ``` f_addGWAStoManifest ```    -   Adds a new line to the manifest, fill in all information.
+
+ ``` f_removeGWASfromManifest ```    -   Removes a line from the manifest.
+
+ ``` f_modifyGWASinManifest ```    -    Changes a line in manifest
+
+
 ### Generate PGS models
 1) Open R(studio) and source the settings file to set up the environment. As example: ```source("C:/path/to/folder/PRS-multi-trait/Scripts/.Main/Settings.R") ```
 
-2) f_calcPGS_LDAK()
+2)  ``` f_calcPGS_LDAK() ``` 
 
 ### Calculate PGS scores for trait
 1) Open R(studio) and source the settings file to set up the environment. As example: ```source("C:/path/to/folder/PRS-multi-trait/Scripts/.Main/Settings.R") ```
 
-2) f_predPRS()
+2)  ``` f_predPRS() ``` 
+
 
 
 
