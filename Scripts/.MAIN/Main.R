@@ -42,6 +42,7 @@ source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
 
 # f_getManifest			# load the Manifest into memory
 # f_saveManifest		# Save the Manifest on disk
+...
 
 # f_getTraits			# Get all the Traits in Manifest
 

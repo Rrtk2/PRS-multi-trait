@@ -58,9 +58,16 @@ f_getManifest = function(printManifest=FALSE){
 	}
 }
 
+
+#Save manifest
+f_saveManifest = function(){
+	save(Ref_gwas_manifest,file = paste0(s_ROOT_dir,s_out_folder,"DATA/manifest/Ref_gwas_manifest.Rdata"))  # save in same folder, with name matching object
+}
+
 # get available traits
-f_getTraits = function(printManifest=FALSE){
-	load(file = paste0(s_ROOT_dir,s_out_folder,"DATA/manifest/Ref_gwas_manifest.Rdata")) 
+f_getTraits = function(){
+	# Get manifest
+	f_getManifest() 
 	cat("GWAS manifest (loaded from file)\n\n")
 	cat("Trait:\t|\tDescription:\n")
 	cat("-----------------------------------------\n")
@@ -68,12 +75,167 @@ f_getTraits = function(printManifest=FALSE){
 	cat("\n\n")
 }
 
-
-
-#Save manifest
-f_saveManifest = function(){
-	save(Ref_gwas_manifest,file = paste0(s_ROOT_dir,s_out_folder,"DATA/manifest/Ref_gwas_manifest.Rdata"))  # save in same folder, with name matching object
+# Add a trait / GWAS
+f_addGWAStoManifest = function(
+	short=c("UniqueTraitName"),
+	n=c(0),
+	filename=c("C:/DATA_STORAGE/Projects/PRS-multi-trait/Data_RAW/Test_dataset/data/quant.summaries"),
+	year=c("?"),
+	trait=c("description"),
+	DOI=c("?"),
+	genomeBuild = c("?"),
+	traitType = c("?"),
+	rawSNPs = c("?"),
+	finalModelSNPs = c("?"),
+	modelRunningTime = c("?"),
+	usedRefSet = c("?"),
+	processed=c(0),
+	FORCE = FALSE){
+		# Get manifest
+		f_getManifest()
+		
+		# Collect data in df style
+		temp_man = data.frame(short = short,
+			n=n,
+			filename=filename,
+			year=year,
+			trait=trait,
+			DOI=DOI,
+			genomeBuild = genomeBuild,
+			traitType = traitType,
+			rawSNPs = rawSNPs,
+			finalModelSNPs = finalModelSNPs,
+			modelRunningTime = modelRunningTime,
+			usedRefSet = usedRefSet,
+			processed=processed)
+			
+		# First check the items to be added
+		apply(temp_man,2,function(x){cat(paste0(x,"\n"))})
+		
+			
+		# input? FORCE
+		if(!FORCE){
+			cat("\n>> Press [y] if information correct, then press [ENTER] <<")
+			check = readline()
+			if(check!="y"){
+				return(message("Adding GWAS to Manifest aborted."))
+			}
+		}
+		
+		if(temp_man$short%in%Ref_gwas_manifest$short){
+			message("Adding GWAS to Manifest failed!")
+			return(message("'short' name is taken! Please check the input or make another unique name."))
+		}
+			
+		# Inplement data
+		Ref_gwas_manifest[dim(Ref_gwas_manifest)[1]+1,] = temp_man
+		Ref_gwas_manifest <<- Ref_gwas_manifest
+		
+		# Save manifest
+		f_saveManifest()
+		f_getManifest(1)
 }
+
+# Remove a trait / GWAS
+f_removeGWASfromManifest = function(
+	trait=c("UniqueTraitName"),
+	FORCE = FALSE){
+		# Get manifest
+		f_getManifest()
+		
+		# check if trait exists
+		if(sum(Ref_gwas_manifest$short%in%trait) == 0){
+			message("Trait('",trait,"') not found!")
+			message("  Options:\n    - ",paste0(Ref_gwas_manifest$short,collapse = "\n    - "))
+			return(message("Removing GWAS from Manifest failed."))
+		}
+		
+		# input? FORCE
+		if(!FORCE){
+			cat(paste0("Are you sure you want to remove trait ('",trait,"')?\n"))
+			cat("This means you are removing line:\n\n")
+			cat(paste0(Ref_gwas_manifest[Ref_gwas_manifest$short%in%trait,],"\n"))
+			cat("\n>> Press [y] if information correct, then press [ENTER] <<")
+			check = readline()
+			if(check!="y"){
+				return(message("Removing GWAS from Manifest aborted."))
+			}
+		}
+		
+					
+		# Inplement data
+		Ref_gwas_manifest = Ref_gwas_manifest[!Ref_gwas_manifest$short%in%trait,]
+		Ref_gwas_manifest <<- Ref_gwas_manifest
+		
+		# Save manifest
+		f_saveManifest()
+		f_getManifest(1)
+}
+
+
+# Adjust a trait / GWAS
+f_modifyGWASinManifest = function(short=c("UniqueTraitName"),
+	n=NA,
+	filename=NA,
+	year=NA,
+	trait=NA,
+	DOI=NA,
+	genomeBuild = NA,
+	traitType = NA,
+	rawSNPs = NA,
+	finalModelSNPs = NA,
+	modelRunningTime = NA,
+	usedRefSet = NA,
+	processed=NA,
+	FORCE = FALSE){
+		# Get manifest
+		f_getManifest()
+		
+		# check if trait exists
+		if(sum(Ref_gwas_manifest$short%in%short) == 0){
+			message("Trait('",short,"') not found!")
+			message("  Options:\n    - ",paste0(Ref_gwas_manifest$short,collapse = "\n    - "))
+			return(message("Modifying GWAS in Manifest failed."))
+		}
+		
+		# process changes
+		# make base of selected trait
+		temp_man = Ref_gwas_manifest[Ref_gwas_manifest$short%in%short,]
+		# check which are NOT NA
+		for(temp_selected_column in c("n","filename","year","trait","DOI","genomeBuild","traitType","rawSNPs","finalModelSNPs","modelRunningTime","usedRefSet","processed")){
+			# check which are NOT NA
+			if(!is.na(get(temp_selected_column ))){
+				message(paste0("Modifying ",temp_selected_column))
+				temp_man[,(temp_selected_column )] = get(temp_selected_column)
+			}
+		
+		}
+		
+		
+		# input? FORCE
+		if(!FORCE){
+			cat(paste0("Are you sure you want to modify trait ('",short,"')?\n"))
+			cat("This means you are modifying line:\n\n")
+			cat(paste0(Ref_gwas_manifest[Ref_gwas_manifest$short%in%short,],"\n"))
+			cat("This will be changed into:\n\n")
+			cat(paste0(temp_man,"\n"))
+			cat("\n>> Press [y] if information correct, then press [ENTER] <<")
+			check = readline()
+			if(check!="y"){
+				return(message("Modifying GWAS in Manifest aborted."))
+			}
+		}
+		
+					
+		# Inplement data
+		Ref_gwas_manifest[Ref_gwas_manifest$short%in%short,] = temp_man
+		Ref_gwas_manifest <<- Ref_gwas_manifest
+		
+		# Save manifest
+		f_saveManifest()
+		f_getManifest(1)
+}
+
 
 
 #-----------------------------------------------------------------------------------------------------#
