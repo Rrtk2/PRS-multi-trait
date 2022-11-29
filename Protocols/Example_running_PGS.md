@@ -8,7 +8,9 @@ This page will help you in starting to work with this workflow. In this example,
 
 # Instructions
 ### Source
-Before running anything, source the settings
+Before running anything, source the settings.  
+- Make sure the internal "s_ROOT_dir" in the Settings.R script is set to the actual root of the "PRS-multi-trait" folder!
+- Make sure the following path is correct.
 
 ```source("C:/path/to/folder/PRS-multi-trait/Scripts/.Main/Settings.R") ```  
 
