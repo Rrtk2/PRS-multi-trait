@@ -74,6 +74,17 @@ if(0){
 }
 
 
+if(0){
+	temp_bfile = "C:/DATA_STORAGE/Projects/PRS-multi-trait/Data_RAW/1000G_phase3_final"
+
+	system(paste0(s_plinkloc," --bfile ", temp_bfile, " --set-all-var-ids @:# --make-bed --out ",paste0(temp_bfile,"_out1")))
+	system(paste0(s_plinkloc," --bfile ", paste0(temp_bfile,"_out1"), " --extract C:/Users/p70072451/Downloads/extractSNPAs.txt --make-bed --out ",paste0(temp_bfile,"_2")))
+
+	
+}
+
+
+
 plink --bfile C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05 --set-all-var-ids @:# --make-bed --out C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05_chr_bp
 
 
