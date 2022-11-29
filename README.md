@@ -15,6 +15,11 @@ Generalizing summary statistics, calculation and prediction of multi-trait PRS s
 
 5) Open R(studio) and source the settings file to set up the file structure, install needed programs and data. As example: ```source("C:/path/to/folder/PRS-multi-trait/Scripts/.Main/Settings.R") ```  
 
+
+### Example
+Look at this [example](https://github.com/Rrtk2/PRS-multi-trait/blob/main/Protocols/Example_running_PGS.md) to generate a PGS model and afterward to calculate the PGS scores on an toy example.
+
+
 ### Interacting with Manifest
  ``` f_getManifest(1) ```    -   Loads manifest into memory and show manifest
 
