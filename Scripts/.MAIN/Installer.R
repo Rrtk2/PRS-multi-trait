@@ -95,3 +95,27 @@ if(!file.exists(paste0(s_ref_loc_final,".cats"))){
 	file.remove(paste0(s_ROOT_dir,"Data_RAW/temp.zip"))
 
 }
+
+
+
+#-----------------------------------------------------------------------------------------------------#
+#							Reference panel
+#-----------------------------------------------------------------------------------------------------#
+if(!file.exists(paste0(paste0(s_ROOT_dir,"Data_RAW/Example/"),"1000G_phase3_final_2.bed"))){
+
+	# print message for installer
+	cat(">> Example (toy) data not detected on expected location! <<\n")
+	cat("   - Installing example (toy) data panel from link\n\n")
+
+	if(!dir.exists(paste0(paste0(s_ROOT_dir,"Data_RAW/Example/"))))){dir.create(file.path(paste0(paste0(s_ROOT_dir,"Data_RAW/Example/"))))}
+
+	# Download file into temp file
+	download.file("https://surfdrive.surf.nl/files/index.php/s/T3RLErWHxIyW5IM/download",paste0(s_ROOT_dir,"Data_RAW/Example/temp.zip"),"curl")
+
+	# Unzip
+	unzip(paste0(s_ROOT_dir,"Data_RAW/Example/temp.zip"),exdir=paste0(s_ROOT_dir,"Data_RAW/Example"))  # unzip your file 
+
+	# Remove temp file
+	file.remove(paste0(s_ROOT_dir,"Data_RAW/Example/temp.zip"))
+
+}

@@ -78,10 +78,10 @@ f_getTraits = function(){
 # Add a trait / GWAS
 f_addGWAStoManifest = function(
 	short=c("UniqueTraitName"),
-	n=c(0),
-	filename=c("C:/DATA_STORAGE/Projects/PRS-multi-trait/Data_RAW/Test_dataset/data/quant.summaries"),
+	n=c(10000), # default 10,000? @RRR discuss
+	filename=c("?"),
 	year=c("?"),
-	trait=c("description"),
+	trait=c("?"),
 	DOI=c("?"),
 	genomeBuild = c("?"),
 	traitType = c("?"),
