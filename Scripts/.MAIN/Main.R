@@ -42,7 +42,7 @@ source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
 
 # f_getManifest			# load the Manifest into memory
 # f_saveManifest		# Save the Manifest on disk
-...
+
 
 # f_getTraits			# Get all the Traits in Manifest
 
@@ -53,9 +53,52 @@ source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
 # Rplot					# Plotting
 
 
+#-----------------------------------------------------------------------------------------------------#
+#							Example 
+#-----------------------------------------------------------------------------------------------------#
+	source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
 
-#-----------------------------------------------------------------------------------------------------#
-#							Inital Startup
-#-----------------------------------------------------------------------------------------------------#
-# to run and install the workflow run the source:
-# source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
+	f_getManifest(1)
+
+	f_addGWAStoManifest(
+		short=c("BMI"),
+		n=c(755315), # default 10,000? @RRR discuss
+		filename=c("D:/DATA_STORAGE/GWAS/BMI-new__UKBioBank_34_2018/BMI_2018-new__UKBioBank_34.txt"),
+		year=c("2018"),
+		trait=c("BMI"),
+		DOI=c("?"),
+		genomeBuild = c("?"),
+		traitType = c("CONT"),
+		rawSNPs = c("?"),
+		finalModelSNPs = c("?"),
+		modelRunningTime = c("?"),
+		usedRefSet = c("?"),
+		processed=c(0),
+		FORCE = FALSE)
+
+	source("C:/DATA_STORAGE/Projects/PRS-multi-trait/Scripts/.Main/Settings.R")
+
+	f_getManifest(1)
+	f_getTraits()
+
+	f_prepareGWAS(trait = "BMI")
+
+	f_calcPGS_LDAK(Trait = "BMI")
+	f_calcPGS_LDAK(Trait = "Height22")
+
+
+
+	# ADNI
+		cohort_name = "ADNI_QC_EUR05_2"
+		temp_bfile = paste0("C:/Users/p70072451/Downloads/ADNI/",cohort_name)
+		temp_bfile3 = f_wslpath(temp_bfile)
+
+		f_predPRS(bfile = temp_bfile3, Trait = "BMI")
+		f_predPRS(bfile = temp_bfile3, Trait = "Height22")
+		PGS_all = f_collect_all_PRS(cohort_name)
+		plot(PGS_all)
+		corrr = cor(PGS_all)
+		diag(corrr) = 0
+		corrplot::corrplot(corrr)
+		
+
