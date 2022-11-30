@@ -21,6 +21,15 @@
 if(!dir.exists(paste0(paste0(s_ROOT_dir,"Programs/")))){dir.create(file.path(paste0(paste0(s_ROOT_dir,"Programs/"))))}
 lapply(c("LDAK","Plink2"),function(i){if(!dir.exists(paste0(paste0(s_ROOT_dir,"Programs/"),i))){dir.create(file.path(paste0(paste0(s_ROOT_dir,"Programs/"),i)))}})
 
+#-----------------------------------------------------------------------------------------------------#
+#							Check WSL
+#-----------------------------------------------------------------------------------------------------#
+if(!system("wsl uname",intern = TRUE)=="Linux"){
+	cat(">> Windows Subsystem for Linux (WSL) is NOT installed! <<\n")
+	cat("Please install this first. See documentation! \n" )
+	stop("WSL not installed, initializing workflow has been aborted.")
+}
+
 
 #-----------------------------------------------------------------------------------------------------#
 #							LDAK
