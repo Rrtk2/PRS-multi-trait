@@ -564,11 +564,16 @@ f_predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALS
 	
 	# check: if manifest Trait exists, else warning with options and return FAIL
 	if(length(Trait_index)==0){
-		warning("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    -",paste0(Ref_gwas_manifest$short,collapse = "\n    -"),"\n\n")
-		return(message("predPRS failed!\n"))
+		#warning("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    -",paste0(Ref_gwas_manifest$short,collapse = "\n    -"),"\n\n")
+		return(message(paste0("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    -",paste0(Ref_gwas_manifest$short,collapse = "\n    -"),"\n\n","predPRS failed!\n")))
 	}
 	
-
+	# check: if bfile contains BP:CHR IDS
+	testedNotation = system(paste0("wsl awk 'NR==1{print $2}' ",bfile,".bim"), intern = TRUE)
+	if(length(strsplit(testedNotation,split = ":")[[1]])!=2){ # @RRR maybe this is not robust, time will tell
+		return(paste0("\n\nEntered bfile ('",bfile,"') does not contain the correct ID format!\n","This should be CHR:BP (such as 1:2345678) and not (",testedNotation,")","\n\n"))
+	}
+	
 	# show info
 	{cat("#-----------------------------------#\n")
 	cat(paste0("Trait: ",Trait,"\n" ))
