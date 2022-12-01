@@ -5,7 +5,7 @@
 Generalizing summary statistics, calculation and prediction of multi-trait PRS scores.
 
 ### Installation
-1) Download the [latest release](https://github.com/Rrtk2/PRS-multi-trait/archive/refs/tags/v0.3.zip) from github
+1) Download the [latest release](https://github.com/Rrtk2/PRS-multi-trait/archive/refs/tags/v0.4.zip) from github
 
 2) Unzip the latest release (into the PRS-multi-trait folder)
 
