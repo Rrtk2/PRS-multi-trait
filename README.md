@@ -4,6 +4,10 @@
 ### Description
 Generalizing summary statistics, calculation and prediction of multi-trait PRS scores.
 
+### Package installation
+
+```devtools::install_github("Rrtk2/PRS-multi-trait/Package/PRSMultiTrait")```
+
 ### Installation
 1) Download the [latest release](https://github.com/Rrtk2/PRS-multi-trait/archive/refs/tags/v0.4.zip) from github
 
