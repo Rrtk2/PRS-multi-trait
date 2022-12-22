@@ -50,10 +50,10 @@ f_windowspath = function(localpath){
 #-----------------------------------------------------------------------------------------------------#
 #Get active manifest info
 f_getManifest = function(printManifest=FALSE){
-	load(file = paste0(s_ROOT_dir,s_out_folder,"DATA/manifest/Ref_gwas_manifest.Rdata"),envir = .GlobalEnv) 
+	load(file = paste0(Settings_env$s_ROOT_dir,s_out_folder,"DATA/manifest/Manifest_env$Ref_gwas_manifest.Rdata"),envir = .GlobalEnv) 
 	if(printManifest){
-		cat("GWAS manifest file (Ref_gwas_manifest):\n\n")
-		print(Ref_gwas_manifest)
+		cat("GWAS manifest file (Manifest_env$Ref_gwas_manifest):\n\n")
+		print(Manifest_env$Ref_gwas_manifest)
 		cat("\n\n")
 	}
 }
@@ -61,7 +61,7 @@ f_getManifest = function(printManifest=FALSE){
 
 #Save manifest
 f_saveManifest = function(){
-	save(Ref_gwas_manifest,file = paste0(s_ROOT_dir,s_out_folder,"DATA/manifest/Ref_gwas_manifest.Rdata"))  # save in same folder, with name matching object
+	save(Manifest_env$Ref_gwas_manifest,file = paste0(Settings_env$s_ROOT_dir,s_out_folder,"DATA/manifest/Manifest_env$Ref_gwas_manifest.Rdata"))  # save in same folder, with name matching object
 }
 
 # get available traits
@@ -71,7 +71,7 @@ f_getTraits = function(){
 	cat("GWAS manifest (loaded from file)\n\n")
 	cat("Trait:\t|\tDescription:\n")
 	cat("-----------------------------------------\n")
-	cat(apply(data.frame(short = Ref_gwas_manifest$short,trait = Ref_gwas_manifest$trait),1,function(x){paste0(x,collapse = "\t|\t")}),sep = "\n")
+	cat(apply(data.frame(short = Manifest_env$Ref_gwas_manifest$short,trait = Manifest_env$Ref_gwas_manifest$trait),1,function(x){paste0(x,collapse = "\t|\t")}),sep = "\n")
 	cat("\n\n")
 }
 
@@ -122,14 +122,14 @@ f_addGWAStoManifest = function(
 			}
 		}
 		
-		if(temp_man$short%in%Ref_gwas_manifest$short){
+		if(temp_man$short%in%Manifest_env$Ref_gwas_manifest$short){
 			message("Adding GWAS to Manifest failed!")
 			return(message("'short' name is taken! Please check the input or make another unique name."))
 		}
 			
 		# Inplement data
-		Ref_gwas_manifest[dim(Ref_gwas_manifest)[1]+1,] = temp_man
-		Ref_gwas_manifest <<- Ref_gwas_manifest
+		Manifest_env$Ref_gwas_manifest[dim(Manifest_env$Ref_gwas_manifest)[1]+1,] = temp_man
+		Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest
 		
 		# Save manifest
 		f_saveManifest()
@@ -144,9 +144,9 @@ f_removeGWASfromManifest = function(
 		f_getManifest()
 		
 		# check if trait exists
-		if(sum(Ref_gwas_manifest$short%in%trait) == 0){
+		if(sum(Manifest_env$Ref_gwas_manifest$short%in%trait) == 0){
 			message("Trait('",trait,"') not found!")
-			message("  Options:\n    - ",paste0(Ref_gwas_manifest$short,collapse = "\n    - "))
+			message("  Options:\n    - ",paste0(Manifest_env$Ref_gwas_manifest$short,collapse = "\n    - "))
 			return(message("Removing GWAS from Manifest failed."))
 		}
 		
@@ -154,7 +154,7 @@ f_removeGWASfromManifest = function(
 		if(!FORCE){
 			cat(paste0("Are you sure you want to remove trait ('",trait,"')?\n"))
 			cat("This means you are removing line:\n\n")
-			cat(paste0(Ref_gwas_manifest[Ref_gwas_manifest$short%in%trait,],"\n"))
+			cat(paste0(Manifest_env$Ref_gwas_manifest[Manifest_env$Ref_gwas_manifest$short%in%trait,],"\n"))
 			cat("\n>> Press [y] if information correct, then press [ENTER] <<")
 			check = readline()
 			if(check!="y"){
@@ -164,8 +164,8 @@ f_removeGWASfromManifest = function(
 		
 					
 		# Inplement data
-		Ref_gwas_manifest = Ref_gwas_manifest[!Ref_gwas_manifest$short%in%trait,]
-		Ref_gwas_manifest <<- Ref_gwas_manifest
+		Manifest_env$Ref_gwas_manifest = Manifest_env$Ref_gwas_manifest[!Manifest_env$Ref_gwas_manifest$short%in%trait,]
+		Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest
 		
 		# Save manifest
 		f_saveManifest()
@@ -192,15 +192,15 @@ f_modifyGWASinManifest = function(short=c("UniqueTraitName"),
 		f_getManifest()
 		
 		# check if trait exists
-		if(sum(Ref_gwas_manifest$short%in%short) == 0){
+		if(sum(Manifest_env$Ref_gwas_manifest$short%in%short) == 0){
 			message("Trait('",short,"') not found!")
-			message("  Options:\n    - ",paste0(Ref_gwas_manifest$short,collapse = "\n    - "))
+			message("  Options:\n    - ",paste0(Manifest_env$Ref_gwas_manifest$short,collapse = "\n    - "))
 			return(message("Modifying GWAS in Manifest failed."))
 		}
 		
 		# process changes
 		# make base of selected trait
-		temp_man = Ref_gwas_manifest[Ref_gwas_manifest$short%in%short,]
+		temp_man = Manifest_env$Ref_gwas_manifest[Manifest_env$Ref_gwas_manifest$short%in%short,]
 		# check which are NOT NA
 		for(temp_selected_column in c("n","filename","year","trait","DOI","genomeBuild","traitType","rawSNPs","finalModelSNPs","modelRunningTime","usedRefSet","processed")){
 			# check which are NOT NA
@@ -216,7 +216,7 @@ f_modifyGWASinManifest = function(short=c("UniqueTraitName"),
 		if(!FORCE){
 			cat(paste0("Are you sure you want to modify trait ('",short,"')?\n"))
 			cat("This means you are modifying line:\n\n")
-			cat(paste0(Ref_gwas_manifest[Ref_gwas_manifest$short%in%short,],"\n"))
+			cat(paste0(Manifest_env$Ref_gwas_manifest[Manifest_env$Ref_gwas_manifest$short%in%short,],"\n"))
 			cat("This will be changed into:\n\n")
 			cat(paste0(temp_man,"\n"))
 			cat("\n>> Press [y] if information correct, then press [ENTER] <<")
@@ -228,8 +228,8 @@ f_modifyGWASinManifest = function(short=c("UniqueTraitName"),
 		
 					
 		# Inplement data
-		Ref_gwas_manifest[Ref_gwas_manifest$short%in%short,] = temp_man
-		Ref_gwas_manifest <<- Ref_gwas_manifest
+		Manifest_env$Ref_gwas_manifest[Manifest_env$Ref_gwas_manifest$short%in%short,] = temp_man
+		Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest
 		
 		# Save manifest
 		f_saveManifest()
@@ -249,9 +249,9 @@ f_prepareGWAS = function(trait = "UniqueTraitName"){
 	f_getManifest()
 	
 	# check if trait exists
-	if(sum(Ref_gwas_manifest$short%in%trait) == 0){
+	if(sum(Manifest_env$Ref_gwas_manifest$short%in%trait) == 0){
 		message("Trait('",trait,"') not found!")
-		message("  Options:\n    - ",paste0(Ref_gwas_manifest$short,collapse = "\n    - "))
+		message("  Options:\n    - ",paste0(Manifest_env$Ref_gwas_manifest$short,collapse = "\n    - "))
 		return(message("Preparing GWAS into standardized format aborted."))
 	}
 	
@@ -263,7 +263,7 @@ f_prepareGWAS = function(trait = "UniqueTraitName"){
 	}
 	
 	# Select the trait from manifest
-	temp_manifest = Ref_gwas_manifest[Ref_gwas_manifest$short%in%trait,]
+	temp_manifest = Manifest_env$Ref_gwas_manifest[Manifest_env$Ref_gwas_manifest$short%in%trait,]
 	
 	#Read the GWAS data
 	temp_gwas = data.table::fread(temp_manifest$filename,header = TRUE,sep = "\t",fill=TRUE) # waaay faster now!
@@ -356,12 +356,12 @@ f_prepareGWAS = function(trait = "UniqueTraitName"){
 	# Collect the data and write a summaries format
 	# assign to short name, then store
 	assign(x=temp_manifest$short, temp_gwas)
-	#save(list=c(temp_manifest$short),file = paste0(s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".Rdata")) # @RRR OPTIONAL. This is only for loading in R. This line should be commented out at some point
-	data.table::fwrite(get(temp_manifest$short),file = paste0(s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".summaries"),row.names = FALSE,sep = "\t",quote = FALSE) # FASTERRRR
+	#save(list=c(temp_manifest$short),file = paste0(Settings_env$s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".Rdata")) # @RRR OPTIONAL. This is only for loading in R. This line should be commented out at some point
+	data.table::fwrite(get(temp_manifest$short),file = paste0(Settings_env$s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".summaries"),row.names = FALSE,sep = "\t",quote = FALSE) # FASTERRRR
 	
 	# update settings
-	Ref_gwas_manifest[!Ref_gwas_manifest$short%in%trait,"processed"] = 1
-	Ref_gwas_manifest[!Ref_gwas_manifest$short%in%trait,"rawSNPs"] = dim(temp_gwas )[1]
+	Manifest_env$Ref_gwas_manifest[!Manifest_env$Ref_gwas_manifest$short%in%trait,"processed"] = 1
+	Manifest_env$Ref_gwas_manifest[!Manifest_env$Ref_gwas_manifest$short%in%trait,"rawSNPs"] = dim(temp_gwas )[1]
 	
 
 
@@ -384,7 +384,7 @@ f_calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	possiblemodels = c("bayesr") # @RRR need to add support for others!
 	
 	f_getManifest(1)
-	Trait_index = which(Ref_gwas_manifest$short==Trait)
+	Trait_index = which(Manifest_env$Ref_gwas_manifest$short==Trait)
 	
 	#-----------------------------------------------------------------------------------------------------#
 	#							Checks
@@ -392,7 +392,7 @@ f_calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 
 	# check: if manifest Trait exists, else warning with options and return FAIL
 	if(length(Trait_index)==0){
-		warning("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    - ",paste0(Ref_gwas_manifest$short,collapse = "\n    - "),"\n\n")
+		warning("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    - ",paste0(Manifest_env$Ref_gwas_manifest$short,collapse = "\n    - "),"\n\n")
 		return(message("calcPGS failed (Trait)!\n"))
 	}
 	
@@ -403,12 +403,12 @@ f_calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 		return(message("calcPGS failed (Model)!\n"))	
 	}
 	
-	temp_manifest = Ref_gwas_manifest[Trait_index,]
+	temp_manifest = Manifest_env$Ref_gwas_manifest[Trait_index,]
 	
 	# show items
 	{cat("#-----------------------------#\n")
 	cat(paste0("Trait: ",Trait,"\n" ))
-	cat(paste0("Generation of PRS model: ",Ref_gwas_manifest[Trait_index,"short"]," \n"))
+	cat(paste0("Generation of PRS model: ",Manifest_env$Ref_gwas_manifest[Trait_index,"short"]," \n"))
 	cat(paste0("Using: ",Model," \n"))
 	cat("#-----------------------------#\n\n\n")}
 	
@@ -417,10 +417,10 @@ f_calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	#-----------------------------------------------------------------------------------------------------#
 	#							Input
 	#-----------------------------------------------------------------------------------------------------#
-	# load(paste0(s_ROOT_dir,s_out_folder,"Example/Pheno.Rdata"))
+	# load(paste0(Settings_env$s_ROOT_dir,s_out_folder,"Example/Pheno.Rdata"))
 
 
-	gwas_loc = paste0(s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".summaries")
+	gwas_loc = paste0(Settings_env$s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".summaries")
 		
 		# load the gwas SumStat
 		#load(gwas_loc)
@@ -449,25 +449,25 @@ f_calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	#							Get refset if not ready (1000G)
 	#-----------------------------------------------------------------------------------------------------#
 	#@RRR FORCE DISABLED. NO CHECKS OF REFERENCE SET!!!
-	#if(!fil e.exists(paste0(s_data_loc_ref,".flag"))){
-	#	source(paste0(s_ROOT_dir,"Scripts/LDAK/Cal_Ref_1000G.R"))
+	#if(!fil e.exists(paste0(Settings_env$s_data_loc_ref,".flag"))){
+	#	source(paste0(Settings_env$s_ROOT_dir,"Scripts/LDAK/Cal_Ref_1000G.R"))
 	#}
 
 
 	#-----------------------------------------------------------------------------------------------------#
 	#							Prepare location and folders
 	#-----------------------------------------------------------------------------------------------------#
-	s_data_loc_ref2 = f_wslpath(s_data_loc_ref)
-	s_ref_loc_final2 = f_wslpath(s_ref_loc_final)
+	Settings_env$s_data_loc_ref2 = f_wslpath(Settings_env$s_data_loc_ref)
+	Settings_env$s_ref_loc_final2 = f_wslpath(Settings_env$s_ref_loc_final)
 
 
 
 	# Parameters for specific PRS models -> in models
-	model_dir = paste0(s_ROOT_dir,s_out_folder,"DATA/models/")
+	model_dir = paste0(Settings_env$s_ROOT_dir,s_out_folder,"DATA/models/")
 	specifi_model_dir = paste0(model_dir,temp_manifest$short)
 	specifi_model_dir2 = f_wslpath(specifi_model_dir)
 
-	temp_summfile = paste0(s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".summaries") 
+	temp_summfile = paste0(Settings_env$s_ROOT_dir,s_out_folder,"DATA/gwas/",temp_manifest$short,".summaries") 
 	temp_summfile2 = f_wslpath(temp_summfile)
 	temp_summfile_pred = paste0(temp_summfile,"pred") 
 	temp_summfile_pred2 = f_wslpath(temp_summfile_pred)
@@ -483,11 +483,11 @@ f_calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	#-----------------------------------------------------------------------------------------------------#
 	#							PRS calculation
 	#-----------------------------------------------------------------------------------------------------#
-	s_ref_loc_finalfile = "megabayesr"
+	Settings_env$s_ref_loc_finalfile = "megabayesr"
 	#Model defaults "bayesr" # best in LDAK for now...
 
-	#system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --sum-hers ",s_data_loc_ref2,"ldak.thin --tagfile ",s_data_loc_ref2,"ldak.thin.tagging --summary ",temp_summfile2," --matrix ",s_data_loc_ref2,"ldak.thin.matrix"," --check-sums NO"))
-	endcode = system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --sum-hers ",s_data_loc_ref2,"gbr.hapmap --tagfile ",s_data_loc_ref2,"gbr.hapmap.bld.ldak.quickprs.tagging --summary ",temp_summfile2," --matrix ",s_data_loc_ref2,"gbr.hapmap.bld.ldak.quickprs.matrix"," --check-sums NO --cutoff 0.01")) 
+	#system(paste0("wsl cd ",specifi_model_dir2," ; ",Settings_env$s_ldak," --sum-hers ",Settings_env$s_data_loc_ref2,"ldak.thin --tagfile ",Settings_env$s_data_loc_ref2,"ldak.thin.tagging --summary ",temp_summfile2," --matrix ",Settings_env$s_data_loc_ref2,"ldak.thin.matrix"," --check-sums NO"))
+	endcode = system(paste0("wsl cd ",specifi_model_dir2," ; ",Settings_env$s_ldak," --sum-hers ",Settings_env$s_data_loc_ref2,"gbr.hapmap --tagfile ",Settings_env$s_data_loc_ref2,"gbr.hapmap.bld.ldak.quickprs.tagging --summary ",temp_summfile2," --matrix ",Settings_env$s_data_loc_ref2,"gbr.hapmap.bld.ldak.quickprs.matrix"," --check-sums NO --cutoff 0.01")) 
 	# @RRR check cutoff, the APOE snps actually meet this!!!
 
 		# check: if failed sum heritabilities
@@ -499,7 +499,7 @@ f_calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 
 	# construct prediction model
 	if(Model=="bayesr"){
-		endcode = system(paste0("wsl cd ",specifi_model_dir2,"; ",s_ldak,paste0(" --mega-prs ",s_ref_loc_finalfile," --model ",Model," --ind-hers ",s_data_loc_ref2,"gbr.hapmap.ind.hers.positive --summary ",temp_summfile2," --cors ",s_data_loc_ref2,"gbr.hapmap --cv-proportion .1 --check-high-LD NO --window-kb 1000 --allow-ambiguous NO --extract ",temp_summfile_pred2," --max-threads 8")))
+		endcode = system(paste0("wsl cd ",specifi_model_dir2,"; ",Settings_env$s_ldak,paste0(" --mega-prs ",Settings_env$s_ref_loc_finalfile," --model ",Model," --ind-hers ",Settings_env$s_data_loc_ref2,"gbr.hapmap.ind.hers.positive --summary ",temp_summfile2," --cors ",Settings_env$s_data_loc_ref2,"gbr.hapmap --cv-proportion .1 --check-high-LD NO --window-kb 1000 --allow-ambiguous NO --extract ",temp_summfile_pred2," --max-threads 8")))
 	}	# kb 1000
 	#@RRR check high-LD YES!? -> solve this
 	#@RRR chcek kb -> cm
@@ -511,39 +511,39 @@ f_calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 		}
 	
 	# LDpred
-	#system(paste0("wsl cd ",specifi_model_dir2,"; ",s_ldak,paste0(" --mega-prs ",s_ref_loc_finalfile," --model ","bolt"," --ind-hers ",s_data_loc_ref2,"gbr.hapmap.ind.hers --summary ",temp_summfile2," --cors ",s_data_loc_ref2,"gbr.hapmap --cv-proportion .1 --check-high-LD NO --window-kb 1000 --allow-ambiguous YES --extract ",temp_summfile_pred2," --max-threads 8 --LDpred YES"))) # kb 1000
+	#system(paste0("wsl cd ",specifi_model_dir2,"; ",Settings_env$s_ldak,paste0(" --mega-prs ",Settings_env$s_ref_loc_finalfile," --model ","bolt"," --ind-hers ",Settings_env$s_data_loc_ref2,"gbr.hapmap.ind.hers --summary ",temp_summfile2," --cors ",Settings_env$s_data_loc_ref2,"gbr.hapmap --cv-proportion .1 --check-high-LD NO --window-kb 1000 --allow-ambiguous YES --extract ",temp_summfile_pred2," --max-threads 8 --LDpred YES"))) # kb 1000
 	#	--ind-hers <indhersfile> - to specify the per-predictor heritabilities.
 	#	--summary <sumsfile> - to specify the file containing the summary statistics.
 	#	--cors <corstem> - to specify the predictor-predictor correlations.
 	#   --LDpred YES potentially works like this???
 
 	#get evaluation/ prs
-	#system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --calc-scores megabayesr --bfile ",s_ref_loc_final2," --scorefile megabayesr.effects --power 0 "))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" overall
-	#system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --jackknife megabayesr --profile megabayesr.profile --num-blocks 200"))
+	#system(paste0("wsl cd ",specifi_model_dir2," ; ",Settings_env$s_ldak," --calc-scores megabayesr --bfile ",Settings_env$s_ref_loc_final2," --scorefile megabayesr.effects --power 0 "))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" overall
+	#system(paste0("wsl cd ",specifi_model_dir2," ; ",Settings_env$s_ldak," --jackknife megabayesr --profile megabayesr.profile --num-blocks 200"))
 
 	# cleanup!
 	#file.remove(temp_summfile)
 	file.remove(temp_summfile_pred)
 	
 	# Check the number of SNPs in final model
-	temp_model = data.table::fread(paste0(specifi_model_dir,"/",s_ref_loc_finalfile,".effects"),header = TRUE,sep = " ") # waaay faster now!
+	temp_model = data.table::fread(paste0(specifi_model_dir,"/",Settings_env$s_ref_loc_finalfile,".effects"),header = TRUE,sep = " ") # waaay faster now!
 		
 
 	# update manifest 
 	time2 = as.numeric(Sys.time())
-	Ref_gwas_manifest[Trait_index,"processed"] = 2
-	Ref_gwas_manifest[Trait_index,"finalModelSNPs"] = dim(temp_model)[1]
-	Ref_gwas_manifest[Trait_index,"modelRunningTime"] = round((time2-time1) / 60,0)
+	Manifest_env$Ref_gwas_manifest[Trait_index,"processed"] = 2
+	Manifest_env$Ref_gwas_manifest[Trait_index,"finalModelSNPs"] = dim(temp_model)[1]
+	Manifest_env$Ref_gwas_manifest[Trait_index,"modelRunningTime"] = round((time2-time1) / 60,0)
 	#@RRR add total effect
-	Ref_gwas_manifest <<- Ref_gwas_manifest # this needs to be pushed into .globalenv
+	Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest # this needs to be pushed into .globalenv
 	rm(temp_model)
 	f_saveManifest()
 	
 	{cat("\n\n#-----------------------------#\n")
 	cat("Completed\n")
 	cat(paste0("PRS model stored in:\n"))
-	cat(paste0(specifi_model_dir2,"/",s_ref_loc_finalfile,".effects","\n"))
-	cat(paste0("Took approx ", Ref_gwas_manifest[Trait_index,"modelRunningTime"] , " minutes.\n"))
+	cat(paste0(specifi_model_dir2,"/",Settings_env$s_ref_loc_finalfile,".effects","\n"))
+	cat(paste0("Took approx ", Manifest_env$Ref_gwas_manifest[Trait_index,"modelRunningTime"] , " minutes.\n"))
 	cat("#-----------------------------#\n")}
 
 }
@@ -560,12 +560,12 @@ f_predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALS
 	# first get the manifest and check processed 	
 	f_getManifest(1)
 	
-	Trait_index = which(Ref_gwas_manifest$short==Trait)
+	Trait_index = which(Manifest_env$Ref_gwas_manifest$short==Trait)
 	
 	# check: if manifest Trait exists, else warning with options and return FAIL
 	if(length(Trait_index)==0){
-		#warning("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    -",paste0(Ref_gwas_manifest$short,collapse = "\n    -"),"\n\n")
-		return(message(paste0("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    -",paste0(Ref_gwas_manifest$short,collapse = "\n    -"),"\n\n","predPRS failed!\n")))
+		#warning("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    -",paste0(Manifest_env$Ref_gwas_manifest$short,collapse = "\n    -"),"\n\n")
+		return(message(paste0("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    -",paste0(Manifest_env$Ref_gwas_manifest$short,collapse = "\n    -"),"\n\n","predPRS failed!\n")))
 	}
 	
 	# check: if bfile contains BP:CHR IDS
@@ -577,18 +577,18 @@ f_predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALS
 	# show info
 	{cat("#-----------------------------------#\n")
 	cat(paste0("Trait: ",Trait,"\n" ))
-	cat(paste0("Calculation of PRS scores of: ",Ref_gwas_manifest[Trait_index,"short"]," \n"))
+	cat(paste0("Calculation of PRS scores of: ",Manifest_env$Ref_gwas_manifest[Trait_index,"short"]," \n"))
 	cat(paste0("Data: ",gsub(bfile,pattern = "^.*./",replacement = ""), "\n"))
 	cat("#-----------------------------------#\n\n\n")}
 	temp_data_name = gsub(bfile,pattern = "^.*./",replacement = "")
-	temp_manifest = Ref_gwas_manifest[Trait_index,]
+	temp_manifest = Manifest_env$Ref_gwas_manifest[Trait_index,]
 	Sys.sleep(1) # to hava a brief moment to see what you selected
 	
 	#-----------------------------------------------------------------------------------------------------#
 	#							parameters
 	#-----------------------------------------------------------------------------------------------------#
 	# Parameters for specific PRS models -> in models
-	model_dir = paste0(s_ROOT_dir,s_out_folder,"DATA/models/")
+	model_dir = paste0(Settings_env$s_ROOT_dir,s_out_folder,"DATA/models/")
 	specifi_model_dir = paste0(model_dir,temp_manifest$short)
 	specifi_model_dir2 = f_wslpath(specifi_model_dir)
 
@@ -597,7 +597,7 @@ f_predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALS
 	#-----------------------------------------------------------------------------------------------------#
 	#							Main algorithm
 	#-----------------------------------------------------------------------------------------------------#
-	temp_outfile = paste0(s_ROOT_dir,s_out_folder,"Predict/",temp_data_name,"_",temp_manifest$short)
+	temp_outfile = paste0(Settings_env$s_ROOT_dir,s_out_folder,"Predict/",temp_data_name,"_",temp_manifest$short)
 	temp_outfile2 = f_wslpath(temp_outfile)
 
 	#-----------------------------------------------------------------------------------------------------#
@@ -658,7 +658,7 @@ f_predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALS
 		write.table(profile,file=paste0(specifi_model_dir,"/megabayesr.effecttemp"),sep = " ",quote=FALSE,row.names = F)
 		
 		#get evaluation/ prs
-		endcode = system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --calc-scores ",temp_outfile2," --bfile ",bfile," --scorefile ",paste0(specifi_model_dir2,"/megabayesr.effecttemp")," --power 0"))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" centered--max-threads 8
+		endcode = system(paste0("wsl cd ",specifi_model_dir2," ; ",Settings_env$s_ldak," --calc-scores ",temp_outfile2," --bfile ",bfile," --scorefile ",paste0(specifi_model_dir2,"/megabayesr.effecttemp")," --power 0"))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" centered--max-threads 8
 		
 		# remove temp
 		file.remove(paste0(specifi_model_dir,"/megabayesr.effecttemp"))
@@ -666,7 +666,7 @@ f_predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALS
 	}else{
 	
 		#get evaluation / prs
-		endcode = system(paste0("wsl cd ",specifi_model_dir2," ; ",s_ldak," --calc-scores ",temp_outfile2," --bfile ",bfile," --scorefile ",paste0(specifi_model_dir2,"/megabayesr.effects")," --power 0 "))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" centered-allow-multi NO
+		endcode = system(paste0("wsl cd ",specifi_model_dir2," ; ",Settings_env$s_ldak," --calc-scores ",temp_outfile2," --bfile ",bfile," --scorefile ",paste0(specifi_model_dir2,"/megabayesr.effects")," --power 0 "))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" centered-allow-multi NO
 	}
  
 	# check: if error
@@ -698,7 +698,7 @@ f_collect_all_PRS = function (cohort = NA){
 	}
 	
 	# find root
-	Predictroot = paste0(s_ROOT_dir,"Data_QC/",s_ROOT_current_folder_name,"/Predict/")
+	Predictroot = paste0(Settings_env$s_ROOT_dir,"Data_QC/",s_ROOT_current_folder_name,"/Predict/")
 
 	# find all files in predict folder
 	all_files = list.files(Predictroot)
