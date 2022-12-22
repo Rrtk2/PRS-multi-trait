@@ -6,6 +6,12 @@
 \usage{
 getTraits()
 }
+\value{
+This fucntion is for vizualization purposes, it shows all the 'shorts' and their descriptions.
+}
 \description{
 getManifest
+}
+\examples{
+getTraits()
 }

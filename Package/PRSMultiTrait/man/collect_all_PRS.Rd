@@ -6,6 +6,12 @@
 \usage{
 collect_all_PRS(cohort = NA)
 }
+\value{
+This function will return all the generated PGSs that were ran on a specific cohort, it will automatically load all and prompt a dataframe with PGS as columns and samples as rows.
+}
 \description{
 collect_all_PRS
+}
+\examples{
+all_PGS = collect_all_PRS(cohort = "examplecohort")
 }

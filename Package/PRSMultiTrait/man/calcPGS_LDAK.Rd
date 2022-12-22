@@ -6,6 +6,12 @@
 \usage{
 calcPGS_LDAK(Trait = NA, Model = "bayesr")
 }
+\value{
+This function will perform the generation of the PGS model, of the given GWAS.
+}
 \description{
 calcPGS_LDAK
+}
+\examples{
+calcPGS_LDAK(Trait = "Height",Model = "bayesr")
 }

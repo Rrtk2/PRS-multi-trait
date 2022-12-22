@@ -21,6 +21,13 @@ addGWAStoManifest(
   FORCE = FALSE
 )
 }
+\value{
+This function will add a GWAS with all its needed information to the Manifest file
+}
 \description{
 addGWAStoManifest
+}
+\examples{
+addGWAStoManifest(short=c("Height"),	n=c(10000), filename=c("C:/Path/To/GWAS_file"), year=c("2020"), trait=c("Height"), DOI=c("?"),	genomeBuild = c("hg19"), traitType = c("CON"), rawSNPs = c("?"), finalModelSNPs = c("?"), modelRunningTime = c("?"), usedRefSet = c("?"), processed=c(0))
+The most important attributes are "short", "n", "filename" and "traitType". "traitType" should be "CAT" or "CON".
 }

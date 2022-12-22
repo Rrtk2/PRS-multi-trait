@@ -6,6 +6,12 @@
 \usage{
 installDependenciesAndData()
 }
+\value{
+This function is essential in the workings for the PRSMultiTrait package, as it installs, checks, and sets everything up.
+}
 \description{
 installDependenciesAndData
+}
+\examples{
+installDependenciesAndData()
 }
