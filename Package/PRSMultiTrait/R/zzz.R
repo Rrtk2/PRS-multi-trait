@@ -33,7 +33,7 @@
 	
 	Settings_env$s_ROOT_dir = file.path(system.file(package="PRSMultiTrait"), "Core//")
 
-	Settings_env$s_manifest_path = file.path(system.file(package="PRSMultiTrait","/"))	
+	Settings_env$s_manifest_path = file.path(system.file(package="PRSMultiTrait"),"/")	
 		
 	Settings_env$s_ROOT_current_folder_name = "Internal_files"
 
