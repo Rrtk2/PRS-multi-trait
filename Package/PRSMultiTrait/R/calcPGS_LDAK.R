@@ -1,6 +1,6 @@
 #' calcPGS_LDAK
-#' @return
-#' @examples
+#' @return This function will perform the generation of the PGS model, of the given GWAS.
+#' @examples calcPGS_LDAK(Trait = "Height",Model = "bayesr")
 #' @export
 calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	#-----------------------------------------------------------------------------------------------------#

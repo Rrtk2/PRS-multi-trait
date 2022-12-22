@@ -1,6 +1,6 @@
 #' installDependenciesAndData
-#' @return
-#' @examples
+#' @return This function is essential in the workings for the PRSMultiTrait package, as it installs, checks, and sets everything up. 
+#' @examples installDependenciesAndData()
 #' @export
 installDependenciesAndData = function(){
 	#-----------------------------------------------------------------------------------------------------#
@@ -121,4 +121,25 @@ installDependenciesAndData = function(){
 		file.remove(paste0(Settings_env$s_ROOT_dir,"Reference/Example/temp.zip"))
 
 	}
+	
+	#-----------------------------------------------------------------------------------------------------#
+	#							GWAS data
+	#-----------------------------------------------------------------------------------------------------#
+
+	# print message for installer
+	cat(">> Installing PGS models <<\n\n")
+	#cat("   - Installing example (toy) data panel from link\n\n")
+
+	#if(!dir.exists(paste0(paste0(Settings_env$s_ROOT_dir,"Reference/Example/")))){dir.create(file.path(paste0(paste0(Settings_env$s_ROOT_dir,"Reference/Example/"))))}
+
+	# Download file into temp file
+	download.file("https://surfdrive.surf.nl/files/index.php/s/5NaRC2aFWI1Y0C6/download",paste0(Settings_env$s_OUT_dir,"DATA/models/temp.zip"),"curl")
+
+	# Unzip
+	unzip(paste0(Settings_env$s_OUT_dir,"DATA/models/temp.zip"),exdir=paste0(Settings_env$s_OUT_dir,"DATA/models"))  # unzip your file 
+
+	# Remove temp file
+	file.remove(paste0(Settings_env$s_OUT_dir,"DATA/models/temp.zip"))
+
+
 }

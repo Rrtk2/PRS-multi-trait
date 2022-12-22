@@ -1,6 +1,6 @@
 #' collect_all_PRS
-#' @return
-#' @examples
+#' @return This function will return all the generated PGSs that were ran on a specific cohort, it will automatically load all and prompt a dataframe with PGS as columns and samples as rows.
+#' @examples all_PGS = collect_all_PRS(cohort = "examplecohort")
 #' @export
 collect_all_PRS = function (cohort = NA){
 	# check if cohort exists; im assuming writign the correct name is not a problem, cause i dont check

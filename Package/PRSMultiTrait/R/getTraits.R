@@ -1,6 +1,6 @@
 #' getManifest
-#' @return
-#' @examples
+#' @return This fucntion is for vizualization purposes, it shows all the 'shorts' and their descriptions.
+#' @examples getTraits()
 #' @export
 getTraits = function(){
 	# Get manifest

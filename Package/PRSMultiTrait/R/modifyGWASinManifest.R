@@ -1,6 +1,6 @@
 #' modifyGWASinManifest
-#' @return
-#' @examples
+#' @return This function will alter an existing GWAS trait in the manifest. This is based on using the 'short' as a method to select which GWAS is needed to be changed, and any other non-NA argument is changed into its alteration.
+#' @examples modifyGWASinManifest(short=c("Height"), n = 12345)
 #' @export
 modifyGWASinManifest = function(short=c("UniqueTraitName"),
 	n=NA,
