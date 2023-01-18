@@ -30,7 +30,7 @@ devtools::install_github("Rrtk2/PRS-multi-trait/Package/PRSMultiTrait")
 
 </summary>
 
-Look at this [example](https://github.com/Rrtk2/PRS-multi-trait/blob/main/Protocols/Example_running_PGSv2.md) to generate a PGS model and afterward to calculate the PGS scores on an toy example.
+Look at this [example](https://github.com/Rrtk2/PRS-multi-trait/blob/main/Protocols/Example_running_PGSV2.md) to generate a PGS model and afterward to calculate the PGS scores on an toy example.
 
 ---
 
