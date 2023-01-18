@@ -32,6 +32,11 @@ devtools::install_github("Rrtk2/PRS-multi-trait/Package/PRSMultiTrait")
 
 Look at this [example](https://github.com/Rrtk2/PRS-multi-trait/blob/main/Protocols/Example_running_PGSV2.md) to generate a PGS model and afterward to calculate the PGS scores on an toy example.
 
+It breaks down to:
+- ``` calcPGS_LDAK(Trait = "Trait", Model = "bayesr") ``` 
+- ``` predPRS(bfile = "Cohort Files", Trait = "Trait") ``` 
+- ``` collect_all_PRS(cohort = "Cohort Name") ``` 
+
 ---
 
 </details>
