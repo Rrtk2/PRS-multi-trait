@@ -105,4 +105,4 @@ Rick Reijnders ra.reijnders@maastrichtuniversity.nl
 
 
 ### Copyright and authors
-All code and documents in this folder was created by me or collaborators.
+All code and documents in this folder was created by me or [collaborators](https://github.com/Rrtk2/PRS-multi-trait/blob/main/AUTHORS.md).
