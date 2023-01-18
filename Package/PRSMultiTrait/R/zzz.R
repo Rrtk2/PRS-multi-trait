@@ -1,14 +1,16 @@
 .onLoad <- function(libname, pkgname){
+
+}
+
+
+.onAttach <- function(libname, pkgname) {
+
 	#Settings_env <- new.env()
 	assign("Settings_env", new.env(), parent.env(.GlobalEnv))
 	
 	#Settings_env <- new.env()
 	assign("Manifest_env", new.env(), parent.env(.GlobalEnv))
 	
-}
-
-
-.onAttach <- function(libname, pkgname) {
 
 	# Welcome message
 	packageStartupMessage(cat("This is the PRSMultiTrait load flag!\n"))
@@ -126,4 +128,8 @@
 
 	}
 
+}
+
+.onDetach <- function(libname, pkgname) {
+    rm(list = c("Settings_env","Manifest_env"), envir = .GlobalEnv)
 }
