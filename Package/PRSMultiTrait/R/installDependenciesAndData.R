@@ -140,6 +140,27 @@ installDependenciesAndData = function(){
 
 	# Remove temp file
 	file.remove(paste0(Settings_env$s_OUT_dir,"DATA/models/temp.zip"))
+	
+	#-----------------------------------------------------------------------------------------------------#
+	#							Manifest
+	#-----------------------------------------------------------------------------------------------------#
+	if(!file.exists(paste0(paste0(Settings_env$s_ROOT_dir,"Manifest/"),"Ref_gwas_manifest.rda"))){
+		
+		# Make folder if needed
+		if(!dir.exists(paste0(paste0(Settings_env$s_ROOT_dir,"Manifest/")))){dir.create(file.path(paste0(paste0(Settings_env$s_ROOT_dir,"Manifest/"))))}
+	
+		# print message for installer
+		cat(">> Manifest not detected on expected location! <<\n")
+		cat("   - Getting Manifest from link\n\n")
+	
 
+		# Download file into temp file
+		download.file("https://surfdrive.surf.nl/files/index.php/s/1zi299F4rs3aIwt/download",paste0(Settings_env$s_ROOT_dir,"Manifest/","temp.zip"),"curl")
 
+		# Unzip
+		unzip(paste0(Settings_env$s_ROOT_dir,"Manifest/","temp.zip"),exdir=paste0(Settings_env$s_ROOT_dir,"Manifest"))  # unzip your file 
+
+		# Remove temp file
+		file.remove(paste0(Settings_env$s_ROOT_dir,"Manifest/","temp.zip"))
+	}
 }
