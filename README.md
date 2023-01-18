@@ -23,29 +23,6 @@ devtools::install_github("Rrtk2/PRS-multi-trait/Package/PRSMultiTrait")
 
 
 
-
-<details>
-<summary>
-
-### Install Package
-
-</summary>
-
-#### Installation (old)
-1) Download the [latest release](https://github.com/Rrtk2/PRS-multi-trait/archive/refs/tags/v0.4.zip) from github
-
-2) Unzip the latest release (into the PRS-multi-trait folder)
-
-3) Open the Settings.R script. (found in PRS-multi-trait folder/Scripts/.MAIN/)
-
-4) Change the ``` s_ROOT_dir ``` from the predefied path to the path the PRS-multi-trait and save, and make sure this is defined using the global enviroment assignment using double arrow "<<-".  As example: ``` s_ROOT_dir <<- "C:/path/to/folder/PRS-multi-trait/" ```  
-
-5) Open R(studio) and source the settings file to set up the file structure, install needed programs and data. As example: ```source("C:/path/to/folder/PRS-multi-trait/Scripts/.Main/Settings.R") ```  
-
----
-
-</details>
-
 <details>
 <summary>
 
@@ -53,32 +30,38 @@ devtools::install_github("Rrtk2/PRS-multi-trait/Package/PRSMultiTrait")
 
 </summary>
 
-Look at this [example](https://github.com/Rrtk2/PRS-multi-trait/blob/main/Protocols/Example_running_PGS.md) to generate a PGS model and afterward to calculate the PGS scores on an toy example.
+Look at this [example](https://github.com/Rrtk2/PRS-multi-trait/blob/main/Protocols/Example_running_PGSv2.md) to generate a PGS model and afterward to calculate the PGS scores on an toy example.
+
+---
+
+</details>
 
 
-#### Interacting with Manifest
- ``` f_getManifest(1) ```    -   Loads manifest into memory and show manifest
-
- ``` f_saveManifest ```    -   Saves manifest onto disk
-
- ``` f_getTraits ```    -   Shows the available traits to be used
-
- ``` f_addGWAStoManifest ```    -   Adds a new line to the manifest, fill in all information.
-
- ``` f_removeGWASfromManifest ```    -   Removes a line from the manifest.
-
- ``` f_modifyGWASinManifest ```    -    Changes a line in manifest
 
 
-#### Generate PGS models
-1) Open R(studio) and source the settings file to set up the environment. As example: ```source("C:/path/to/folder/PRS-multi-trait/Scripts/.Main/Settings.R") ```
+<details>
+<summary>
 
-2)  ``` f_calcPGS_LDAK() ``` 
+### Functions
 
-#### Calculate PGS scores for trait
-1) Open R(studio) and source the settings file to set up the environment. As example: ```source("C:/path/to/folder/PRS-multi-trait/Scripts/.Main/Settings.R") ```
+</summary>
+The PRSMultiTrait package contains several functions that can be used to calculate polygenic risk scores (PRS) for multiple traits using genome-wide association studies (GWAS) data. Here is a brief overview of the main functions in the package:
 
-2)  ``` f_predPRS() ``` 
+
+| Function        | Description                     |
+|-----------| ----------------------------------|
+| ``` installDependenciesAndData() ```  |Installs the programs and data required to run the package. |
+| ``` getManifest(1) ```  |Retrieves the manifest file containing information about the GWAS studies used in the package.|
+| ``` getTraits() ```  |Shows the available traits from the manifest.|
+| ``` addGWAStoManifest() ```  |Adds a new GWAS study to the manifest.|
+| ``` removeGWASfromManifest() ```  |Removes a GWAS study from the manifest.|
+| ``` modifyGWASinManifest() ```  |Modifies a GWAS study in the manifest.|
+| ``` calcPGS_LDAK(Trait, Model) ```  |Calculates a PGS model for the specified trait using the specified model.|
+| ``` predPRS(bfile, Trait, OverlapSNPsOnly, Force) ```  |Predicts PRS values using the newly made model.|
+| ``` collect_all_PRS(cohort) ```  |Collects PRS values for the specified cohort.|
+ 
+ 
+Please note that this is a summary of the main functions of the package, and the package documentation should be consulted for more detailed information on how to use them.
 
 ---
 
@@ -100,6 +83,8 @@ Rick Reijnders
 Joshua Harvey
 
 Valentin Laroche 
+
+Jarno Koetsier
 
 Niko Amiri
 
