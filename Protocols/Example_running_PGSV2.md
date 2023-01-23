@@ -25,7 +25,9 @@ To remove a GWAS study from the manifest, use the following command in R:  ``` r
 To modify a GWAS study in the manifest, use the following command in R:  ``` modifyGWASinManifest() ``` 
 
 ## Running a Toy Example
-In this example, we will use a toy dataset and GWAS to calculate the height of a cohort. This instruction assumes you were able to generate the '.summaries' file in the desired file format, stored on the correct location (and metadata stored in the Manifest). In this example the toy GWAS is called 'test_height.summaries', and is stored in PRS-multi-trait\Data_QC\Test_branch\DATA\gwas. The Manifest file contains this toy GWAS with corresponding name (columm: short) 'test_height'.
+In this example, we will use a toy dataset and GWAS to calculate the height of a cohort. This instruction assumes you were able to generate the '.summaries' file in the desired file format, stored on the correct location (and metadata stored in the Manifest). In this example the toy GWAS is called 'test_height.summaries', and is stored in PRS-multi-trait\Data_QC\Test_branch\DATA\gwas. The Manifest file contains this toy GWAS with corresponding name (columm: short) 'test_height'. 
+
+Please add in more info about using prepareGWAS(trait = "Trait")
 
 To calculate the PGS model, run the following command in R: ```  calcPGS_LDAK(Trait = "test_height", Model = "bayesr") ``` 
 
