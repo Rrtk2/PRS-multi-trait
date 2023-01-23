@@ -18,8 +18,13 @@ To install the RRtest package
 ```
 devtools::install_github("Rrtk2/PRS-multi-trait/Package/PRSMultiTrait")
 ```
----
 
+To get the PGMs
+```
+library("PRSMultiTrait")
+installDependenciesAndData()
+```
+---
 
 
 
