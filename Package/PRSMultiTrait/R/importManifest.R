@@ -1,8 +1,8 @@
 #' importManifest
 #' @return
 #' @examples
-#' @export
 #' importManifest(Path = "C:/Users/p70072451/Downloads/Manifest.tsv")
+#' @export
 importManifest = function(Path = NA){
 	if(is.na(Path)){
 		stop("Path is NA, set path first!")

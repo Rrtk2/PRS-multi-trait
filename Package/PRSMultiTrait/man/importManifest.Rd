@@ -9,3 +9,6 @@ importManifest(Path = NA)
 \description{
 importManifest
 }
+\examples{
+importManifest(Path = "C:/Users/p70072451/Downloads/Manifest.tsv")
+}

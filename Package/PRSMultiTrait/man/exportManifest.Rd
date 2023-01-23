@@ -9,3 +9,6 @@ exportManifest(Path = NA)
 \description{
 exportManifest
 }
+\examples{
+exportManifest(Path = "C:/Users/p70072451/Downloads/")
+}

@@ -1,8 +1,8 @@
 #' exportManifest
 #' @return
 #' @examples
-#' @export
 #' exportManifest(Path = "C:/Users/p70072451/Downloads/")
+#' @export
 exportManifest = function(Path = NA){
 	if(is.na(Path)){
 		stop("Path is NA, set path first!")
