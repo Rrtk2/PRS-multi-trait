@@ -4,8 +4,18 @@
 #' @export
 prepareGWAS = function(trait = "UniqueTraitName"){
 
-	#@RRR MOVE TO SETTINGS PLEASE :)
-	listofStandardizedGWASes = c("Birth_length","BMI","ASD")
+	#-----------------------------------------------------------------------------------------------------#
+	#							Note
+	#-----------------------------------------------------------------------------------------------------#
+
+	# To do all instantly:
+	#	for( i in which(Manifest_env$Ref_gwas_manifest$processed==0)){
+	#		print(Manifest_env$Ref_gwas_manifest$short[i])
+	#		prepareGWAS(Manifest_env$Ref_gwas_manifest$short[i])
+	#	}
+	
+	#@RRR MOVE TO SETTINGS PLEASE :) updated 23-1-2023
+	listofStandardizedGWASes = c('AD_jans' ,'Ad_no_APOE' ,'AD1' ,'AD2' ,'Adiponectin' ,'ASD' ,'BD' ,'BL' ,'BMI' ,'BW' ,'Bwfetal' ,'Bwmaternal' ,'ChildhoodObesity' ,'Chronotype' ,'EA' ,'ExtremeBMI' ,'ExtremeHeight' ,'ExtremeWHR' ,'family_AD' ,'HbA1c' ,'HC' ,'HDL' ,'Height' ,'Height22' ,'Heigth1' ,'InfantHeadCircumference' ,'LDL' ,'MDD' ,'ObesityClass1' ,'ObesityClass2' ,'ObesityClass3' ,'Overweight' ,'PubertalGrowth' ,'RA' ,'SHR' ,'SleepDuration' ,'T2D' ,'TC' ,'test_height' ,'TG' ,'WC' ,'WHR')
 
 	# Get manifest
 	getManifest()
@@ -23,6 +33,17 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 		message("  Options:\n    - ",paste0(listofStandardizedGWASes,collapse = "\n    - "))
 		return(message("Preparing GWAS into standardized format aborted."))
 	}
+	
+	# Check if file exists
+	if(!file.exists(temp_manifest$filename)){
+		message("File does not seem to exist!")
+		message(paste0("Is this correct?\n",temp_manifest$filename))
+		return(message("Preparing GWAS into standardized format aborted."))
+	}
+	
+	
+	# Stating start to work on: 
+	message("(prepareGWAS.R)    Processing '",trait,"'!")
 	
 	# Select the trait from manifest
 	temp_manifest = Manifest_env$Ref_gwas_manifest[Manifest_env$Ref_gwas_manifest$short%in%trait,]
@@ -60,7 +81,7 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 		}
 	
 		if(temp_manifest$short%in%listofStandardizedGWASes){
-			cat("(Functions.R)    Using standardized CONT GWAS processing\n")
+			cat("(prepareGWAS.R)    Using standardized CONT GWAS processing\n")
 			temp_gwas = data.frame(Predictor=paste0(temp_gwas$CHR,":",temp_gwas$BP),
 						A1=toupper(temp_gwas$A1),
 						A2=toupper(temp_gwas$A2),
@@ -89,7 +110,7 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 		}
 		
 		if(temp_manifest$short%in%listofStandardizedGWASes){
-			cat("(Functions.R)    Using standardized CAT GWAS processing\n")
+			cat("(prepareGWAS.R)    Using standardized CAT GWAS processing\n")
 			temp_gwas = data.frame(Predictor=paste0(temp_gwas$CHR,":",temp_gwas$BP),
 						A1=toupper(temp_gwas$A1),
 						A2=toupper(temp_gwas$A2),
@@ -122,13 +143,13 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 	data.table::fwrite(get(temp_manifest$short),file = paste0(Settings_env$s_ROOT_dir,Settings_env$s_out_folder,"DATA/gwas/",temp_manifest$short,".summaries"),row.names = FALSE,sep = "\t",quote = FALSE) # FASTERRRR
 	
 	# update settings
-	Manifest_env$Ref_gwas_manifest[!Manifest_env$Ref_gwas_manifest$short%in%trait,"processed"] = 1
-	Manifest_env$Ref_gwas_manifest[!Manifest_env$Ref_gwas_manifest$short%in%trait,"rawSNPs"] = dim(temp_gwas )[1]
+	Manifest_env$Ref_gwas_manifest[Manifest_env$Ref_gwas_manifest$short%in%trait,"processed"] = 1
+	Manifest_env$Ref_gwas_manifest[Manifest_env$Ref_gwas_manifest$short%in%trait,"rawSNPs"] = dim(temp_gwas )[1]
 	
 
 
 	# Update manifest
 	saveManifest()
 	
-	
+	cat("Done processing '",trait,"'!\n\n")
 }

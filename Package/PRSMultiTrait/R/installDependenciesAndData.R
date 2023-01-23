@@ -123,7 +123,7 @@ installDependenciesAndData = function(){
 	}
 	
 	#-----------------------------------------------------------------------------------------------------#
-	#							GWAS data
+	#							MODELS data
 	#-----------------------------------------------------------------------------------------------------#
 
 	# print message for installer
@@ -133,7 +133,7 @@ installDependenciesAndData = function(){
 	#if(!dir.exists(paste0(paste0(Settings_env$s_ROOT_dir,"Reference/Example/")))){dir.create(file.path(paste0(paste0(Settings_env$s_ROOT_dir,"Reference/Example/"))))}
 
 	# Download file into temp file
-	download.file("https://surfdrive.surf.nl/files/index.php/s/5NaRC2aFWI1Y0C6/download",paste0(Settings_env$s_OUT_dir,"DATA/models/temp.zip"),"curl")
+	download.file("https://surfdrive.surf.nl/files/index.php/s/WZd5luvblyYaS4n/download",paste0(Settings_env$s_OUT_dir,"DATA/models/temp.zip"),"curl")
 
 	# Unzip
 	unzip(paste0(Settings_env$s_OUT_dir,"DATA/models/temp.zip"),exdir=paste0(Settings_env$s_OUT_dir,"DATA/models"))  # unzip your file 

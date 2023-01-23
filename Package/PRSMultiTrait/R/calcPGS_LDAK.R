@@ -3,6 +3,17 @@
 #' @examples calcPGS_LDAK(Trait = "Height",Model = "bayesr")
 #' @export
 calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
+
+	#-----------------------------------------------------------------------------------------------------#
+	#							Note
+	#-----------------------------------------------------------------------------------------------------#
+
+	# To do all instantly:
+	#	for( i in which(Manifest_env$Ref_gwas_manifest$processed==1)){
+	#		print(Manifest_env$Ref_gwas_manifest$short[i])
+	#		calcPGS_LDAK(Trait = Manifest_env$Ref_gwas_manifest$short[i], Model = "bayesr")
+	#	}
+	
 	#-----------------------------------------------------------------------------------------------------#
 	#							Startup
 	#-----------------------------------------------------------------------------------------------------#
