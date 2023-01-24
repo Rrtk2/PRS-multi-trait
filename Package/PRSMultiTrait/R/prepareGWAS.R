@@ -10,7 +10,6 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 
 	# To do all instantly:
 	#	for( i in which(Manifest_env$Ref_gwas_manifest$processed==0)){
-	#		print(Manifest_env$Ref_gwas_manifest$short[i])
 	#		prepareGWAS(Manifest_env$Ref_gwas_manifest$short[i])
 	#	}
 	
@@ -34,6 +33,11 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 		return(message("Preparing GWAS into standardized format aborted."))
 	}
 	
+
+	# Select the trait from manifest
+	temp_manifest = Manifest_env$Ref_gwas_manifest[Manifest_env$Ref_gwas_manifest$short%in%trait,]
+	
+	
 	# Check if file exists
 	if(!file.exists(temp_manifest$filename)){
 		message("File does not seem to exist!")
@@ -41,23 +45,74 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 		return(message("Preparing GWAS into standardized format aborted."))
 	}
 	
-	
 	# Stating start to work on: 
 	message("(prepareGWAS.R)    Processing '",trait,"'!")
 	
-	# Select the trait from manifest
-	temp_manifest = Manifest_env$Ref_gwas_manifest[Manifest_env$Ref_gwas_manifest$short%in%trait,]
-	
+
 	#Read the GWAS data
 	temp_gwas = data.table::fread(temp_manifest$filename,header = TRUE,sep = "\t",fill=TRUE) # waaay faster now!
+	temp_gwas_dim_pre_init = dim(temp_gwas)
 	
 	# Make sure no BP or CHR are missing (NA); remove!
 	temp_gwas = temp_gwas[!(is.na(temp_gwas$CHR)|is.na(temp_gwas$BP)),]
-	cat("GWAS loaded, found",dim(temp_gwas)[1],"(non-NA) SNPs")
+	cat("GWAS loaded, found",dim(temp_gwas)[1],"(non-NA) SNPs\n")
 	
 	# Check if there are multi-alleles in the gwas, remove!
 	temp_gwas = temp_gwas[nchar(temp_gwas$A1)==1 & nchar(temp_gwas$A2)==1,]
-	cat(" of which",dim(temp_gwas)[1],"have non-multi-alleles!\n")
+	cat(" of which",dim(temp_gwas)[1], "(",paste0(round(((dim(temp_gwas)[1]) / temp_gwas_dim_pre_init[1])*100,1),"% )"," have non-multi-alleles!\n"))
+	
+
+	# check if there are any that are misaligned to the referecne (UK biobank)
+	load(paste0(Settings_env$s_ROOT_dir,"Reference/gbr_hapmap/All_SNPS_Hapmap.Rdata")) # waaay faster now!
+	temp_gwas_dim_pre = dim(temp_gwas)
+	temp_gwas = temp_gwas[paste0(temp_gwas$CHR,":",temp_gwas$BP)%in%All_SNPS_Hapmap,]
+	temp_gwas_dim_post = dim(temp_gwas)
+	cat("  of which",(temp_gwas_dim_post[1]), "(",paste0(round(((temp_gwas_dim_post[1]) / temp_gwas_dim_pre_init[1])*100,1),"% )"," SNPs remaining after Hapmap filter"),"\n")
+	
+	
+	# Check if Alleles are correct (MAF should be Minor, not Major)
+	temp_ref = data.table::fread(paste0(Settings_env$s_ROOT_dir,"Reference/gbr_hapmap/gbr.hapmap.cors.bim"),header = FALSE,sep = "\t",fill=TRUE) # waaay faster now!
+	
+
+	
+	temp_gwas_dim_pre = dim(temp_gwas)
+	# chekc set that A1 is A2 and A2 is A1 (flipped)
+	temp_A12A21_index = as.logical(temp_ref[match(paste0(temp_gwas$CHR,":",temp_gwas$BP),temp_ref$V2),"V5"] == temp_gwas$A2) & as.logical(temp_ref[match(paste0(temp_gwas$CHR,":",temp_gwas$BP),temp_ref$V2),"V6"] == temp_gwas$A1)
+	if(length(temp_A12A21_index)>0){
+	
+
+		if(c("BETA")%in%colnames(temp_gwas)){
+			temp_a1 = temp_gwas$A1[temp_A12A21_index]
+			temp_a2 = temp_gwas$A2[temp_A12A21_index]
+			temp_gwas$A1[temp_A12A21_index] = temp_a2
+			temp_gwas$A2[temp_A12A21_index] = temp_a1
+			temp_gwas$BETA[temp_A12A21_index] = -temp_gwas$BETA[temp_A12A21_index]
+			rm(list=c("temp_a1","temp_a2"))
+		}
+		
+		if(c("OR")%in%colnames(temp_gwas)){
+			temp_a1 = temp_gwas$A1[temp_A12A21_index]
+			temp_a2 = temp_gwas$A2[temp_A12A21_index]
+			temp_gwas$A1[temp_A12A21_index] = temp_a2
+			temp_gwas$A2[temp_A12A21_index] = temp_a1
+			temp_gwas$OR[temp_A12A21_index] = -temp_gwas$OR[temp_A12A21_index]
+			rm(list=c("temp_a1","temp_a2"))
+		}
+	
+	
+	}
+	
+	cat("   of which",(as.numeric(table(temp_A12A21_index)["TRUE"])), "(",paste0(round(as.numeric(table(temp_A12A21_index)["TRUE"] / temp_gwas_dim_pre_init[1])*100,1),"% )"," SNPs were flipped"),"\n")
+	
+	# check set that A1 is A1 and A2 is A2 (correct)
+	#temp_A11A22_index = as.logical(temp_ref[match(paste0(temp_gwas$CHR,":",temp_gwas$BP),temp_ref$V2),"V5"] == temp_gwas$A1) & as.logical(temp_ref[match(paste0(temp_gwas$CHR,":",temp_gwas$BP),temp_ref$V2),"V6"] == temp_gwas$A2)
+	temp_gwas = temp_gwas[as.logical(temp_ref[match(paste0(temp_gwas$CHR,":",temp_gwas$BP),temp_ref$V2),"V5"] == temp_gwas$A1),]
+	temp_gwas = temp_gwas[as.logical(temp_ref[match(paste0(temp_gwas$CHR,":",temp_gwas$BP),temp_ref$V2),"V6"] == temp_gwas$A2),]
+	
+	temp_gwas_dim_post = dim(temp_gwas)
+	cat("    >> total ",(temp_gwas_dim_post[1]), "(",paste0(round(((temp_gwas_dim_post[1]) / temp_gwas_dim_pre_init[1])*100,1),"% )"," SNPs remaining after allele check << "),"\n")
+	
+	rm(list=  c("All_SNPS_Hapmap","temp_gwas_dim_pre","temp_gwas_dim_post"))
 	
 
 	# Check if temp_manifest$traitType is OK

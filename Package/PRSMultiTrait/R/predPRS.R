@@ -3,7 +3,15 @@
 #' @examples predPRS(bfile = wslpath("C:/path/to/examplecohort"), Trait = "Height")
 #' @export
 predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALSE){
+	#-----------------------------------------------------------------------------------------------------#
+	#							Note
+	#-----------------------------------------------------------------------------------------------------#
 
+	# To do all for cohort instantly:
+	#	for( i in which(Manifest_env$Ref_gwas_manifest$processed==2)){
+	#		predPRS(bfile = wslPath(paste0(Settings_env$s_ROOT_dir,"Reference/Example/1000G_phase3_final_2")), Trait = Manifest_env$Ref_gwas_manifest$short[i])
+	#	}
+	
 	#-----------------------------------------------------------------------------------------------------#
 	#							Startup
 	#-----------------------------------------------------------------------------------------------------#
