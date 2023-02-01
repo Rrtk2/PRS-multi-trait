@@ -5,6 +5,7 @@
 PRS-multi-trait is an R package that focuses on using generalized summary statistics, calculation and prediction of multi-trait polygenic (risk) scores (PGS) to predict the likelihood of an individual developing a particular trait or disease based on their genetic risk factors. The package includes functions for calculating PGS for individuals based on the presence of specific genetic variants that have been associated with the trait or disease in question. PRS-multi-trait is designed to be user-friendly and easy to use, with a range of functions and documentation to help users get started quickly. Whether you are a researcher or practitioner in the field of genetics and genomics, or simply interested in exploring the genetic basis of complex traits and diseases, PRS-Multi-trait can help you generate PGS models and calculate PGS for your cohort. The method is useful for a wide range of applications, including identifying individuals who may be at risk of developing complex diseases such as diabetes or Alzheimer's disease, as well as for predicting scores for more straightforward traits such as height or eye color.
 
 
+This package has shiny-app support, we reccomend it!
 
 ---
 
@@ -19,11 +20,18 @@ To install the RRtest package
 devtools::install_github("Rrtk2/PRS-multi-trait/Package/PRSMultiTrait")
 ```
 
-To get the PGMs
+To get the dependencies and models
 ```
 library("PRSMultiTrait")
 PRSMultiTrait::installDependenciesAndData()
 ```
+
+
+To run the shiny app to have a user-friendly interface
+```
+PRSMultiTrait::runApp()
+```
+
 ---
 
 
