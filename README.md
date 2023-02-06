@@ -9,7 +9,13 @@ This package has shiny-app support, we reccomend it!
 
 ---
 
-### Quick installation in R
+###  Insall Windows Subsystem for Linux (WSL)
+Open windows powershell (powershell.exe)
+```
+wsl --install
+```
+
+## Quick installation in R
 First, you need to install the devtools package. You can do this from CRAN.
 ```
 install.packages("devtools")
