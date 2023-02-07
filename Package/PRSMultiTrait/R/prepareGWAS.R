@@ -14,7 +14,7 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 	#	}
 	
 	#@RRR MOVE TO SETTINGS PLEASE :) updated 23-1-2023
-	listofStandardizedGWASes = c('AD_jans' ,'Ad_no_APOE' ,'AD1' ,'AD2' ,'Adiponectin' ,'ASD' ,'BD' ,'BL' ,'BMI' ,'BW' ,'Bwfetal' ,'Bwmaternal' ,'ChildhoodObesity' ,'Chronotype' ,'EA' ,'ExtremeBMI' ,'ExtremeHeight' ,'ExtremeWHR' ,'family_AD' ,'HbA1c' ,'HC' ,'HDL' ,'Height' ,'Height22' ,'Heigth1' ,'InfantHeadCircumference' ,'LDL' ,'MDD' ,'ObesityClass1' ,'ObesityClass2' ,'ObesityClass3' ,'Overweight' ,'PubertalGrowth' ,'RA' ,'SHR' ,'SleepDuration' ,'T2D' ,'TC' ,'test_height' ,'TG' ,'WC' ,'WHR')
+	#listofStandardizedGWASes = c('AD_jans' ,'Ad_no_APOE' ,'AD1' ,'AD2' ,'Adiponectin' ,'ASD' ,'BD' ,'BL' ,'BMI' ,'BW' ,'Bwfetal' ,'Bwmaternal' ,'ChildhoodObesity' ,'Chronotype' ,'EA' ,'ExtremeBMI' ,'ExtremeHeight' ,'ExtremeWHR' ,'family_AD' ,'HbA1c' ,'HC' ,'HDL' ,'Height' ,'Height22' ,'Heigth1' ,'InfantHeadCircumference' ,'LDL' ,'MDD' ,'ObesityClass1' ,'ObesityClass2' ,'ObesityClass3' ,'Overweight' ,'PubertalGrowth' ,'RA' ,'SHR' ,'SleepDuration' ,'T2D' ,'TC' ,'test_height' ,'TG' ,'WC' ,'WHR')
 
 	# Get manifest
 	getManifest()
@@ -27,11 +27,11 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 	}
 	
 	# check if trait is accepted
-	if(!trait%in%listofStandardizedGWASes){
-		message("Trait('",trait,"') not supported yet!")
-		message("  Options:\n    - ",paste0(listofStandardizedGWASes,collapse = "\n    - "))
-		return(message("Preparing GWAS into standardized format aborted."))
-	}
+	#if(!trait%in%listofStandardizedGWASes){
+	#	message("Trait('",trait,"') not supported yet!")
+	#	message("  Options:\n    - ",paste0(listofStandardizedGWASes,collapse = "\n    - "))
+	#	return(message("Preparing GWAS into standardized format aborted."))
+	#}
 	
 
 	# Select the trait from manifest

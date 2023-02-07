@@ -2,7 +2,7 @@
 # Requared packages
 library(tidyverse)
 library(corrr)
-library(ggdendroplot)
+library(ggdendroplot) # devtools::install_github("nicolash2/ggdendroplot")
 library(patchwork)
 library(DT)
 library(shinyWidgets)
