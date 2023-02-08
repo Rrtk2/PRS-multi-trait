@@ -58,3 +58,4 @@
 *.bim
 Package/PRSMultiTrait/.Rhistory
 Data_QC/Test_branch/Manifest/IMAGE_workspace.Rdata
+*.Rdata
