@@ -163,4 +163,32 @@ installDependenciesAndData = function(){
 		# Remove temp file
 		file.remove(paste0(Settings_env$s_ROOT_dir,"Manifest/","temp.zip"))
 	}
+	
+	#-----------------------------------------------------------------------------------------------------#
+	#							Packages for Shiny
+	#-----------------------------------------------------------------------------------------------------#
+
+	#list of packages required
+	list_of_packages <- c("tidyverse","corrr","patchwork","DT","shinyWidgets","shinycssloaders","shinyFiles","ggdendroplot")
+
+	#checking missing packages from list
+	new_packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,"Package"])]
+
+	#install missing ones
+	if(length(new_packages)){
+		cat(">> Installing required packages to run Shiny app! <<\n")
+		for( package in new_packages){
+			# manual fix for ggdendroplot (only github)
+			if(package=="ggdendroplot"){
+				devtools::install_github("nicolash2/ggdendroplot")
+			}else{
+				BiocManager::install(package, force = TRUE)
+			}
+			
+		}
+		
+	}
+
 }
+
+
