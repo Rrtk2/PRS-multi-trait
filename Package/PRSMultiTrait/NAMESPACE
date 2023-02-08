@@ -2,6 +2,7 @@
 
 export(addGWAStoManifest)
 export(calcPGS_LDAK)
+export(checkDataIDs)
 export(collect_all_PRS)
 export(exportManifest)
 export(getManifest)
