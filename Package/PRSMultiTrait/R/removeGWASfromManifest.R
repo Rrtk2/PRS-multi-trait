@@ -35,5 +35,5 @@ removeGWASfromManifest = function(
 		
 		# Save manifest
 		saveManifest()
-		getManifest(1)
+		getManifest(0)
 }
