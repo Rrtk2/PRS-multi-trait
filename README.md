@@ -34,7 +34,7 @@ PRSMultiTrait::installDependenciesAndData()
 
 To make sure the b-files have correct IDs to work with this package.
 ```
-checkGWASIDs("path/to/b-files.bim")
+PRSMultiTrait::checkGWASIDs("path/to/b-files.bim")
 ```
 
 To run the shiny app to have a user-friendly interface
