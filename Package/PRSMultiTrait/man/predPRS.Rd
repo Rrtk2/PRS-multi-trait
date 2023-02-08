@@ -4,7 +4,13 @@
 \alias{predPRS}
 \title{predPRS}
 \usage{
-predPRS(bfile = NA, Trait = NA, OverlapSNPsOnly = FALSE, Force = FALSE)
+predPRS(
+  bfile = NA,
+  Trait = NA,
+  Model = "bayesr",
+  OverlapSNPsOnly = FALSE,
+  Force = FALSE
+)
 }
 \value{
 This fucntion will run the calculation of the PGS of the given GWAS, it will automatically save these PGS which can be extracted with collect_all_PRS(). Make sure the bfiles are using a chr:bp ids and are using wsl-pathing notation in the fucntion.

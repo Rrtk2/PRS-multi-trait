@@ -4,7 +4,7 @@
 \alias{collect_all_PRS}
 \title{collect_all_PRS}
 \usage{
-collect_all_PRS(cohort = NA)
+collect_all_PRS(cohort = NA, Model = "bayesr", Trait = NA)
 }
 \value{
 This function will return all the generated PGSs that were ran on a specific cohort, it will automatically load all and prompt a dataframe with PGS as columns and samples as rows.
