@@ -173,8 +173,10 @@ predPRS = function(bfile = NA, Trait = NA, Model = "bayesr", OverlapSNPsOnly=FAL
 
 	
 	{cat("\n\n#-----------------------------#\n")
-	cat("Completed\n")
-	cat(paste0("Found in:\n"))
+	cat("Completed\n\n")
+	cat("Effect LOST due to missingness:\n   ")
+	cat(round((missing_effect/total_effect)*100,1),"% out of 100 %\n\n")
+	cat(paste0("Found in:\n   "))
 	cat(paste0(temp_outfile2,"\n"))
 	cat("#-----------------------------#\n")}
 }
