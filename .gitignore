@@ -1,5 +1,41 @@
 # ignore filetypes
 *.rick
+*.summaries
+*.best
+*.cors
+*.effects
+*.parameters
+*.priors
+*.progress
+*.zip
+.Rhistory
+*.profile
+*.cats
+*.bim
+*.bin
+*.root
+*.noise
+*.enrich
+*.extra
+*.hers
+*.positive
+*.labels
+*.overlap
+*.summariespred
+*.Rdata
+*.log
+*.rar
+*.fam
+*.details
+*.snps
+*PGSMultiTrait.docx
+*.matrix
+*.tagging
+*.cross
+*.share
+*.taus
+*.linux
+*.exe
 
 # ignore filetypes
 # tested using 'find * -size +1G | cat >> .gitignore' in folder
