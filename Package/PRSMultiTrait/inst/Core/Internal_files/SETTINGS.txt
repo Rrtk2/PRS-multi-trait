@@ -1,0 +1,51 @@
+SETTINGS:
+variable	value
+s_data_loc_ref	C:/DATA_STORAGE/Projects/PRS-multi-trait/Package/PRSMultiTrait/inst/Core/Reference/gbr_hapmap/
+s_ldak	/mnt/c/DATA_STORAGE/Projects/PRS-multi-trait/Package/PRSMultiTrait/inst/Core/Programs/LDAK/ldak5.2.linux
+s_manifest_path	C:/DATA_STORAGE/Projects/PRS-multi-trait/Package/PRSMultiTrait/inst//Core/Manifest
+s_OUT_dir	C:/DATA_STORAGE/Projects/PRS-multi-trait/Package/PRSMultiTrait/inst/Core/Internal_files/
+s_out_folder	Internal_files/
+s_plinkloc	C:/DATA_STORAGE/Projects/PRS-multi-trait/Package/PRSMultiTrait/inst/Core/Programs/Plink2/plink2.exe
+s_ref_loc_final	C:/DATA_STORAGE/Projects/PRS-multi-trait/Package/PRSMultiTrait/inst/Core/Reference/gbr_hapmap/gbr.hapmap
+s_ref_out_name	gbr.hapmap
+s_ROOT_current_folder_name	Internal_files
+s_ROOT_dir	C:/DATA_STORAGE/Projects/PRS-multi-trait/Package/PRSMultiTrait/inst/Core/
+s_seed	42
+
+VERSION:
+platform	x86_64-w64-mingw32
+arch	x86_64
+os	mingw32
+system	x86_64, mingw32
+status	
+major	4
+minor	1.0
+year	2021
+month	05
+day	18
+svn rev	80317
+language	R
+version.string	R version 4.1.0 (2021-05-18)
+nickname	Camp Pontanezen
+
+SYSTEM INFO:
+sysname	Windows
+release	10 x64
+version	build 19045
+nodename	FHMLNP-WKS114
+machine	x86-64
+login	P70072451
+user	P70072451
+effective_user	P70072451
+
+BASE PACKAGES:
+stats
+graphics
+grDevices
+utils
+datasets
+methods
+base
+
+OTHER PACKAGES:
+PRSMultiTrait
