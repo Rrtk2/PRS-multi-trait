@@ -2,10 +2,17 @@
 #' @return This function will return all the generated PGSs that were ran on a specific cohort, it will automatically load all and prompt a dataframe with PGS as columns and samples as rows.
 #' @examples all_PGS = collect_all_PRS(cohort = "examplecohort")
 #' @export
-collect_all_PRS = function (cohort = NA){
+collect_all_PRS = function (cohort = NA, Model = "bayesr", Trait = NA){
 	# check if cohort exists; im assuming writign the correct name is not a problem, cause i dont check
 	if(is.na(cohort)){
 		return(warning("Cohort name is NA"))
+	}
+	
+	# check: if model is any of the available ones
+	possiblemodels = c("lasso","lasso-sparse", "ridge", "bolt", "bayesr", "bayesr-shrink") # 
+	if(!Model%in%possiblemodels){
+		warning("\n\nEntered model('",Model,"') does not match any of the possible models supported!","\n","  Options:\n    - ",paste0(possiblemodels,collapse = "\n    - "),"\n\n")
+		return(message("predPRS failed (Model)!\n"))	
 	}
 	
 	# find root
@@ -15,8 +22,12 @@ collect_all_PRS = function (cohort = NA){
 	all_files = list.files(Predictroot)
 	
 
-	# Get all profiles
-	select_files = grep(all_files ,pattern = paste0("(",cohort,")(?=.*profile$)"),perl = TRUE) # magic of regex; searches A: the cohort name and B: any file with A ending on ".profile"
+	# if no trait is specified do get all traits, else the specific one
+	if(is.na(Trait)){
+		select_files = grep(all_files ,pattern = paste0("(",cohort,")(?=.*",Model,"*)(?=.*profile$)"),perl = TRUE) # magic of regex; searches A: the cohort name and B: model and C:any file with A and B ending on ".profile"
+	}else{
+		select_files = grep(all_files ,pattern = paste0("(",cohort,")(?=.*",Trait,"*)(?=.*",Model,"*)(?=.*profile$)"),perl = TRUE)
+	}
 	#@RRR fix grep name chort not FULLY CMPLETE MATCh
 
 	# make into 1 object
