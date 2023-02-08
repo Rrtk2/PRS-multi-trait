@@ -135,7 +135,7 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 			return(message("Column ",paste0(requiredcols[!coltest],collapse = " & ")," is missing in GWAS file."))
 		}
 	
-		if(temp_manifest$short%in%listofStandardizedGWASes){
+		#if(temp_manifest$short%in%listofStandardizedGWASes){
 			cat("(prepareGWAS.R)    Using standardized CONT GWAS processing\n")
 			temp_gwas = data.frame(Predictor=paste0(temp_gwas$CHR,":",temp_gwas$BP),
 						A1=toupper(temp_gwas$A1),
@@ -143,11 +143,11 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 						n=temp_gwas$N,
 						Direction=sign(temp_gwas$BETA),
 						P=temp_gwas$P)
-		}else{
-			message("Trait('",trait,"') not supported yet!")
-			message("  Options:\n    - ",paste0(listofStandardizedGWASes,collapse = "\n    - "))
-			return(message("Preparing GWAS into standardized format aborted."))
-		}
+		#}else{
+		#	message("Trait('",trait,"') not supported yet!")
+		#	message("  Options:\n    - ",paste0(listofStandardizedGWASes,collapse = "\n    - "))
+		#	return(message("Preparing GWAS into standardized format aborted."))
+		#}
 	}
 	
 	
@@ -164,7 +164,7 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 			return(message("Column ",paste0(requiredcols[!coltest],collapse = " & ")," is missing in GWAS file."))
 		}
 		
-		if(temp_manifest$short%in%listofStandardizedGWASes){
+		#if(temp_manifest$short%in%listofStandardizedGWASes){
 			cat("(prepareGWAS.R)    Using standardized CAT GWAS processing\n")
 			temp_gwas = data.frame(Predictor=paste0(temp_gwas$CHR,":",temp_gwas$BP),
 						A1=toupper(temp_gwas$A1),
@@ -172,11 +172,11 @@ prepareGWAS = function(trait = "UniqueTraitName"){
 						n=temp_gwas$N,
 						Direction=sign((temp_gwas$OR-1)), #@RRR Check if this is correct; should be! OR is centered around 1.
 						P=temp_gwas$P)
-		}else{
-			message("Trait('",trait,"') not supported yet!")
-			message("  Options:\n    - ",paste0(listofStandardizedGWASes,collapse = "\n    - "))
-			return(message("Preparing GWAS into standardized format aborted."))
-		}
+		#}else{
+		#	message("Trait('",trait,"') not supported yet!")
+		#	message("  Options:\n    - ",paste0(listofStandardizedGWASes,collapse = "\n    - "))
+		#	return(message("Preparing GWAS into standardized format aborted."))
+		#}
 	}
 	
 	
