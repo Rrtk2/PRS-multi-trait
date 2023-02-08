@@ -18,9 +18,9 @@ calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	#							Startup
 	#-----------------------------------------------------------------------------------------------------#
 	time1 = as.numeric(Sys.time())
-	possiblemodels = c("bayesr") # @RRR need to add support for others!
+	possiblemodels = c("lasso","lasso-sparse", "ridge", "bolt", "bayesr", "bayesr-shrink") # 
 	
-	getManifest(1)
+	getManifest()
 	Trait_index = which(Manifest_env$Ref_gwas_manifest$short==Trait)
 	
 	#-----------------------------------------------------------------------------------------------------#
@@ -120,7 +120,7 @@ calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	#-----------------------------------------------------------------------------------------------------#
 	#							PRS calculation
 	#-----------------------------------------------------------------------------------------------------#
-	Settings_env$s_ref_loc_finalfile = "megabayesr"
+	#Settings_env$s_ref_loc_finalfile = "megabayesr"
 	#Model defaults "bayesr" # best in LDAK for now...
 
 	#system(paste0("wsl cd ",specifi_model_dir2," ; ",Settings_env$s_ldak," --sum-hers ",Settings_env$s_data_loc_ref2,"ldak.thin --tagfile ",Settings_env$s_data_loc_ref2,"ldak.thin.tagging --summary ",temp_summfile2," --matrix ",Settings_env$s_data_loc_ref2,"ldak.thin.matrix"," --check-sums NO"))
@@ -135,9 +135,9 @@ calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 		}
 
 	# construct prediction model
-	if(Model=="bayesr"){
-		endcode = system(paste0("wsl cd ",specifi_model_dir2,"; ",Settings_env$s_ldak,paste0(" --mega-prs ",Settings_env$s_ref_loc_finalfile," --model ",Model," --ind-hers ",Settings_env$s_data_loc_ref2,"gbr.hapmap.ind.hers.positive --summary ",temp_summfile2," --cors ",Settings_env$s_data_loc_ref2,"gbr.hapmap --cv-proportion .1 --check-high-LD NO --window-kb 1000 --allow-ambiguous NO --extract ",temp_summfile_pred2," --max-threads 8")))
-	}	# kb 1000
+	#if(Model=="bayesr"){
+	system(paste0("wsl cd ",specifi_model_dir2,"; ",Settings_env$s_ldak,paste0(" --mega-prs ",Model," --model ",Model," --ind-hers ",Settings_env$s_data_loc_ref2,"gbr.hapmap.ind.hers.positive --summary ",temp_summfile2," --cors ",Settings_env$s_data_loc_ref2,"gbr.hapmap --cv-proportion .1 --check-high-LD NO --window-kb 1000 --allow-ambiguous NO --extract ",temp_summfile_pred2," --max-threads 8")))
+	#}	# kb 1000
 	#@RRR check high-LD YES!? -> solve this
 	#@RRR chcek kb -> cm
 		# check: if failed construct prediction model
@@ -163,7 +163,7 @@ calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	file.remove(temp_summfile_pred)
 	
 	# Check the number of SNPs in final model
-	temp_model = data.table::fread(paste0(specifi_model_dir,"/",Settings_env$s_ref_loc_finalfile,".effects"),header = TRUE,sep = " ") # waaay faster now!
+	temp_model = data.table::fread(paste0(specifi_model_dir,"/",Model,".effects"),header = TRUE,sep = " ") # waaay faster now!
 		
 
 	# update manifest 
@@ -179,7 +179,7 @@ calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	{cat("\n\n#-----------------------------#\n")
 	cat("Completed\n")
 	cat(paste0("PRS model stored in:\n"))
-	cat(paste0(specifi_model_dir2,"/",Settings_env$s_ref_loc_finalfile,".effects","\n"))
+	cat(paste0(specifi_model_dir2,"/",Model,".effects","\n"))
 	cat(paste0("Took approx ", Manifest_env$Ref_gwas_manifest[Trait_index,"modelRunningTime"] , " minutes.\n"))
 	cat("#-----------------------------#\n")}
 
