@@ -172,7 +172,7 @@ calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	Manifest_env$Ref_gwas_manifest[Trait_index,"finalModelSNPs"] = dim(temp_model)[1]
 	Manifest_env$Ref_gwas_manifest[Trait_index,"modelRunningTime"] = round((time2-time1) / 60,0)
 	#@RRR add total effect
-	Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest # this needs to be pushed into .globalenv
+	#Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest # this needs to be pushed into .globalenv
 	rm(temp_model)
 	saveManifest()
 	
