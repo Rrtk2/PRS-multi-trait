@@ -61,5 +61,5 @@ modifyGWASinManifest = function(short=c("UniqueTraitName"),
 		
 		# Save manifest
 		saveManifest()
-		getManifest(1)
+		getManifest(0)
 }
