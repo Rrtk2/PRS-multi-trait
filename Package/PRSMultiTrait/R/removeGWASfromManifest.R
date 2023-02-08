@@ -31,7 +31,7 @@ removeGWASfromManifest = function(
 					
 		# Inplement data
 		Manifest_env$Ref_gwas_manifest = Manifest_env$Ref_gwas_manifest[!Manifest_env$Ref_gwas_manifest$short%in%trait,]
-		Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest
+		#Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest
 		
 		# Save manifest
 		saveManifest()

@@ -57,7 +57,7 @@ modifyGWASinManifest = function(short=c("UniqueTraitName"),
 					
 		# Inplement data
 		Manifest_env$Ref_gwas_manifest[Manifest_env$Ref_gwas_manifest$short%in%short,] = temp_man
-		Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest
+		#Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest
 		
 		# Save manifest
 		saveManifest()

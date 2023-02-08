@@ -58,8 +58,8 @@ addGWAStoManifest = function(
 			
 		# Inplement data
 		Manifest_env$Ref_gwas_manifest[dim(Manifest_env$Ref_gwas_manifest)[1]+1,] = temp_man
-		Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest
-		
+		#Manifest_env$Ref_gwas_manifest <<- Manifest_env$Ref_gwas_manifest
+
 		# Save manifest
 		saveManifest()
 		getManifest(1)
