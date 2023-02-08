@@ -15,6 +15,15 @@ collect_all_PRS = function (cohort = NA, Model = "bayesr", Trait = NA){
 		return(message("predPRS failed (Model)!\n"))	
 	}
 	
+	# check if trait exists
+	if(!is.na(Trait)){
+		if(sum(Manifest_env$Ref_gwas_manifest$short%in%trait) == 0){
+			message("Trait('",trait,"') not found!")
+			message("  Options:\n    - ",paste0(Manifest_env$Ref_gwas_manifest$short,collapse = "\n    - "))
+			return(message("Preparing GWAS into standardized format aborted."))
+		}
+	}
+	
 	# find root
 	Predictroot = paste0(Settings_env$s_ROOT_dir,Settings_env$s_ROOT_current_folder_name,"/Predict/")
 
