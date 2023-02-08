@@ -2,7 +2,7 @@
 #' @return This fucntion will run the calculation of the PGS of the given GWAS, it will automatically save these PGS which can be extracted with collect_all_PRS(). Make sure the bfiles are using a chr:bp ids and are using wsl-pathing notation in the fucntion.
 #' @examples predPRS(bfile = wslpath("C:/path/to/examplecohort"), Trait = "Height")
 #' @export
-predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALSE){
+predPRS = function(bfile = NA, Trait = NA, Model = "bayesr",OverlapSNPsOnly=FALSE, Force = FALSE){
 	#-----------------------------------------------------------------------------------------------------#
 	#							Note
 	#-----------------------------------------------------------------------------------------------------#
@@ -16,7 +16,7 @@ predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALSE)
 	#							Startup
 	#-----------------------------------------------------------------------------------------------------#
 	# first get the manifest and check processed 	
-	getManifest(1)
+	getManifest(0)
 	
 	Trait_index = which(Manifest_env$Ref_gwas_manifest$short==Trait)
 	
@@ -25,6 +25,14 @@ predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALSE)
 		#warning("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    -",paste0(Manifest_env$Ref_gwas_manifest$short,collapse = "\n    -"),"\n\n")
 		return(message(paste0("\n\nEntered trait('",Trait,"') does not match any of the existing traits in manifest!","\n","  Options:\n    -",paste0(Manifest_env$Ref_gwas_manifest$short,collapse = "\n    -"),"\n\n","predPRS failed!\n")))
 	}
+	
+	# check: if model is any of the available ones
+	possiblemodels = c("lasso","lasso-sparse", "ridge", "bolt", "bayesr", "bayesr-shrink") # 
+	if(!Model%in%possiblemodels){
+		warning("\n\nEntered model('",Model,"') does not match any of the possible models supported!","\n","  Options:\n    - ",paste0(possiblemodels,collapse = "\n    - "),"\n\n")
+		return(message("predPRS failed (Model)!\n"))	
+	}
+	
 	
 	# check: if bfile contains BP:CHR IDS
 	testedNotation = system(paste0("wsl awk 'NR==1{print $2}' ",bfile,".bim"), intern = TRUE)
@@ -37,6 +45,7 @@ predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALSE)
 	cat(paste0("Trait: ",Trait,"\n" ))
 	cat(paste0("Calculation of PRS scores of: ",Manifest_env$Ref_gwas_manifest[Trait_index,"short"]," \n"))
 	cat(paste0("Data: ",gsub(bfile,pattern = "^.*./",replacement = ""), "\n"))
+	cat(paste0("Model: ",Model, "\n"))
 	cat("#-----------------------------------#\n\n\n")}
 	temp_data_name = gsub(bfile,pattern = "^.*./",replacement = "")
 	temp_manifest = Manifest_env$Ref_gwas_manifest[Trait_index,]
@@ -49,14 +58,39 @@ predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALSE)
 	model_dir = paste0(Settings_env$s_ROOT_dir,Settings_env$s_out_folder,"DATA/models/")
 	specifi_model_dir = paste0(model_dir,temp_manifest$short)
 	specifi_model_dir2 = wslPath(specifi_model_dir)
-
-
-
-	#-----------------------------------------------------------------------------------------------------#
-	#							Main algorithm
-	#-----------------------------------------------------------------------------------------------------#
-	temp_outfile = paste0(Settings_env$s_ROOT_dir,Settings_env$s_out_folder,"Predict/",temp_data_name,"_",temp_manifest$short)
+	temp_outfile = paste0(Settings_env$s_ROOT_dir,Settings_env$s_out_folder,"Predict/",temp_data_name,"_",temp_manifest$short,"_",Model)
 	temp_outfile2 = wslPath(temp_outfile)
+	
+	
+	#-----------------------------------------------------------------------------------------------------#
+	#							State power check
+	#-----------------------------------------------------------------------------------------------------#
+	# Get data snps 
+	a = windowsPath(paste0(bfile,".bim"))
+	b = data.frame(data.table::fread(a,header = FALSE,sep = "\t")) # waaay faster now!
+	All_data_snps = b[,"V2"]
+	rm(b)
+	#All_data_snps
+	
+	#paste0(specifi_model_dir,"/",Model,".effects")
+	
+	profile = read.table(paste0(specifi_model_dir,"/",Model,".effects"),header = TRUE,sep = " ")
+	prp = table(!profile$Predictor%in%All_data_snps)
+	missing_effect = sum(abs(profile[!profile$Predictor%in%All_data_snps,5])) 
+	total_effect = sum(abs(profile[,5]))
+	
+	# chcek if SNPs lost are collectively important enough to stop the predicion
+	cat(paste0("\n\nProp. SNPS found = ",as.numeric(round(prp["FALSE"]/sum(prp)*100,1)),"% (",as.numeric(prp["TRUE"])," SNPs missing)\n"))
+	cat(paste0("Missing SNPs effect totals ",round(missing_effect,1)," out of ",round(total_effect,1),", this is ",round((missing_effect/total_effect)*100,1),"% of the total effect!\n\n"))
+	
+	if(round((missing_effect/total_effect)*100,1)>5){
+		warning(paste0("\n\nData does not contain all essential SNPs to make a reliable PGS score!\nData missingness results in a ",round((missing_effect/total_effect)*100,1),"% loss of effect, which is greater than 5%!\n\n"))
+		
+		if(!OverlapSNPsOnly){
+			return(message("predPRS failed due to missing essential SNPs!\n"))
+		}
+	}
+
 
 	#-----------------------------------------------------------------------------------------------------#
 	#							Make TEMP effects file
@@ -65,23 +99,23 @@ predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALSE)
 	# redoes the PGS based on available SNPs
 	if(OverlapSNPsOnly){
 		cat(paste0("\n\nOnly selecting SNPs that overlap in data AND model. Can lead to lower predictive power!\n"))
-		# Get data snps 
-		a = windowsPath(paste0(bfile,".bim"))
-		b = data.frame(data.table::fread(a,header = FALSE,sep = "\t")) # waaay faster now!
-		All_data_snps = b[,"V2"]
-		rm(b)
-		#All_data_snps
-		
-		#paste0(specifi_model_dir,"/megabayesr.effects")
-		
-		profile = read.table(paste0(specifi_model_dir,"/megabayesr.effects"),header = TRUE,sep = " ")
-		prp = table(!profile$Predictor%in%All_data_snps)
-		missing_effect = sum(abs(profile[!profile$Predictor%in%All_data_snps,5])) 
-		total_effect = sum(abs(profile[,5]))
-		
-		# chcek if SNPs lost are collectively important enough to stop the predicion
-		cat(paste0("\n\nProp. SNPS found = ",as.numeric(round(prp["FALSE"]/sum(prp)*100,1)),"% (",as.numeric(prp["TRUE"])," SNPs missing)\n"))
-		cat(paste0("Missing SNPs effect totals ",round(missing_effect,1)," out of ",round(total_effect,1),", this is ",round((missing_effect/total_effect)*100,1),"% of the total effect!\n\n"))
+		## Get data snps 
+		#a = windowsPath(paste0(bfile,".bim"))
+		#b = data.frame(data.table::fread(a,header = FALSE,sep = "\t")) # waaay faster now!
+		#All_data_snps = b[,"V2"]
+		#rm(b)
+		##All_data_snps
+		#
+		##paste0(specifi_model_dir,"/",Model,".effects")
+		#
+		#profile = read.table(paste0(specifi_model_dir,"/",Model,".effects"),header = TRUE,sep = " ")
+		#prp = table(!profile$Predictor%in%All_data_snps)
+		#missing_effect = sum(abs(profile[!profile$Predictor%in%All_data_snps,5])) 
+		#total_effect = sum(abs(profile[,5]))
+		#
+		## chcek if SNPs lost are collectively important enough to stop the predicion
+		#cat(paste0("\n\nProp. SNPS found = ",as.numeric(round(prp["FALSE"]/sum(prp)*100,1)),"% (",as.numeric(prp["TRUE"])," SNPs missing)\n"))
+		#cat(paste0("Missing SNPs effect totals ",round(missing_effect,1)," out of ",round(total_effect,1),", this is ",round((missing_effect/total_effect)*100,1),"% of the total effect!\n\n"))
 		if(round((missing_effect/total_effect)*100,1)>5){
 			warning(paste0("\n\nData does not contain all essential SNPs to make a reliable PGS score!\nData missingness results in a ",round((missing_effect/total_effect)*100,1),"% loss of effect, which is greater than 5%!\n\n"))
 			
@@ -113,18 +147,18 @@ predPRS = function(bfile = NA, Trait = NA, OverlapSNPsOnly=FALSE, Force = FALSE)
 		
 		# SElect all SNPs from PGS model overlapping with data	 		
 		profile = profile[profile$Predictor%in%All_data_snps,]
-		write.table(profile,file=paste0(specifi_model_dir,"/megabayesr.effecttemp"),sep = " ",quote=FALSE,row.names = F)
+		write.table(profile,file=paste0(specifi_model_dir,"/",Model,".effecttemp"),sep = " ",quote=FALSE,row.names = F)
 		
 		#get evaluation/ prs
-		endcode = system(paste0("wsl cd ",specifi_model_dir2," ; ",Settings_env$s_ldak," --calc-scores ",temp_outfile2," --bfile ",bfile," --scorefile ",paste0(specifi_model_dir2,"/megabayesr.effecttemp")," --power 0"))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" centered--max-threads 8
+		endcode = system(paste0("wsl cd ",specifi_model_dir2," ; ",Settings_env$s_ldak," --calc-scores ",temp_outfile2," --bfile ",bfile," --scorefile ",paste0(specifi_model_dir2,"/",Model,".effecttemp")," --power 0"))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" centered--max-threads 8
 		
 		# remove temp
-		file.remove(paste0(specifi_model_dir,"/megabayesr.effecttemp"))
+		file.remove(paste0(specifi_model_dir,"/",Model,".effecttemp"))
 		
 	}else{
 	
 		#get evaluation / prs
-		endcode = system(paste0("wsl cd ",specifi_model_dir2," ; ",Settings_env$s_ldak," --calc-scores ",temp_outfile2," --bfile ",bfile," --scorefile ",paste0(specifi_model_dir2,"/megabayesr.effects")," --power 0 "))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" centered-allow-multi NO
+		endcode = system(paste0("wsl cd ",specifi_model_dir2," ; ",Settings_env$s_ldak," --calc-scores ",temp_outfile2," --bfile ",bfile," --scorefile ",paste0(specifi_model_dir2,"/",Model,".effects")," --power 0 "))#--pheno quant.pheno @RRR this needs to be included in the end. now im testing with samples that do not have the phenotype; PRS should be "0" centered-allow-multi NO
 	}
  
 	# check: if error
