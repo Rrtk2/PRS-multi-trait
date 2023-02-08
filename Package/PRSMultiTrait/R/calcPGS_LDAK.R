@@ -18,7 +18,7 @@ calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	#							Startup
 	#-----------------------------------------------------------------------------------------------------#
 	time1 = as.numeric(Sys.time())
-	possiblemodels = c("lasso","lasso-sparse", "ridge", "bolt", "bayesr", "bayesr-shrink") # 
+	
 	
 	getManifest()
 	Trait_index = which(Manifest_env$Ref_gwas_manifest$short==Trait)
@@ -34,7 +34,7 @@ calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){
 	}
 	
 	# check: if model is any of the available ones
-	
+	possiblemodels = c("lasso","lasso-sparse", "ridge", "bolt", "bayesr", "bayesr-shrink") # 
 	if(!Model%in%possiblemodels){
 		warning("\n\nEntered model('",Model,"') does not match any of the possible models supported!","\n","  Options:\n    - ",paste0(possiblemodels,collapse = "\n    - "),"\n\n")
 		return(message("calcPGS failed (Model)!\n"))	
