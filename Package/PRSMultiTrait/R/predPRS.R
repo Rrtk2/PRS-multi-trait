@@ -2,7 +2,7 @@
 #' @return This fucntion will run the calculation of the PGS of the given GWAS, it will automatically save these PGS which can be extracted with collect_all_PRS(). Make sure the bfiles are using a chr:bp ids and are using wsl-pathing notation in the fucntion.
 #' @examples predPRS(bfile = wslpath("C:/path/to/examplecohort"), Trait = "Height")
 #' @export
-predPRS = function(bfile = NA, Trait = NA, Model = "bayesr",OverlapSNPsOnly=FALSE, Force = FALSE){
+predPRS = function(bfile = NA, Trait = NA, Model = "bayesr", OverlapSNPsOnly=FALSE, Force = FALSE){
 	#-----------------------------------------------------------------------------------------------------#
 	#							Note
 	#-----------------------------------------------------------------------------------------------------#
