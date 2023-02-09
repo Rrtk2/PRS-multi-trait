@@ -27,6 +27,241 @@ ui <- tagList(
     
     navbarPage(title = "I PRS Multi-Trait", id = "navbar",
                
+			   ###################################################################
+               #  prepareGWAS                                                  
+               ###################################################################
+				tabPanel(
+					"Prepare GWAS", 
+					value = "GWAS_panel", 
+					icon = icon("fas fa-home"), 
+					class = "my_style_1",
+
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					
+					fluidRow(
+                          
+                          column(4, offset = 4, 
+                                 align = "center", 
+                                 style = "background-color:#FFFFFF;",
+                                 
+                                 br(),
+                                 
+                                 h1(strong(span(style = "color:#000000", "Prepare GWAS!"))),
+                                 
+                                 h2(span(style = "color:#FF0000", "This page should be hidden in some menu.")),
+                                 br(),
+                                 
+                                 
+                                 
+                                 br(),
+                                 br()
+                          )
+                        ),
+					
+					fluidRow(
+
+						column(
+							4, 
+							offset = 4, 
+							align = "center", 
+							style = "background-color:#FFFFFF;",
+
+							#Start the analysis
+							actionBttn(
+								inputId = "startGWASprep",
+								label = "Start",
+								style = "jelly",
+								color = "danger",
+								icon = icon("arrow-right")
+							),
+
+
+
+							br(),
+							br(),
+
+						)
+					),
+
+					fluidRow(
+						column(4, 
+							offset = 4, 
+							align = "center",
+							style = "background-color:#FFFFFF;",
+
+							br(),
+																   
+							awesomeCheckbox(
+								inputId = "GWAS_traits_input",
+								label = "Select all GWAS traits to be prepared",
+								value = TRUE,
+								status = "danger"
+							),
+
+							conditionalPanel(
+								condition = "input.GWAS_traits_input==false",
+
+								selectInput(
+									inputId = "GWAS_traits_input_dropdown",
+									label = "Select GWASes to be prepared",
+									choices = Traits,
+									multiple = TRUE
+								),
+							),
+
+						)
+
+					),
+
+
+
+
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br(),
+					br()
+
+											
+
+				), # End prepareGWAS
+               
+			    ###################################################################
+               #  Generate PGM                                                   
+               ###################################################################
+               tabPanel("Generate PGM", 
+                        value = "PGM_panel", 
+                        icon = icon("fas fa-home"), class = "my_style_1",
+                        
+                       
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        
+                        fluidRow(
+                          
+                          column(4, offset = 4, 
+                                 align = "center", 
+                                 style = "background-color:#FFFFFF;",
+                                 
+                                 br(),
+                                 
+                                 h1(strong(span(style = "color:#000000", "Generate PGM"))),
+                                 h2(span(style = "color:#FF0000", "This page should be hidden in some menu.")),
+                              
+                                 
+                                 br(),
+                                 
+
+                                 br(),
+                                 br()
+                          )
+                        ),
+                        
+                        
+                        fluidRow(
+                          
+                          column(4, offset = 4, 
+                                 align = "center", 
+                                 style = "background-color:#FFFFFF;",
+                                 
+                              
+                                 #Start the analysis
+                                 actionBttn(inputId = "startPGM",
+                                            label = "Start",
+                                            style = "jelly",
+                                            color = "danger",
+                                            icon = icon("arrow-right")),
+                                 
+                                 
+                                 
+                                 br(),
+                                 br(),
+                                 
+                          )
+                        ),
+                        
+                        fluidRow(
+                          column(4, offset = 4, align = "center",
+                                 style = "background-color:#FFFFFF;",
+                                 
+                                 br(),
+                                                                   
+                                   selectInput(inputId = "PGM_traits_input",
+                                               label = "Select traits to calculate PGM for",
+                                               choices = Traits,
+                                               multiple = TRUE),
+                                 
+                          )
+                          
+                        ),
+						
+						fluidRow(
+                          column(4, offset = 4, align = "center",
+                                 style = "background-color:#FFFFFF;",
+                                 
+                                 br(),
+                                 awesomeCheckbox(inputId = "PGM_all_models",
+                                                 label = "Calculate PGM using all models",
+                                                 value = TRUE,
+                                                 status = "danger"),
+                                 
+                                 conditionalPanel(
+                                   condition = "input.PGM_all_models==false",
+                                   
+                                   selectInput(inputId = "PGM_models_input",
+                                               label = "Select models",
+                                               choices = Models,
+                                               multiple = TRUE),
+                                 )
+                          )
+                          
+                        ),
+						
+                       
+                    
+                        
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br()
+                        
+                        
+                       
+                        
+               ), # end Generate PGM 
+               
                ###################################################################
                #  Data selection                                                   
                ###################################################################
@@ -35,9 +270,7 @@ ui <- tagList(
                         icon = icon("fas fa-home"), class = "my_style_1",
                         
                         
-                        #********************************************************#
-                        #   Data selection
-                        #********************************************************#
+
                         br(),
                         br(),
                         br(),
@@ -198,12 +431,9 @@ ui <- tagList(
                         
                         #********************************************************#
                         
-               ),
-               
-               
-               
-               
-               
+               ), #Data selection
+			   
+			   
                ###################################################################
                #  Outputs
                ###################################################################
@@ -283,7 +513,7 @@ ui <- tagList(
                                      
                                      
                         )
-               )
+               ) # outputs
     ) #navbarpage
   ) # fluidpage
 ) # taglist

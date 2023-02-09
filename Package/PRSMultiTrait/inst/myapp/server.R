@@ -441,7 +441,127 @@ server <- function(input, output, session){
       
     })
     
-  }) #observeEvent
+  }) #end observeEvent startAnalysis
   
+	#-----------------------------------------------------------------------------------------------------#
+	#							startGWASprep
+	#-----------------------------------------------------------------------------------------------------#
+
+	observeEvent(input$startGWASprep, {
+   
+		# Select PGM
+		GWAS_selected <- eventReactive(input$startGWASprep,{
+			if(input$GWAS_traits_input == TRUE){
+				GWAS_selected <- input$Trait #@RRR check
+			}else{
+				GWAS_selected <- input$GWAS_traits_input_dropdown
+			}
+			return(GWAS_selected)
+		})
+		
+		if(length(GWAS_selected())){
+			# Pop busy message
+			showModal(modalDialog(title = h4(strong("Preparing GWAS(es)..."),
+				align = "center"), 
+				footer = NULL,
+				h5("This might take a while. Please be patient.", 
+				align = "center")))
+				
+			# prepare GWASes
+			for (g in GWAS_selected()){
+				prepareGWAS(trait = g)
+				#cat("\n\nTEST FLAG 1\n\n")
+				
+			}
+			
+			## PGMs
+			#for (p in GWAS_selected()){
+			#	PRSMultiTrait::calcPGS_LDAK(Trait = p, Model = "bayesr")
+			#	#cat("\n\nTEST FLAG 2\n\n")
+			#}
+			
+			# remove old message
+			removeModal()
+
+			# Pop Success message
+			sendSweetAlert(
+			session = session,
+			title = "Success!",
+			text = "GWAS successfully procesed!",
+			type = "success")
+			
+		}else{
+		
+			sendSweetAlert(
+			session = session,
+			title = "Hold on",
+			text = "Select a trait first",
+			type = "info")
+		}
+		
+	
+	}) #end observeEvent startGWASprep
+	
+	#-----------------------------------------------------------------------------------------------------#
+	#							startPGM
+	#-----------------------------------------------------------------------------------------------------#
+
+	observeEvent(input$startPGM, {
+   
+		# Select PGM
+		eventresult <- eventReactive(input$startPGM,{
+			PGM_selected <- input$PGM_traits_input
+
+			if (input$PGM_all_models == TRUE){
+				models_selected <- Models
+			}else{
+				models_selected <- input$PGM_models_input
+			}
+			eventresult	 = list("PGM_selected" = PGM_selected, "models_selected" = models_selected)
+			return(eventresult)
+		})
+		
+		
+		PGM_selected = eventresult()[["PGM_selected"]]
+		models_selected = eventresult()[["models_selected"]]
+		
+		if(length(eventresult()[["PGM_selected"]])){
+			# Pop busy message
+			showModal(modalDialog(title = h4(strong("Calculating PGM..."),
+				align = "center"), 
+				footer = NULL,
+				h5("This might take a while. Please be patient.", 
+				align = "center")))
+				
+			
+			# PGMs
+			for (m in models_selected){
+				for (p in PGM_selected){
+					PRSMultiTrait::calcPGS_LDAK(Trait = p, Model = m)
+				#cat("\n\nTEST FLAG 2\n\n")
+				}
+			}
+			
+			# remove old message
+			removeModal()
+
+			# Pop Success message
+			sendSweetAlert(
+			session = session,
+			title = "Success!",
+			text = "PGM successfully generated!",
+			type = "success")
+			
+		}else{
+		
+			sendSweetAlert(
+			session = session,
+			title = "Hold on",
+			text = "Select a trait first",
+			type = "info")
+		}
+		
+	
+	}) #end observeEvent startPGM
 }
 
