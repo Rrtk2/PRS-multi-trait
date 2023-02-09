@@ -39,7 +39,7 @@ PRSMultiTrait::checkDataIDs("path/to/b-files.bim")
 
 To run the shiny app to have a user-friendly interface
 ```
-PRSMultiTrait::runApp()
+PRSMultiTrait::runPGSApp()
 ```
 
 ---
