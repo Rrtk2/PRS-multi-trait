@@ -91,7 +91,7 @@ server <- function(input, output, session){
       filename = "PRS_results.csv",
       content = function(file){
         #write.csv(PRS_result(), file)
-		write.table(PRS_result(),file,col.names = TRUE,row.names = TRUE,sep = ",",quote = FALSE)
+		write.table(PRS_result(),file,col.names = NA,row.names = TRUE,sep = ",",quote = FALSE)
       }
     )
 	
@@ -100,7 +100,7 @@ server <- function(input, output, session){
       filename = "PRS_results.tsv",
       content = function(file){
         #write.csv(PRS_result(), file)
-		write.table(PRS_result(),file,col.names = TRUE,row.names = TRUE,sep = "\t",quote = FALSE)
+		write.table(PRS_result(),file,col.names = NA,row.names = TRUE,sep = "\t",quote = FALSE)
       }
     )
     
@@ -329,7 +329,7 @@ server <- function(input, output, session){
       filename = "PRS_results.csv",
       content = function(file){
         #write.csv(PRS_result(), file)
-		write.table(PRS_result(),file,col.names = TRUE,row.names = TRUE,sep = ",",quote = FALSE)
+		write.table(PRS_result(),file,col.names = NA,row.names = TRUE,sep = ",",quote = FALSE)
       }
     )
 	
@@ -338,7 +338,7 @@ server <- function(input, output, session){
       filename = "PRS_results.tsv",
       content = function(file){
         #write.csv(PRS_result(), file)
-		write.table(PRS_result(),file,col.names = TRUE,row.names = TRUE,sep = "\t",quote = FALSE)
+		write.table(PRS_result(),file,col.names = NA,row.names = TRUE,sep = "\t",quote = FALSE)
       }
     )
 
