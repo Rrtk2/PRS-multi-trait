@@ -288,7 +288,7 @@ server <- function(input, output, session){
 		df_list = list()
 		for (t in traits_selected()){
 			for (m in models_selected()){
-				df_list[[i]] <-  collect_all_PRS(cohort = cohortName(),Trait = t, Model = m)
+				df_list[[length(df_list)+1]] <-  collect_all_PRS(cohort = cohortName(),Trait = t, Model = m)
 			}
 		}
 		PRS_result <- do.call(rbind, df_list)
