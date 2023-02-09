@@ -121,6 +121,28 @@ ui <- tagList(
                           )
                           
                         ),
+						
+						 fluidRow(
+                          column(4, offset = 4, align = "center",
+                                 style = "background-color:#FFFFFF;",
+                                 
+                                 br(),
+                                 awesomeCheckbox(inputId = "all_models",
+                                                 label = "Calculate PRS using default model (bayesr)",
+                                                 value = TRUE,
+                                                 status = "danger"),
+                                 
+                                 conditionalPanel(
+                                   condition = "input.all_models==false",
+                                   
+                                   selectInput(inputId = "models_input",
+                                               label = "Select models",
+                                               choices = Models,
+                                               multiple = TRUE),
+                                 )
+                          )
+                          
+                        ),
                         
                         fluidRow(
                           column(4, offset = 4, align = "center",

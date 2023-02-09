@@ -14,5 +14,5 @@ library("PRSMultiTrait")
 # Get manifest
 getManifest()
 Traits <- Manifest_env$Ref_gwas_manifest$short
-
+Models <- c("lasso","lasso-sparse", "ridge", "bolt", "bayesr", "bayesr-shrink")
 

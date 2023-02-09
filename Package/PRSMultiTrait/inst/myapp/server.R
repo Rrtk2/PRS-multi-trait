@@ -23,7 +23,7 @@ server <- function(input, output, session){
   
   volumes = getVolumes()
   observe({
-    shinyFileChoose(input, "bfile", roots = volumes, session = session)
+    shinyFileChoose(input, "bfile", roots = volumes, session = session, filetypes = c("bim"),)
   })
   
   
@@ -226,10 +226,23 @@ server <- function(input, output, session){
       
       return(traits_selected)
     })
+	
+	# Select Models
+    models_selected <- eventReactive(input$startAnalysis,{
+      if (input$all_models == TRUE){
+        models_selected <- "bayesr" # defaults to bayesr
+      }
+      if (input$all_models == FALSE){
+        models_selected <- input$models_input
+      }
+      
+      return(models_selected)
+    })
     
     # Path to data
     path <- reactive({
       req(traits_selected())
+	  req(models_selected())
       req(bfile())
       path <- str_remove(bfile(), ".bed")
       path <- str_remove(path, ".bim")
@@ -251,14 +264,25 @@ server <- function(input, output, session){
       req(traits_selected())
       req(path())
       
-      for (t in traits_selected()){
-        predPRS(bfile = wslPath(path()), 
-                Trait = t, 
-                OverlapSNPsOnly=FALSE, 
-                Force = FALSE)
-      }
+	  for (t in traits_selected()){
+		  for (m in models_selected()){
+			predPRS(bfile = wslPath(path()), 
+					Trait = t,
+					Model = m,
+					OverlapSNPsOnly=TRUE, #@RRR need to have button for this
+					Force = TRUE)#@RRR and need to have button for this
+		  }
+	  }
       
-      PRS_result <-  collect_all_PRS(cohort = cohortName())
+		#@RRR this line below needs to be adjusted, or the function itself to bind all objects for the selected traits and models
+		df_list = list()
+		for (t in traits_selected()){
+			for (m in models_selected()){
+				df_list[[i]] <-  collect_all_PRS(cohort = cohortName(),Trait = t, Model = m)
+			}
+		}
+		PRS_result <- do.call(rbind, df_list)
+		
       removeModal()
       return(PRS_result)
     })
