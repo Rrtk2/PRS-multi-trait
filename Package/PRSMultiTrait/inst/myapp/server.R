@@ -90,7 +90,17 @@ server <- function(input, output, session){
     output$downloadPRS <- downloadHandler(
       filename = "PRS_results.csv",
       content = function(file){
-        write.csv(PRS_result(), file)
+        #write.csv(PRS_result(), file)
+		write.table(PRS_result(),file,col.names = TRUE,row.names = TRUE,sep = ",",quote = FALSE)
+      }
+    )
+	
+	#download table of meta data
+    output$downloadPRStsv <- downloadHandler(
+      filename = "PRS_results.tsv",
+      content = function(file){
+        #write.csv(PRS_result(), file)
+		write.table(PRS_result(),file,col.names = TRUE,row.names = TRUE,sep = "\t",quote = FALSE)
       }
     )
     
@@ -318,7 +328,17 @@ server <- function(input, output, session){
     output$downloadPRS <- downloadHandler(
       filename = "PRS_results.csv",
       content = function(file){
-        write.csv(PRS_result(), file)
+        #write.csv(PRS_result(), file)
+		write.table(PRS_result(),file,col.names = TRUE,row.names = TRUE,sep = ",",quote = FALSE)
+      }
+    )
+	
+	#download table of meta data
+    output$downloadPRStsv <- downloadHandler(
+      filename = "PRS_results.tsv",
+      content = function(file){
+        #write.csv(PRS_result(), file)
+		write.table(PRS_result(),file,col.names = TRUE,row.names = TRUE,sep = "\t",quote = FALSE)
       }
     )
 

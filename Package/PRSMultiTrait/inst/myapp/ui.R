@@ -217,7 +217,9 @@ ui <- tagList(
                                               hr(),
                                               dataTableOutput("PRS_table"),
                                               downloadButton("downloadPRS", 
-                                                             "Download Table")),
+                                                             "Download Table (csv)"),
+											  downloadButton("downloadPRStsv", 
+                                                             "Download Table (tsv)")),
                                      
                                      tabPanel("Heatmap", value = "PRS_heatmap",
                                               fluidRow(
