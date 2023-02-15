@@ -204,7 +204,6 @@ server <- function(input, output, session){
     })
   }) #observeEvent
   
-
   
   #****************************************************************************#
   # Start from PLINK files
@@ -291,7 +290,7 @@ server <- function(input, output, session){
 				df_list[[length(df_list)+1]] <-  collect_all_PRS(cohort = cohortName(),Trait = t, Model = m)
 			}
 		}
-		PRS_result <- do.call(rbind, df_list)
+		PRS_result <- do.call(cbind, df_list)
 		
       removeModal()
       return(PRS_result)

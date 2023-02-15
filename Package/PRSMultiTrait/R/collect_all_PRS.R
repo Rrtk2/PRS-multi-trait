@@ -30,15 +30,15 @@ collect_all_PRS = function (cohort = NA, Model = "bayesr", Trait = NA){
 	# find root
 	Predictroot = paste0(Settings_env$s_ROOT_dir,Settings_env$s_ROOT_current_folder_name,"/Predict/")
 
-	# find all files in predict folder
+	# find all files in predict folder, only .profile
 	all_files = list.files(Predictroot)
-	
+	all_files = all_files[grep(all_files,pattern = "\\.profile")]
 
 	# if no trait is specified do get all traits, else the specific one
 	if(is.na(Trait)){
-		select_files = grep(all_files ,pattern = paste0("(",cohort,")(?=.*",Model,"*)(?=.*profile$)"),perl = TRUE) # magic of regex; searches A: the cohort name and B: model and C:any file with A and B ending on ".profile"
+		select_files = grep(all_files ,pattern = paste0(cohort,"_.*._", Model, ".profile"),perl = TRUE) # magic of regex; searches A: the cohort name and B: model and C:any file with A and B ending on ".profile"
 	}else{
-		select_files = grep(all_files ,pattern = paste0("(",cohort,")(?=.*",Trait,"*)(?=.*",Model,"*)(?=.*profile$)"),perl = TRUE)
+		select_files = grep(all_files ,pattern = paste0(cohort,"_",Trait,"_", Model, ".profile"),perl = TRUE)
 	}
 	#@RRR fix grep name chort not FULLY CMPLETE MATCh
 
