@@ -12,6 +12,17 @@ predPRS(
   Force = FALSE
 )
 }
+\arguments{
+\item{bfile}{The path to the cohort without extension. (linux path is required, use wslPath(windows path) to convert), see example.}
+
+\item{Trait}{The GWAS trait of interest to predict PGS for.}
+
+\item{Model}{The used model to calculate the PGM}
+
+\item{OverlapSNPsOnly}{Set to TRUE to only use the SNPs that overlap between your cohort data and the underlying PGM. This causes a loss in effect as some SNPs are not used in the estimation of the PGS. Will keep working without errors untill a 5\% effect loss, then FORCE is needed to continue.}
+
+\item{Force}{Set to TRUE to force the operation to continue, even though its a bad idea due to high missingness!}
+}
 \value{
 This fucntion will run the calculation of the PGS of the given GWAS, it will automatically save these PGS which can be extracted with collect_all_PRS(). Make sure the bfiles are using a chr:bp ids and are using wsl-pathing notation in the fucntion.
 }

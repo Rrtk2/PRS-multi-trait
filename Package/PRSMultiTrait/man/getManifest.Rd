@@ -6,6 +6,9 @@
 \usage{
 getManifest(printManifest = FALSE)
 }
+\arguments{
+\item{printManifest}{Show (print) the manifest in the console.}
+}
 \value{
 This function is used internally a lot, to make sure the manifest file is leading at all times. It loads the manifest object in its manifest env. It can be prompted to be shown if printManifest is set to TRUE.
 }

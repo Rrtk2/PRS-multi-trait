@@ -6,6 +6,12 @@
 \usage{
 saveManifest()
 }
+\value{
+This function will save the manifest to its dedicated file / enviroment.
+}
 \description{
 saveManifest
+}
+\examples{
+saveManifest()
 }

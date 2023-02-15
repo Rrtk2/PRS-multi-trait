@@ -1,5 +1,8 @@
 #' collect_all_PRS
 #' @return This function will return all the generated PGSs that were ran on a specific cohort, it will automatically load all and prompt a dataframe with PGS as columns and samples as rows.
+#' @param cohort Enter the file name (not the path) of the cohort the polygenic scores need collecing for.
+#' @param Model Enter the model to collect the polygenic scores for specified trait.
+#' @param Trait Enter the unique GWAS trait ID of interest to collect the polygenic scores using specified model.
 #' @examples all_PGS = collect_all_PRS(cohort = "examplecohort")
 #' @export
 collect_all_PRS = function (cohort = NA, Model = "bayesr", Trait = NA){

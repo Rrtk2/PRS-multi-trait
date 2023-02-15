@@ -6,6 +6,11 @@
 \usage{
 calcPGS_LDAK(Trait = NA, Model = "bayesr")
 }
+\arguments{
+\item{Trait}{Enter the unique GWAS trait ID of interest to be used in modelling the PGM. Can be observed by getTraits().}
+
+\item{Model}{Enter the model to be used in modelling the PGM.}
+}
 \value{
 This function will perform the generation of the PGS model, of the given GWAS.
 }

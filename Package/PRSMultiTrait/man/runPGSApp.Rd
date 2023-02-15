@@ -6,6 +6,12 @@
 \usage{
 runPGSApp()
 }
+\value{
+This function will start the shiny interface to use this package. This way interacting with the package will be faster, more effecient, and less error-prone.
+}
 \description{
 runPGSApp
+}
+\examples{
+runPGSApp()
 }

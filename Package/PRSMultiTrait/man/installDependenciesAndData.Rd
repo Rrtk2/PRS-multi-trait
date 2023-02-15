@@ -7,7 +7,7 @@
 installDependenciesAndData()
 }
 \value{
-This function is essential in the workings for the PRSMultiTrait package, as it installs, checks, and sets everything up.
+This function is essential in the workings for the PRSMultiTrait package, as it installs, checks, and sets everything up. Takes a couple of minutes.
 }
 \description{
 installDependenciesAndData

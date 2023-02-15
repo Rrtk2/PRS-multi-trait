@@ -1,5 +1,7 @@
 #' calcPGS_LDAK
 #' @return This function will perform the generation of the PGS model, of the given GWAS.
+#' @param Trait Enter the unique GWAS trait ID of interest to be used in modelling the PGM. Can be observed by getTraits().
+#' @param Model Enter the model to be used in modelling the PGM.
 #' @examples calcPGS_LDAK(Trait = "Height",Model = "bayesr")
 #' @export
 calcPGS_LDAK = function(Trait = NA,Model = "bayesr"){

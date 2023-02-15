@@ -1,6 +1,7 @@
 #' wslPath
-#' @return
-#' @examples
+#' @return This function transforms a Windows path to Linux path
+#' @param localpath Insert a Windows path to be changed to a Linux path
+#' @examples wslPath(localpath = "C:/Users/Default/Downloads/Manifest.tsv")
 #' @export
 wslPath = function(localpath){
 	temp_drive = gsub(localpath,pattern = "/.*$",replacement = "")

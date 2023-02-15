@@ -1,5 +1,5 @@
 #' installDependenciesAndData
-#' @return This function is essential in the workings for the PRSMultiTrait package, as it installs, checks, and sets everything up. 
+#' @return This function is essential in the workings for the PRSMultiTrait package, as it installs, checks, and sets everything up. Takes a couple of minutes.
 #' @examples installDependenciesAndData()
 #' @export
 installDependenciesAndData = function(){

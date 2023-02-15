@@ -6,6 +6,13 @@
 \usage{
 collect_all_PRS(cohort = NA, Model = "bayesr", Trait = NA)
 }
+\arguments{
+\item{cohort}{Enter the file name (not the path) of the cohort the polygenic scores need collecing for.}
+
+\item{Model}{Enter the model to collect the polygenic scores for specified trait.}
+
+\item{Trait}{Enter the unique GWAS trait ID of interest to collect the polygenic scores using specified model.}
+}
 \value{
 This function will return all the generated PGSs that were ran on a specific cohort, it will automatically load all and prompt a dataframe with PGS as columns and samples as rows.
 }

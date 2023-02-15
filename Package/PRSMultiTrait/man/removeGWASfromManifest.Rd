@@ -6,6 +6,15 @@
 \usage{
 removeGWASfromManifest(trait = c("UniqueTraitName"), FORCE = FALSE)
 }
+\arguments{
+\item{short}{The unique ID for the GWAS trait to be removed.}
+}
+\value{
+Removes a line (row) from the manifest, based on the given ID.
+}
 \description{
 removeGWASfromManifest
+}
+\examples{
+removeGWASfromManifest(trait = "Height")
 }

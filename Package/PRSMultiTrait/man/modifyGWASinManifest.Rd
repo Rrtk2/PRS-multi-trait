@@ -21,6 +21,35 @@ modifyGWASinManifest(
   FORCE = FALSE
 )
 }
+\arguments{
+\item{short}{A unique ID for the GWAS trait.}
+
+\item{n}{The sample size here, can be a rough estimate. This is not functionally used, only for annotation.}
+
+\item{filename}{The exact location of the curated GWAS.summaries file. This character string is the file argument in data.table::fread.}
+
+\item{year}{The year of GWAS.}
+
+\item{trait}{A brief description on the GWAS trait, to further specify if traits are similar.}
+
+\item{DOI}{The persistent online link to always be able to trace back the GWAS.}
+
+\item{genomeBuild}{The genomeBuild used in the GWAS, usually hg37.}
+
+\item{traitType}{The type of GWAS trait. This can ONLY be "CAT" or "CONT", categorical or continuous.}
+
+\item{rawSNPs}{This is the amount of SNPs in the data to be used to model.}
+
+\item{finalModelSNPs}{This is the amount of SNPs that are used in the final model.}
+
+\item{modelRunningTime}{THis is the amount of time taken to train the model.}
+
+\item{usedRefSet}{Planned to be used when enabling diffent reference sets, no only UKBB.}
+
+\item{processed}{This is a variable indicaive of the processing steps taken in the workflow. 0 = new, 1 = QC, 2 is PGM.}
+
+\item{FORCE}{Set to TRUE if wanting to skip the verification step.}
+}
 \value{
 This function will alter an existing GWAS trait in the manifest. This is based on using the 'short' as a method to select which GWAS is needed to be changed, and any other non-NA argument is changed into its alteration.
 }

@@ -6,6 +6,15 @@
 \usage{
 wslPath(localpath)
 }
+\arguments{
+\item{localpath}{Insert a Windows path to be changed to a Linux path}
+}
+\value{
+This function transforms a Windows path to Linux path
+}
 \description{
 wslPath
+}
+\examples{
+wslPath(localpath = "C:/Users/Default/Downloads/Manifest.tsv")
 }

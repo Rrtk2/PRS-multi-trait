@@ -1,6 +1,7 @@
 #' removeGWASfromManifest
-#' @return
-#' @examples
+#' @return Removes a line (row) from the manifest, based on the given ID.
+#' @param short The unique ID for the GWAS trait to be removed.
+#' @examples removeGWASfromManifest(trait = "Height")
 #' @export
 # Remove a trait / GWAS
 removeGWASfromManifest = function(

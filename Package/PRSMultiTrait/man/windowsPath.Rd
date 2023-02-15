@@ -6,6 +6,15 @@
 \usage{
 windowsPath(localpath)
 }
+\arguments{
+\item{localpath}{Insert a linux path to be changed to a Windows path}
+}
+\value{
+This function transforms a linux path to Windows path
+}
 \description{
 windowsPath
+}
+\examples{
+windowsPath(localpath = "c/mnt/Users/Default/Downloads/Manifest.tsv")
 }

@@ -1,7 +1,8 @@
 #' exportManifest
-#' @return
+#' @return This function will export the manifest used in this package to the specified folder. The manifest is the heart of the package, this must never get corrupted.
+#' @param Path The folder path to save the manifest in. Automatically generates a tab-delimited file called 'Manifest.tsv' in specified folder.
 #' @examples
-#' exportManifest(Path = "C:/Users/p70072451/Downloads/")
+#' exportManifest(Path = "C:/Users/Default/Downloads/")
 #' @export
 exportManifest = function(Path = NA){
 	if(is.na(Path)){

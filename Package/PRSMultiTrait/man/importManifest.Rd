@@ -6,9 +6,15 @@
 \usage{
 importManifest(Path = NA)
 }
+\arguments{
+\item{Path}{The specific file path to get the manifest from. Must be a tab-delimited file. See formatting example at exportManifest().}
+}
+\value{
+This function will import the manifest used in this package from the specified file. The manifest is the heart of the package, this must never get corrupted.
+}
 \description{
 importManifest
 }
 \examples{
-importManifest(Path = "C:/Users/p70072451/Downloads/Manifest.tsv")
+importManifest(Path = "C:/Users/Default/Downloads/Manifest.tsv")
 }

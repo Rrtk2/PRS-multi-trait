@@ -1,5 +1,10 @@
 #' predPRS
 #' @return This fucntion will run the calculation of the PGS of the given GWAS, it will automatically save these PGS which can be extracted with collect_all_PRS(). Make sure the bfiles are using a chr:bp ids and are using wsl-pathing notation in the fucntion.
+#' @param bfile The path to the cohort without extension. (linux path is required, use wslPath(windows path) to convert), see example.
+#' @param Trait The GWAS trait of interest to predict PGS for.
+#' @param Model The used model to calculate the PGM
+#' @param OverlapSNPsOnly Set to TRUE to only use the SNPs that overlap between your cohort data and the underlying PGM. This causes a loss in effect as some SNPs are not used in the estimation of the PGS. Will keep working without errors untill a 5% effect loss, then FORCE is needed to continue.
+#' @param Force Set to TRUE to force the operation to continue, even though its a bad idea due to high missingness!
 #' @examples predPRS(bfile = wslpath("C:/path/to/examplecohort"), Trait = "Height")
 #' @export
 predPRS = function(bfile = NA, Trait = NA, Model = "bayesr", OverlapSNPsOnly=FALSE, Force = FALSE){

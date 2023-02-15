@@ -6,6 +6,15 @@
 \usage{
 prepareGWAS(trait = "UniqueTraitName")
 }
+\arguments{
+\item{short}{The unique GWAS ID for the GWAS summaries file to be formatted to an internal format which will be used in the generation of PGM.}
+}
+\value{
+This function will format the GWAS summaries file loaded from the location given in the manifest to a more convenient internal format, used later in the generation of the PGM(s).
+}
 \description{
 prepareGWAS
+}
+\examples{
+prepareGWAS(trait = "Height")
 }

@@ -21,6 +21,35 @@ addGWAStoManifest(
   FORCE = FALSE
 )
 }
+\arguments{
+\item{short}{Enter a unique ID for the GWAS trait.}
+
+\item{n}{Enter the sample size here, can be a rough estimate. This is not functionally used, only for annotation.}
+
+\item{filename}{Enter the exact location of the curated GWAS.summaries file. This character string is the file argument in data.table::fread.}
+
+\item{year}{Enter the year of GWAS.}
+
+\item{trait}{Enter a brief description on the GWAS trait, to further specify if traits are similar.}
+
+\item{DOI}{Enter the persistent online link to always be able to trace back the GWAS.}
+
+\item{genomeBuild}{Enter the genomeBuild used in the GWAS, usually hg37.}
+
+\item{traitType}{Enter the type of GWAS trait. This can ONLY be "CAT" or "CONT", categorical or continuous.}
+
+\item{rawSNPs}{Automatically estimated, please leave as "?". This is the amount of SNPs in the data to be used to model.}
+
+\item{finalModelSNPs}{Automatically estimated, please leave as "?". This is the amount of SNPs that are used in the final model.}
+
+\item{modelRunningTime}{Automatically estimated, please leave as "?". THis is the amount of time taken to train the model.}
+
+\item{usedRefSet}{Not used yet. Planned to be used when enabling diffent reference sets, no only UKBB.}
+
+\item{processed}{Please set to 0. This is a variable indicaive of the processing steps taken in the workflow. 0 = new, 1 = QC, 2 is PGM.}
+
+\item{FORCE}{Set to TRUE if wanting to skip the verification step.}
+}
 \value{
 This function will add a GWAS with all its needed information to the Manifest file
 }
@@ -29,5 +58,5 @@ addGWAStoManifest
 }
 \examples{
 addGWAStoManifest(short=c("Height"),	n=c(10000), filename=c("C:/Path/To/GWAS_file"), year=c("2020"), trait=c("Height"), DOI=c("?"),	genomeBuild = c("hg19"), traitType = c("CON"), rawSNPs = c("?"), finalModelSNPs = c("?"), modelRunningTime = c("?"), usedRefSet = c("?"), processed=c(0))
-The most important attributes are "short", "n", "filename" and "traitType". "traitType" should be "CAT" or "CON".
+The most important attributes are "short", "filename" and "traitType". "traitType" should be "CAT" or "CON".
 }

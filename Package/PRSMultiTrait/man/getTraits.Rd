@@ -7,7 +7,7 @@
 getTraits()
 }
 \value{
-This fucntion is for vizualization purposes, it shows all the 'shorts' and their descriptions.
+This function is for vizualization purposes, it shows all the 'shorts' and their descriptions.
 }
 \description{
 getManifest

@@ -6,6 +6,15 @@
 \usage{
 checkDataIDs(path = NA)
 }
+\arguments{
+\item{path}{The path to the b-file (bim).}
+}
+\value{
+This function will check the IDs of the b-files of the cohort of interest. These need to be chr:bp format. This function will automatically convert the IDs, and generate new b-files with a "_chrpb" postfix.
+}
 \description{
 checkDataIDs
+}
+\examples{
+path = "C:/Users/p70072451/Downloads/ADNI/ADNI_QC_EUR05_2.bim"; checkDataIDs(path)
 }

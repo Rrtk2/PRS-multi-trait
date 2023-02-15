@@ -1,5 +1,6 @@
 #' getManifest
 #' @return This function is used internally a lot, to make sure the manifest file is leading at all times. It loads the manifest object in its manifest env. It can be prompted to be shown if printManifest is set to TRUE.
+#' @param printManifest Show (print) the manifest in the console.
 #' @examples getManifest(1)
 #' @export
 getManifest = function(printManifest=FALSE){
