@@ -16,7 +16,7 @@ ui <- tagList(
                            
                            .container-fluid { padding-left: 0; padding-right: 0; }
                            
-                           .my_style_1 { position: absolute; left: 0; }
+                           .my_style_1 { position: absolute; top: 0; }
                            
                            "))),
   
@@ -76,7 +76,7 @@ ui <- tagList(
 								inputId = "startGWASprep",
 								label = "Start",
 								style = "jelly",
-								color = "danger",
+								color = "primary",
 								icon = icon("arrow-right")
 							),
 
@@ -100,7 +100,7 @@ ui <- tagList(
 								inputId = "GWAS_traits_input",
 								label = "Select all GWAS traits to be prepared",
 								value = TRUE,
-								status = "danger"
+								status = "success"
 							),
 
 							conditionalPanel(
@@ -110,7 +110,8 @@ ui <- tagList(
 									inputId = "GWAS_traits_input_dropdown",
 									label = "Select GWASes to be prepared",
 									choices = Traits,
-									multiple = TRUE
+									multiple = TRUE,
+									#status = "danger" @RRR Need something like this!
 								),
 							),
 
@@ -189,7 +190,7 @@ ui <- tagList(
                                  actionBttn(inputId = "startPGM",
                                             label = "Start",
                                             style = "jelly",
-                                            color = "danger",
+                                            color = "primary",
                                             icon = icon("arrow-right")),
                                  
                                  
@@ -223,7 +224,7 @@ ui <- tagList(
                                  awesomeCheckbox(inputId = "PGM_all_models",
                                                  label = "Calculate PGM using all models",
                                                  value = TRUE,
-                                                 status = "danger"),
+                                                 status = "success"),
                                  
                                  conditionalPanel(
                                    condition = "input.PGM_all_models==false",
@@ -315,14 +316,14 @@ ui <- tagList(
                                  actionBttn(inputId = "example", 
                                             label = "Example",
                                             style = "jelly",
-                                            color = "danger",
+                                            color = "default",
                                             icon = icon("fas fa-mouse-pointer")),
                                  
                                  #Start the analysis
                                  actionBttn(inputId = "startAnalysis",
                                             label = "Start",
                                             style = "jelly",
-                                            color = "danger",
+                                            color = "primary",
                                             icon = icon("arrow-right")),
                                  
                                  
@@ -363,7 +364,7 @@ ui <- tagList(
                                  awesomeCheckbox(inputId = "all_models",
                                                  label = "Calculate PRS using default model (bayesr)",
                                                  value = TRUE,
-                                                 status = "danger"),
+                                                 status = "success"),
                                  
                                  conditionalPanel(
                                    condition = "input.all_models==false",
@@ -381,8 +382,8 @@ ui <- tagList(
                           column(4, offset = 4, align = "center",
                                  style = "background-color:#FFFFFF;",
                                  hr(),
-                                 column(4, align = "center",
-                                       img(src = "MHENS_logo.png", width = "100%")),
+                                 #column(4, align = "center",
+                                       #img(src = "MHENS_logo.png", width = "100%")),
                                  column(4, align = "center",
                                         img(src = "UM_logo.png", width = "100%")),
                                  column(4, align = "center",
@@ -404,8 +405,8 @@ ui <- tagList(
                                  #Continue with saved data
                                  actionBttn(inputId = "continue", 
                                             label = "Continue with saved data",
-                                            style = "simple",
-                                            color = "warning",
+                                            style = "jelly",
+                                            color = "default",
                                             icon = icon("fas fa-sign-in-alt"))
                           )
                           
