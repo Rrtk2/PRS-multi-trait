@@ -109,7 +109,7 @@ ui <- tagList(
 								selectInput(
 									inputId = "GWAS_traits_input_dropdown",
 									label = "Select GWASes to be prepared",
-									choices = Traits,
+									choices = Manifest_env$Traits_PRE,
 									multiple = TRUE,
 									#status = "danger" @RRR Need something like this!
 								),
@@ -206,11 +206,27 @@ ui <- tagList(
                                  style = "background-color:#FFFFFF;",
                                  
                                  br(),
-                                                                   
-                                   selectInput(inputId = "PGM_traits_input",
-                                               label = "Select traits to calculate PGM for",
-                                               choices = Traits,
-                                               multiple = TRUE),
+                                  
+							awesomeCheckbox(
+								inputId = "PGM_traits_input",
+								label = "Select all traits to calculate PGM for",
+								value = TRUE,
+								status = "success"
+							),
+
+							conditionalPanel(
+								condition = "input.PGM_traits_input==false",
+
+								selectInput(
+									inputId = "PGM_traits_input_dropdown",
+									label = "Select traits to calculate PGM for",
+									choices = Manifest_env$Traits_PGM,
+									multiple = TRUE,
+									#status = "danger" @RRR Need something like this!
+								),
+							),
+								  
+                                  
                                  
                           )
                           
@@ -231,7 +247,7 @@ ui <- tagList(
                                    
                                    selectInput(inputId = "PGM_models_input",
                                                label = "Select models",
-                                               choices = Models,
+                                               choices = Manifest_env$Models,
                                                multiple = TRUE),
                                  )
                           )
@@ -349,7 +365,7 @@ ui <- tagList(
                                    
                                    selectInput(inputId = "traits_input",
                                                label = "Select traits",
-                                               choices = Traits,
+                                               choices = Manifest_env$Traits_PGS,
                                                multiple = TRUE),
                                  )
                           )
@@ -371,7 +387,7 @@ ui <- tagList(
                                    
                                    selectInput(inputId = "models_input",
                                                label = "Select models",
-                                               choices = Models,
+                                               choices = Manifest_env$Models,
                                                multiple = TRUE),
                                  )
                           )

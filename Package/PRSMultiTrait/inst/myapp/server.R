@@ -58,7 +58,7 @@ server <- function(input, output, session){
       PRS_result <-  collect_all_PRS(cohort = cohortName())
       return(PRS_result)
     })
-    
+   
     
     # Go the next step
     observeEvent(if (length(PRS_result()) > 0){input$idcontinue}, {
@@ -202,7 +202,35 @@ server <- function(input, output, session){
       
       
     })
-  }) #observeEvent
+  }) # end observeEvent input$continue
+  
+	#****************************************************************************#
+	# Observer which Traits are able to be selected
+	#****************************************************************************#
+	observeEvent(input$GWAS_traits_input, { 
+		# this is done to see if any traits were ran and updated to processed 2. Else the shiny ui cannot find it.
+		getManifest()
+		Manifest_env$Traits_PRE <<- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 0]
+		# print("PRE")
+  
+	})# end observeEvent input$GWAS_traits_input
+     
+	observeEvent(input$PGM_traits_input, { 
+		# this is done to see if any traits were ran and updated to processed 2. Else the shiny ui cannot find it.
+		getManifest()
+		Manifest_env$Traits_PGM <<- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 1]
+		#print("PGM")
+
+	})# end observeEvent input$PGM_traits_input
+
+
+	observeEvent(input$all_traits, { 
+		# this is done to see if any traits were ran and updated to processed 2. Else the shiny ui cannot find it.
+		getManifest()
+		Manifest_env$Traits_PGS <<- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 2]
+		#print("PGS")
+
+	})# end observeEvent input$all_traits
   
   
   #****************************************************************************#
@@ -227,7 +255,7 @@ server <- function(input, output, session){
     # Select traits
     traits_selected <- eventReactive(input$startAnalysis,{
       if (input$all_traits == TRUE){
-        traits_selected <- Traits
+        traits_selected <- Manifest_env$Traits_PGS
       }
       if (input$all_traits == FALSE){
         traits_selected <- input$traits_input
@@ -451,7 +479,8 @@ server <- function(input, output, session){
 		# Select PGM
 		GWAS_selected <- eventReactive(input$startGWASprep,{
 			if(input$GWAS_traits_input == TRUE){
-				GWAS_selected <- input$Trait #@RRR check
+		
+				GWAS_selected <- Manifest_env$Traits_PRE
 			}else{
 				GWAS_selected <- input$GWAS_traits_input_dropdown
 			}
@@ -510,9 +539,17 @@ server <- function(input, output, session){
 		# Select PGM
 		eventresult <- eventReactive(input$startPGM,{
 			PGM_selected <- input$PGM_traits_input
+			
+			
+			if (input$PGM_traits_input == TRUE){
+				models_selected <- Manifest_env$Traits_PGM
+			}else{
+				models_selected <- input$PGM_traits_input_dropdown
+			}
+			
 
 			if (input$PGM_all_models == TRUE){
-				models_selected <- Models
+				models_selected <- Manifest_env$Models
 			}else{
 				models_selected <- input$PGM_models_input
 			}
