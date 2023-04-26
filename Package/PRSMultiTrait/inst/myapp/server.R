@@ -7,25 +7,75 @@ server <- function(input, output, session){
   # Data selection
   #****************************************************************************#
   
+  # Reactive values
+  v <- reactiveValues()
+  v$Manifest <- Manifest_env$Ref_gwas_manifest
   
   #Hide tabs
   hideTab("navbar", target = "output_panel")
   
+  volumes = getVolumes()
+  observe({
+    shinyFileChoose(input, "bfile", roots = volumes, session = session, filetypes = c("bim", "bed", "fam"))
+  })
+  observe({
+    shinyFileChoose(input, "summary", roots = volumes, session = session, filetypes = c("summaries"))
+  })
+  
+  observe({
+    output$traits_input_ui <- renderUI({
+      selectInput(inputId = "traits_input",
+                  label = "Select trait(s)",
+                  choices = v$Manifest[v$Manifest$processed == 2,1],
+                  multiple = TRUE)
+    })
+    output$remove_input_ui <- renderUI({
+      selectInput(inputId = "remove_input",
+                  label = "Select trait(s) to be removed",
+                  choices = v$Manifest[,1],
+                  multiple = TRUE)
+    })
+  })
+
+  # Show uploaded bfile
+  observe({
+    output$bfile_status <- renderText({
+      file <- as.character(parseFilePaths(volumes, input$bfile)$datapath)
+      if (length(file) > 0){
+        output <- paste0("<i>Selected file: ", file, "</i>")
+      }
+      if (length(file) == 0){
+        output <- "<i>No file selected</i>"
+      }
+      return(output)
+    }) 
+  })
+  
+  # Show uploaded summary file
+  observe({
+    output$summaryfile_status <- renderText({
+      file <- as.character(parseFilePaths(volumes, input$summary)$datapath)
+      if (length(file) > 0){
+        output <- paste0("<i>Selected file: ", file, "</i>")
+      }
+      if (length(file) == 0){
+        output <- "<i>No file selected</i>"
+      }
+      return(output)
+    }) 
+  })
+
   #Info panel
   observeEvent(input$infopanel1, {
     sendSweetAlert(
       session = session,
       title = "Information",
-      text = "Information should be provided here",
+      text = tags$span("Full documentation can be found",
+                       tags$a(href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ", 
+                              "here")),
       type = "info"
     )
   })
-  
-  volumes = getVolumes()
-  observe({
-    shinyFileChoose(input, "bfile", roots = volumes, session = session, filetypes = c("bim"),)
-  })
-  
   
   #****************************************************************************#
   # Continue with saved data
@@ -41,24 +91,42 @@ server <- function(input, output, session){
       title = "Continue",
       text = "Enter the cohort name (i.e., the name of the PLINK file without .bim/.bed/.fam extension) 
       to continue.",
-      input = "text",
-      inputPlaceholder = "Cohort name",
+      input = "select",
+      inputOptions = cohort,
       btn_labels = c("Continue", "Cancel")
     )
     
     # Cohort name
     cohortName <- reactive({
       req(input$idcontinue)
-      return(input$idcontinue)
+      cohortName <- str_split(input$idcontinue, ": ")[[1]][1]
+      return(cohortName)
+    })
+    
+    # Cohort name
+    modelName <- reactive({
+      req(input$idcontinue)
+      modelName <- str_split(input$idcontinue, ": ")[[1]][2]
+      return(modelName)
     })
     
     # Get PRS results
     PRS_result <- reactive({
       req(cohortName())
-      PRS_result <-  collect_all_PRS(cohort = cohortName())
+      req(modelName())
+      PRS_result <-  collect_all_PRS(cohort = cohortName(),
+                                     Model = modelName())
+      
+      if ((modelName() != "bayesr-shrink") & (modelName() != "lasso-sparse")){
+        colnames(PRS_result) <- str_remove(colnames(PRS_result), paste0("_",modelName()))
+      } else{
+        colnames(PRS_result) <- str_remove(colnames(PRS_result), "_bayesr.shrink")
+        colnames(PRS_result) <- str_remove(colnames(PRS_result), "_lasso.sparse")
+      }
+      
       return(PRS_result)
     })
-   
+    
     
     # Go the next step
     observeEvent(if (length(PRS_result()) > 0){input$idcontinue}, {
@@ -202,35 +270,7 @@ server <- function(input, output, session){
       
       
     })
-  }) # end observeEvent input$continue
-  
-	#****************************************************************************#
-	# Observer which Traits are able to be selected
-	#****************************************************************************#
-	observeEvent(input$GWAS_traits_input, { 
-		# this is done to see if any traits were ran and updated to processed 2. Else the shiny ui cannot find it.
-		getManifest()
-		Manifest_env$Traits_PRE <<- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 0]
-		# print("PRE")
-  
-	})# end observeEvent input$GWAS_traits_input
-     
-	observeEvent(input$PGM_traits_input, { 
-		# this is done to see if any traits were ran and updated to processed 2. Else the shiny ui cannot find it.
-		getManifest()
-		Manifest_env$Traits_PGM <<- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 1]
-		#print("PGM")
-
-	})# end observeEvent input$PGM_traits_input
-
-
-	observeEvent(input$all_traits, { 
-		# this is done to see if any traits were ran and updated to processed 2. Else the shiny ui cannot find it.
-		getManifest()
-		Manifest_env$Traits_PGS <<- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 2]
-		#print("PGS")
-
-	})# end observeEvent input$all_traits
+  }) #observeEvent
   
   
   #****************************************************************************#
@@ -250,7 +290,7 @@ server <- function(input, output, session){
       bfile <- as.character(parseFilePaths(volumes, input$bfile)$datapath)
       return(bfile)
     })
-    
+
     
     # Select traits
     traits_selected <- eventReactive(input$startAnalysis,{
@@ -264,22 +304,16 @@ server <- function(input, output, session){
       return(traits_selected)
     })
 	
-	# Select Models
-    models_selected <- eventReactive(input$startAnalysis,{
-      if (input$all_models == TRUE){
-        models_selected <- "bayesr" # defaults to bayesr
-      }
-      if (input$all_models == FALSE){
-        models_selected <- input$models_input
-      }
-      
-      return(models_selected)
+	 # Select Models
+    modelName <- eventReactive(input$startAnalysis,{
+      req(input$selectedModel)
+      return(input$selectedModel)
     })
     
     # Path to data
     path <- reactive({
       req(traits_selected())
-	  req(models_selected())
+      req(modelName())
       req(bfile())
       path <- str_remove(bfile(), ".bed")
       path <- str_remove(path, ".bim")
@@ -295,32 +329,31 @@ server <- function(input, output, session){
       return(cohortName)
     })
     
+    
     # Get PRS results
     PRS_result <- reactive({
       req(cohortName())
-      req(traits_selected())
-      req(path())
+      req(modelName())
       
-	  for (t in traits_selected()){
-		  for (m in models_selected()){
-			predPRS(bfile = wslPath(path()), 
-					Trait = t,
-					Model = m,
-					OverlapSNPsOnly=TRUE, #@RRR need to have button for this
-					Force = TRUE)#@RRR and need to have button for this
-		  }
-	  }
+      for (t in traits_selected()){
+          predPRS(bfile = wslPath(path()), 
+                  Trait = t,
+                  Model = modelName(),
+                  OverlapSNPsOnly=TRUE,
+                  Force = TRUE)
+
+      }
       
-		#@RRR this line below needs to be adjusted, or the function itself to bind all objects for the selected traits and models
-		df_list = list()
-		for (t in traits_selected()){
-			for (m in models_selected()){
-				df_list[[length(df_list)+1]] <-  collect_all_PRS(cohort = cohortName(),Trait = t, Model = m)
-			}
-		}
-		PRS_result <- do.call(cbind, df_list)
-		
-      removeModal()
+      PRS_result <-  collect_all_PRS(cohort = cohortName(),
+                                     Model = modelName())
+      
+      if (modelName() != "bayesr-shrink"){
+        colnames(PRS_result) <- str_remove(colnames(PRS_result), paste0("_",modelName()))
+      } else{
+        colnames(PRS_result) <- str_remove(colnames(PRS_result), "_bayesr.shrink")
+        colnames(PRS_result) <- str_remove(colnames(PRS_result), "_lasso.sparse")
+      }
+      
       return(PRS_result)
     })
     
@@ -328,11 +361,13 @@ server <- function(input, output, session){
     # Go the next step
     observeEvent(if (length(PRS_result()) > 0){input$startAnalysis}, {
       
+      removeModal()
+      
       # Success message
       sendSweetAlert(
         session = session,
         title = "Success!",
-        text = "Data successfully selected!",
+        text = "PGS successfully calculated!",
         type = "success")
       
       # Go to next tab
@@ -470,134 +505,153 @@ server <- function(input, output, session){
     
   }) #end observeEvent startAnalysis
   
-	#-----------------------------------------------------------------------------------------------------#
-	#							startGWASprep
-	#-----------------------------------------------------------------------------------------------------#
-
-	observeEvent(input$startGWASprep, {
-   
-		# Select PGM
-		GWAS_selected <- eventReactive(input$startGWASprep,{
-			if(input$GWAS_traits_input == TRUE){
-		
-				GWAS_selected <- Manifest_env$Traits_PRE
-			}else{
-				GWAS_selected <- input$GWAS_traits_input_dropdown
-			}
-			return(GWAS_selected)
-		})
-		
-		if(length(GWAS_selected())){
-			# Pop busy message
-			showModal(modalDialog(title = h4(strong("Preparing GWAS(es)..."),
-				align = "center"), 
-				footer = NULL,
-				h5("This might take a while. Please be patient.", 
-				align = "center")))
-				
-			# prepare GWASes
-			for (g in GWAS_selected()){
-				prepareGWAS(trait = g)
-				#cat("\n\nTEST FLAG 1\n\n")
-				
-			}
-			
-			## PGMs
-			#for (p in GWAS_selected()){
-			#	PRSMultiTrait::calcPGS_LDAK(Trait = p, Model = "bayesr")
-			#	#cat("\n\nTEST FLAG 2\n\n")
-			#}
-			
-			# remove old message
-			removeModal()
-
-			# Pop Success message
-			sendSweetAlert(
-			session = session,
-			title = "Success!",
-			text = "GWAS successfully procesed!",
-			type = "success")
-			
-		}else{
-		
-			sendSweetAlert(
-			session = session,
-			title = "Hold on",
-			text = "Select a trait first",
-			type = "info")
-		}
-		
+  
+  
+  #****************************************************************************#
+  # Add PGS Model
+  #****************************************************************************#
+  
+  # Output table
+  output$Manifest_table <- DT::renderDataTable({
+    outputTable <- v$Manifest[,c("short", "n", "year", "trait", "DOI", 
+                                 "genomeBuild", "traitType")]
+    colnames(outputTable) <- c("Name", "N", "Year", "Description", "DOI",
+                               "Genome Build", "Type")
+    return(outputTable)
+  }, server=TRUE,
+  options = list(pageLength = 15), rownames= FALSE)
+  
+  
+  # Check whether GWAS can be added
+  status_addGWAS <- eventReactive(input$addGWAS_button,{
+    status <- TRUE
+    if (input$GWAS_name %in% Manifest_env$Traits){
+      status <- "Trait name already exists, please select a different name"
+    }
+    if(is.integer(input$summary)){
+      status <- "No file selected!"
+    }
+    if(input$GWAS_name == ""){
+      status <- "Please give the PGS model a name!"
+    }
+    
+    return(status)
+  })
+  
+  #Info panel
+  observeEvent(if (status_addGWAS() != TRUE){input$addGWAS_button},  {
+    sendSweetAlert(
+      session = session,
+      title = "Error",
+      text = status_addGWAS(),
+      type = "error"
+    )
+  })
+  
+  # Add GWAS
+  observeEvent(if (status_addGWAS() == TRUE){input$addGWAS_button}, {
+    
+    showModal(modalDialog(title = h4(strong("PGS Model Generation..."),
+                                     align = "center"), 
+                          footer = NULL,
+                          h5("This might take a while. Please be patient.", 
+                             align = "center")))
+    
+    # Get sample size
+    sampleSize <- reactive({
+      summaryFile <- as.character(parseFilePaths(volumes, input$summary)$datapath)
+      dataObj <- fread(summaryFile)
+      sampleSize <- median(dataObj$N)
+      return(sampleSize)
+    })
+    
+    # Add GWAS to Manifest
+    addGWAStoManifest(short = input$GWAS_name, 
+                      n = sampleSize(), 
+                      filename = as.character(parseFilePaths(volumes, input$summary)$datapath), 
+                      year = input$GWAS_year, 
+                      trait = input$GWAS_description, 
+                      DOI = input$GWAS_doi, 
+                      genomeBuild = input$GWAS_build, 
+                      traitType = input$GWAS_CatCont, 
+                      rawSNPs = c("?"), 
+                      finalModelSNPs = c("?"), 
+                      modelRunningTime = c("?"),
+                      usedRefSet = c("?"), 
+                      processed = c(0), 
+                      FORCE = TRUE) 
+    
+    # Prepare GWAS
+    PRSMultiTrait::prepareGWAS(trait = input$GWAS_name)
+    
+    # PGS Mode generation
+    for (m in Manifest_env$Models){
+      PRSMultiTrait::calcPGS_LDAK(Trait = input$GWAS_name,
+                                  Model = m)
+    }
+    # Update Manifest
+    Manifest_env$Traits <- Manifest_env$Ref_gwas_manifest$short
+    Manifest_env$Traits_PRE <- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 0]
+    Manifest_env$Traits_PGM <- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 1]
+    Manifest_env$Traits_PGS <- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 2]
+    v$Manifest <- Manifest_env$Ref_gwas_manifest
+    
+    # remove message
+    removeModal()
+    
+    
+    
+  }) #end observeEvent
 	
-	}) #end observeEvent startGWASprep
-	
-	#-----------------------------------------------------------------------------------------------------#
-	#							startPGM
-	#-----------------------------------------------------------------------------------------------------#
+  observeEvent(input$removeGWAS_button, {
+    if(length(input$remove_input)>0){
+      ask_confirmation(
+        session = session,
+        inputId = "ConfirmRemove",
+        title = "Are you sure?",
+        text = paste0("You are about to remove the following PGS Models: ", paste(input$remove_input, collapse = "; ")),
+        type = "warning",
+        btn_labels = c("Cancel", "Confirm")
+      )
+    }
+    if(length(input$remove_input)==0){
+      sendSweetAlert(
+        session = session,
+        title = "Error",
+        text = "Select a trait to be removed!",
+        type = "error"
+      )
+    }
+  })
+  
+  # Remove GWAS
+  observeEvent(input$ConfirmRemove,{
+    if(input$ConfirmRemove == TRUE){
+      print(paste0(input$remove_input, " removed from manifest"))
+      
+      for (r in input$remove_input){
+        removeGWASfromManifest(r, FORCE = TRUE)
+      }
+    }
+    Manifest_env$Traits <- Manifest_env$Ref_gwas_manifest$short
+    Manifest_env$Traits_PRE <- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 0]
+    Manifest_env$Traits_PGM <- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 1]
+    Manifest_env$Traits_PGS <- Manifest_env$Traits[Manifest_env$Ref_gwas_manifest$processed == 2]
+    
+    v$Manifest <- Manifest_env$Ref_gwas_manifest
 
-	observeEvent(input$startPGM, {
-   
-		# Select PGM
-		eventresult <- eventReactive(input$startPGM,{
-			PGM_selected <- input$PGM_traits_input
-			
-			
-			if (input$PGM_traits_input == TRUE){
-				models_selected <- Manifest_env$Traits_PGM
-			}else{
-				models_selected <- input$PGM_traits_input_dropdown
-			}
-			
+  })
+  
+  
+  output$Manifest_table1 <- DT::renderDataTable({
+    outputTable <- v$Manifest[,c("short", "n", "year", "trait", "DOI", 
+                                 "genomeBuild", "traitType")]
+    colnames(outputTable) <- c("Name", "N", "Year", "Description", "DOI",
+                               "Genome Build", "Type")
+    return(outputTable)
+  }, server=TRUE,
+  options = list(pageLength = 15), rownames= FALSE)
+  
 
-			if (input$PGM_all_models == TRUE){
-				models_selected <- Manifest_env$Models
-			}else{
-				models_selected <- input$PGM_models_input
-			}
-			eventresult	 = list("PGM_selected" = PGM_selected, "models_selected" = models_selected)
-			return(eventresult)
-		})
-		
-		
-		PGM_selected = eventresult()[["PGM_selected"]]
-		models_selected = eventresult()[["models_selected"]]
-		
-		if(length(eventresult()[["PGM_selected"]])){
-			# Pop busy message
-			showModal(modalDialog(title = h4(strong("Calculating PGM..."),
-				align = "center"), 
-				footer = NULL,
-				h5("This might take a while. Please be patient.", 
-				align = "center")))
-				
-			
-			# PGMs
-			for (m in models_selected){
-				for (p in PGM_selected){
-					PRSMultiTrait::calcPGS_LDAK(Trait = p, Model = m)
-				#cat("\n\nTEST FLAG 2\n\n")
-				}
-			}
-			
-			# remove old message
-			removeModal()
-
-			# Pop Success message
-			sendSweetAlert(
-			session = session,
-			title = "Success!",
-			text = "PGM successfully generated!",
-			type = "success")
-			
-		}else{
-		
-			sendSweetAlert(
-			session = session,
-			title = "Hold on",
-			text = "Select a trait first",
-			type = "info")
-		}
-		
-	
-	}) #end observeEvent startPGM
 }
 
