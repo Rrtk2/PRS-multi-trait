@@ -4,7 +4,10 @@ ui <- tagList(
                            .navbar-nav {
                            float: none !important;
                            }
-                           .navbar-nav > li:nth-child(6) {
+                           .navbar-nav > li:nth-child(4) {
+                           float: right;
+                           }
+                            .navbar-nav > li:nth-child(3) {
                            float: right;
                            }
                            .my_style_1{ 
@@ -24,337 +27,113 @@ ui <- tagList(
   fluidPage(
     
     useSweetAlert(),
-    
     navbarPage(title = "I PRS Multi-Trait", id = "navbar",
                
-			   ###################################################################
-               #  prepareGWAS                                                  
-               ###################################################################
-				tabPanel(
-					"Prepare GWAS", 
-					value = "GWAS_panel", 
-					icon = icon("fas fa-home"), 
-					class = "my_style_1",
-
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					
-					fluidRow(
-                          
-                          column(4, offset = 4, 
-                                 align = "center", 
-                                 style = "background-color:#FFFFFF;",
-                                 
-                                 br(),
-                                 
-                                 h1(strong(span(style = "color:#000000", "Prepare GWAS!"))),
-                                 
-                                 h2(span(style = "color:#FF0000", "This page should be hidden in some menu.")),
-                                 br(),
-                                 
-                                 
-                                 
-                                 br(),
-                                 br()
-                          )
-                        ),
-					
-					fluidRow(
-
-						column(
-							4, 
-							offset = 4, 
-							align = "center", 
-							style = "background-color:#FFFFFF;",
-
-							#Start the analysis
-							actionBttn(
-								inputId = "startGWASprep",
-								label = "Start",
-								style = "jelly",
-								color = "primary",
-								icon = icon("arrow-right")
-							),
-
-
-
-							br(),
-							br(),
-
-						)
-					),
-
-					fluidRow(
-						column(4, 
-							offset = 4, 
-							align = "center",
-							style = "background-color:#FFFFFF;",
-
-							br(),
-																   
-							awesomeCheckbox(
-								inputId = "GWAS_traits_input",
-								label = "Select all GWAS traits to be prepared",
-								value = TRUE,
-								status = "success"
-							),
-
-							conditionalPanel(
-								condition = "input.GWAS_traits_input==false",
-
-								selectInput(
-									inputId = "GWAS_traits_input_dropdown",
-									label = "Select GWASes to be prepared",
-									choices = Manifest_env$Traits_PRE,
-									multiple = TRUE,
-									#status = "danger" @RRR Need something like this!
-								),
-							),
-
-						)
-
-					),
-
-
-
-
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br(),
-					br()
-
-											
-
-				), # End prepareGWAS
-               
-			    ###################################################################
-               #  Generate PGM                                                   
-               ###################################################################
-               tabPanel("Generate PGM", 
-                        value = "PGM_panel", 
-                        icon = icon("fas fa-home"), class = "my_style_1",
-                        
-                       
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        
-                        fluidRow(
-                          
-                          column(4, offset = 4, 
-                                 align = "center", 
-                                 style = "background-color:#FFFFFF;",
-                                 
-                                 br(),
-                                 
-                                 h1(strong(span(style = "color:#000000", "Generate PGM"))),
-                                 h2(span(style = "color:#FF0000", "This page should be hidden in some menu.")),
-                              
-                                 
-                                 br(),
-                                 
-
-                                 br(),
-                                 br()
-                          )
-                        ),
-                        
-                        
-                        fluidRow(
-                          
-                          column(4, offset = 4, 
-                                 align = "center", 
-                                 style = "background-color:#FFFFFF;",
-                                 
-                              
-                                 #Start the analysis
-                                 actionBttn(inputId = "startPGM",
-                                            label = "Start",
-                                            style = "jelly",
-                                            color = "primary",
-                                            icon = icon("arrow-right")),
-                                 
-                                 
-                                 
-                                 br(),
-                                 br(),
-                                 
-                          )
-                        ),
-                        
-                        fluidRow(
-                          column(4, offset = 4, align = "center",
-                                 style = "background-color:#FFFFFF;",
-                                 
-                                 br(),
-                                  
-							awesomeCheckbox(
-								inputId = "PGM_traits_input",
-								label = "Select all traits to calculate PGM for",
-								value = TRUE,
-								status = "success"
-							),
-
-							conditionalPanel(
-								condition = "input.PGM_traits_input==false",
-
-								selectInput(
-									inputId = "PGM_traits_input_dropdown",
-									label = "Select traits to calculate PGM for",
-									choices = Manifest_env$Traits_PGM,
-									multiple = TRUE,
-									#status = "danger" @RRR Need something like this!
-								),
-							),
-								  
-                                  
-                                 
-                          )
-                          
-                        ),
-						
-						fluidRow(
-                          column(4, offset = 4, align = "center",
-                                 style = "background-color:#FFFFFF;",
-                                 
-                                 br(),
-                                 awesomeCheckbox(inputId = "PGM_all_models",
-                                                 label = "Calculate PGM using all models",
-                                                 value = TRUE,
-                                                 status = "success"),
-                                 
-                                 conditionalPanel(
-                                   condition = "input.PGM_all_models==false",
-                                   
-                                   selectInput(inputId = "PGM_models_input",
-                                               label = "Select models",
-                                               choices = Manifest_env$Models,
-                                               multiple = TRUE),
-                                 )
-                          )
-                          
-                        ),
-						
-                       
-                    
-                        
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br()
-                        
-                        
-                       
-                        
-               ), # end Generate PGM 
                
                ###################################################################
-               #  Data selection                                                   
+               
+               #  Calculate PGS: Home tab    
+               
                ###################################################################
-               tabPanel("Data accession", 
+               tabPanel("Home", 
                         value = "input_panel", 
                         icon = icon("fas fa-home"), class = "my_style_1",
                         
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        br(),
                         
-
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        
+                        #******************************************************#
+                        # Title and welcome message
+                        #******************************************************#
                         fluidRow(
-                          
-                          column(4, offset = 4, 
+                          column(6, offset = 3,
                                  align = "center", 
-                                 style = "background-color:#FFFFFF;",
+                                 style = "background-color:#F5F5F5;",
                                  
                                  br(),
-                                 
+                                 br(),
                                  h1(strong(span(style = "color:#000000", "Welcome to PRS Multi-Trait!"))),
                                  
-                                 h5(span(style = "color:#000000", "Get started by uploading your PLINK files.")),
+                                 h5(span(style = "color:#000000", "Get started by uploading your PLINK files *.")),
                                  
-                                 br(),
-                                 
-                                 
-                                 #Upload CELs
-                                 shinyFilesButton(id = "bfile", 
-                                                  label = "Click here to select data file",
-                                                  title = "Please select a file:",
-                                                  multiple = FALSE,
-                                                  icon = icon("fas fa-mouse-pointer")),
-                                 br(),
                                  br()
                           )
                         ),
                         
+                        #******************************************************#
+                        # File upload
+                        #******************************************************#
+                        fluidRow(
+                          column(6, offset = 3, 
+                                 align = "center", 
+                                 style = "background-color:#F5F5F5;",
+                                 
+                                 shinyFilesButton(id = "bfile", 
+                                                  label = "Click here to select .bim; .bed; or .fam file *",
+                                                  title = "Please select a file:",
+                                                  multiple = FALSE,
+                                                  icon = icon("fas fa-mouse-pointer")),
+                                 htmlOutput("bfile_status")
+                                 
+                          )
+                          
+                        ),
                         
+                        #******************************************************#
+                        # Start analysis
+                        #******************************************************#
                         fluidRow(
                           
-                          column(4, offset = 4, 
+                          column(6, offset = 3, 
                                  align = "center", 
-                                 style = "background-color:#FFFFFF;",
+                                 style = "background-color:#F5F5F5;",
+                                 br(),
+                                 
                                  
                                  #Use example data
                                  actionBttn(inputId = "example", 
                                             label = "Example",
                                             style = "jelly",
-                                            color = "default",
-                                            icon = icon("fas fa-mouse-pointer")),
+                                            color = "danger",
+                                            size = "md",
+                                            icon = icon("refresh")),
                                  
                                  #Start the analysis
                                  actionBttn(inputId = "startAnalysis",
                                             label = "Start",
                                             style = "jelly",
-                                            color = "primary",
+                                            color = "danger",
+                                            size = "md",
                                             icon = icon("arrow-right")),
                                  
+                                 #Get information
+                                 actionBttn(inputId = "infopanel1", 
+                                            label = NULL,
+                                            color = "danger",
+                                            style = "simple",
+                                            icon = icon("info")),
                                  
                                  
                                  br(),
-                                 br(),
+                                 br()
                                  
                           )
                         ),
                         
+                        #******************************************************#
+                        # Select traits
+                        #******************************************************#
                         fluidRow(
-                          column(4, offset = 4, align = "center",
-                                 style = "background-color:#FFFFFF;",
+                          column(6, offset = 3, align = "center",
+                                 style = "background-color:#F5F5F5;",
                                  
-                                 br(),
                                  awesomeCheckbox(inputId = "all_traits",
                                                  label = "Calculate PRS for all available traits",
                                                  value = TRUE,
@@ -363,50 +142,63 @@ ui <- tagList(
                                  conditionalPanel(
                                    condition = "input.all_traits==false",
                                    
-                                   selectInput(inputId = "traits_input",
-                                               label = "Select traits",
-                                               choices = Manifest_env$Traits_PGS,
-                                               multiple = TRUE),
-                                 )
-                          )
-                          
-                        ),
-						
-						 fluidRow(
-                          column(4, offset = 4, align = "center",
-                                 style = "background-color:#FFFFFF;",
-                                 
-                                 br(),
-                                 awesomeCheckbox(inputId = "all_models",
-                                                 label = "Calculate PRS using default model (bayesr)",
-                                                 value = TRUE,
-                                                 status = "success"),
-                                 
-                                 conditionalPanel(
-                                   condition = "input.all_models==false",
-                                   
-                                   selectInput(inputId = "models_input",
-                                               label = "Select models",
-                                               choices = Manifest_env$Models,
-                                               multiple = TRUE),
+                                   uiOutput("traits_input_ui")
                                  )
                           )
                           
                         ),
                         
+                        #******************************************************#
+                        # Advanced settings
+                        #******************************************************#
                         fluidRow(
-                          column(4, offset = 4, align = "center",
-                                 style = "background-color:#FFFFFF;",
-                                 hr(),
-                                 #column(4, align = "center",
-                                       #img(src = "MHENS_logo.png", width = "100%")),
-                                 column(4, align = "center",
-                                        img(src = "UM_logo.png", width = "100%")),
-                                 column(4, align = "center",
-                                        img(src = "EXETER_logo.png", width = "100%")),
-                                 
+                          column(6, offset= 3,
+                                 align = "center",
+                                 style = "background-color:#F5F5F5;",
+                                 br(),
+                                 dropdownButton(
+                                   
+                                   tags$h3(strong("Advanced Settings")),
+                                   
+                                   selectInput(inputId = 'selectedModel',
+                                               label = 'Model',
+                                               choices = Manifest_env$Models,
+                                               selected = "bayesr"),
+                                   
+                                   materialSwitch(
+                                     inputId = "OverlapSNPsOnly",
+                                     label = "Overlap SNPs Only",
+                                     value = TRUE, 
+                                     status = "danger"
+                                   ),
+                                   
+                                   materialSwitch(
+                                     inputId = "Force",
+                                     label = "Force",
+                                     value = TRUE, 
+                                     status = "danger"
+                                   ),
+                                   
+                                   circle = FALSE,  label = "Advanced Settings",
+                                   icon = icon("gear"), width = "300px",
+                                   
+                                   tooltip = tooltipOptions(title = "Click to change settings!")
+                                 ),
+                                 br(),
+                                 br(),
                           )
-                          
+                        ),
+                        
+                        fluidRow(
+                          column(6, offset = 3,
+                                 align = "center",
+                                 style = "background-color:#F5F5F5;",
+                                 span("* You can select either the .bim, .bed, or .fam file. 
+                                    However, be aware that all three files should be in the same
+                                    folder and share the same name!"),
+                                 br(),
+                                 br()
+                          )
                         ),
                         
                         
@@ -421,8 +213,8 @@ ui <- tagList(
                                  #Continue with saved data
                                  actionBttn(inputId = "continue", 
                                             label = "Continue with saved data",
-                                            style = "jelly",
-                                            color = "default",
+                                            style = "simple",
+                                            color = "warning",
                                             icon = icon("fas fa-sign-in-alt"))
                           )
                           
@@ -446,28 +238,33 @@ ui <- tagList(
                         br()
                         
                         
-                        #********************************************************#
                         
-               ), #Data selection
-			   
-			   
+               ), # End of home tab
+               
+               
+               
                ###################################################################
+               
                #  Outputs
+               
                ###################################################################
                
                tabPanel("Output", value = "output_panel", 
                         icon = icon("fas fa-layer-group"),
                         
                         navlistPanel(id = "tabs_output",
+                                     
+                                     # Output table
                                      tabPanel("Table", value = "PRS_table",
                                               h1(strong("PRS Data Table")),
                                               hr(),
                                               dataTableOutput("PRS_table"),
                                               downloadButton("downloadPRS", 
                                                              "Download Table (csv)"),
-											  downloadButton("downloadPRStsv", 
+                                              downloadButton("downloadPRStsv", 
                                                              "Download Table (tsv)")),
                                      
+                                     # Heatmap
                                      tabPanel("Heatmap", value = "PRS_heatmap",
                                               fluidRow(
                                                 column(3,
@@ -477,7 +274,7 @@ ui <- tagList(
                                                                                "spearman",
                                                                                "kendall"),
                                                                    selected = "pearson")
-                                                       ),
+                                                ),
                                                 column(3,
                                                        selectInput(inputId = "link_method",
                                                                    label = "Linkage Method",
@@ -489,7 +286,7 @@ ui <- tagList(
                                                                                "median", 
                                                                                "mcquitty"),
                                                                    selected = "ward.D2")
-                                                ),
+                                                )
                                                 
                                               ),
                                               hr(),
@@ -498,7 +295,9 @@ ui <- tagList(
                                                          height = 800,
                                                          click = NULL)%>% 
                                                 withSpinner(color="red")
-                                              ),
+                                     ),
+                                     
+                                     # Correlations
                                      tabPanel("Correlations", value = "PRS_correlation",
                                               fluidRow(
                                                 column(3,
@@ -529,8 +328,118 @@ ui <- tagList(
                                      
                                      
                                      
-                        )
-               ) # outputs
+                        ) # navlist panel
+               ), # outputs
+               
+               ###################################################################
+               
+               #  Remove PGS model       
+               
+               ###################################################################
+               tabPanel(
+                 "Remove PRS Model", 
+                 value = "removePGS_panel", 
+                 icon = icon("fa-solid fa-square-minus"),
+                 
+                 sidebarPanel(
+                   
+                   h1(strong("Remove PGS Model")),
+                   hr(),
+                   uiOutput("remove_input_ui"),
+                   hr(),
+                   #start button
+                   actionBttn(inputId = "removeGWAS_button", 
+                              label = "Remove PRS Model!",
+                              style = "simple",
+                              color = "danger",
+                              size = "md",
+                              icon = icon("fa-solid fa-square-minus"))
+                   
+                 ),
+                 
+                 mainPanel(
+                   h1(strong("Available Models")),
+                   hr(),
+                   dataTableOutput("Manifest_table1")
+                 )
+                 
+                 
+                 
+               ), # End Remove PGS Model
+               
+               ###################################################################
+               
+               #  Add PGS model       
+               
+               ###################################################################
+               tabPanel(
+                 "Add PRS Model", 
+                 value = "addPGS_panel", 
+                 icon = icon("fa-solid fa-square-plus"),
+                 
+                 # Side panel
+                 sidebarPanel(
+                   
+                   h1(strong("Add PGS Model")),
+                   hr(),
+                   #Upload summary statistics
+                   h5(strong("Upload Summary Statistics")),
+                   shinyFilesButton(id = "summary", 
+                                    label = "Click here to select summary statistics file",
+                                    title = "Please select a file:",
+                                    multiple = FALSE,
+                                    icon = icon("fas fa-mouse-pointer")),
+                   htmlOutput("summaryfile_status"),
+                   br(),
+                   br(),
+                   
+                   textInput(inputId = "GWAS_name",
+                             label = "Name"),
+                   
+                   textInput(inputId = "GWAS_year",
+                             label = "Year"),
+                   
+                   textInput(inputId = "GWAS_description",
+                             label = "Description"),
+                   
+                   textInput(inputId = "GWAS_doi",
+                             label = "DOI"),
+                   
+                   prettyRadioButtons(
+                     inputId = "GWAS_build",
+                     label = "Genome Build", 
+                     choices = c("GRCh38/hg38", "GRCh37/hg19", "GRCh36/hg18"),
+                     selected = "GRCh37/hg19"
+                   ),
+                   
+                   prettyRadioButtons(
+                     inputId = "GWAS_CatCont",
+                     label = "Categorical or Continous Variable", 
+                     choices = c("CAT", "CONT")
+                   ),
+                   hr(),
+                   #start button
+                   actionBttn(inputId = "addGWAS_button", 
+                              label = "Add PRS Model!",
+                              style = "simple",
+                              color = "danger",
+                              size = "md",
+                              icon = icon("fa-solid fa-square-plus"))
+                   
+                 ),
+                 
+                 # Main panel
+                 mainPanel(
+                   h1(strong("Available Models")),
+                   hr(),
+                   dataTableOutput("Manifest_table")
+                 )
+                 
+                 
+                 
+               ) # End Add PGS Model
+               
+               
     ) #navbarpage
   ) # fluidpage
 ) # taglist
