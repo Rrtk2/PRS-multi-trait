@@ -9,7 +9,7 @@ This package has shiny-app support, we reccomend it!
 
 ---
 
-###  Insall Windows Subsystem for Linux (WSL)
+###  Install Windows Subsystem for Linux (WSL)
 Open windows powershell (powershell.exe)
 ```
 wsl --install
