@@ -73,15 +73,16 @@ predPRS = function(bfile = NA, Trait = NA, Model = "bayesr", OverlapSNPsOnly=FAL
 	# Get data snps 
 	a = windowsPath(paste0(bfile,".bim"))
 	b = data.frame(data.table::fread(a,header = FALSE,sep = "\t")) # waaay faster now!
-	All_data_snps = b[,"V2"]
+	All_data_snps = c(paste0(b[,"V2"], b[,"V5"], b[,"V6"]),
+	                  paste0(b[,"V2"], b[,"V6"], b[,"V5"]))
 	rm(b)
 	#All_data_snps
 	
 	#paste0(specifi_model_dir,"/",Model,".effects")
 	
 	profile = read.table(paste0(specifi_model_dir,"/",Model,".effects"),header = TRUE,sep = " ")
-	prp = table(!profile$Predictor%in%All_data_snps)
-	missing_effect = sum(abs(profile[!profile$Predictor%in%All_data_snps,5])) 
+	prp = table(!(paste0(profile$Predictor,profile$A1,profile$A2)%in%All_data_snps))
+	missing_effect = sum(abs(profile[!(paste0(profile$Predictor,profile$A1,profile$A2)%in%All_data_snps),5])) 
 	total_effect = sum(abs(profile[,5]))
 	
 	# chcek if SNPs lost are collectively important enough to stop the predicion
@@ -151,7 +152,7 @@ predPRS = function(bfile = NA, Trait = NA, Model = "bayesr", OverlapSNPsOnly=FAL
 		}
 		
 		# SElect all SNPs from PGS model overlapping with data	 		
-		profile = profile[profile$Predictor%in%All_data_snps,]
+		profile = profile[paste0(profile$Predictor,profile$A1,profile$A2)%in%All_data_snps,]
 		write.table(profile,file=paste0(specifi_model_dir,"/",Model,".effecttemp"),sep = " ",quote=FALSE,row.names = F)
 		
 		#get evaluation/ prs
