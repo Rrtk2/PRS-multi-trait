@@ -26,7 +26,11 @@ checkDataIDs = function(path = NA){
 	bim <- data.table::fread(file = path)
 
 	# perform check; crude check on all ids contain ':', if missing, then auto reformat
-	check_out = as.logical(table(grepl(bim$V2,pattern = ":"))["TRUE"] ==length(bim$V2))
+	check_number_snps = 100
+	check_out = as.logical(table((grepl(head(bim$V2,check_number_snps),pattern = ":") & 
+	length(strsplit(head(bim$V2,check_number_snps),":")) == 1))["TRUE"] == check_number_snps) & !(FALSE%in%(lapply(strsplit(head(bim$V2,check_number_snps),":"),length)==2))
+
+	
 
 	
 	if(check_out){
@@ -44,9 +48,15 @@ checkDataIDs = function(path = NA){
 		path_data_wsl = (gsub(path,pattern = "\\.bim$",replacement = ""))
 		path_SNPnames_wsl = (paste0(path_SNPnames,"SNPconverter.txt"))
 		
+		# change IDs
 		system(paste(Settings_env$s_plinkloc,"--bfile",path_data_wsl,"--maf 0.05 --make-bed --out",paste0(path_data_wsl,"_chrbp"),"--update-name", path_SNPnames_wsl))
 		
-		message("(checkDataIDs.R)    New bfiles generated with name: ",paste0(gsub(path_data_wsl ,pattern = "^.*/",replacement = ""),"_chrbp"),"!")
+		# ID potential duplcated IDs
+		#plink --file input_file --list-duplicate-vars
+		system(paste(Settings_env$s_plinkloc,"--bfile",paste0(path_data_wsl,"_chrbp")," --rm-dup force-first --make-bed --out",paste0(path_data_wsl,"_chrbp_nodup")))
+		
+
+		message("(checkDataIDs.R)    New bfiles generated with name: ",paste0(gsub(path_data_wsl ,pattern = "^.*/",replacement = ""),"_chrbp_nodup"),"!")
 	}
 
 }
