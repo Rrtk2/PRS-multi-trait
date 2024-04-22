@@ -51,7 +51,7 @@ installDependenciesAndData = function(){
 		cat("   - Installing Plink2 from cog-genomics.org\n\n")
 
 		# Download file into temp file
-		download.file("https://s3.amazonaws.com/plink2-assets/alpha3/plink2_win64_20221024.zip",paste0(Settings_env$s_ROOT_dir,"Programs/","Plink2/temp"))
+		download.file("https://s3.amazonaws.com/plink2-assets/alpha5/plink2_win32_20240105.zip",paste0(Settings_env$s_ROOT_dir,"Programs/","Plink2/temp"))
 
 		# Unzip
 		unzip(paste0(Settings_env$s_ROOT_dir,"Programs/","Plink2/temp"),exdir=paste0(Settings_env$s_ROOT_dir,"Programs/","Plink2"))  # unzip your file 
